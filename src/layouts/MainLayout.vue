@@ -11,30 +11,31 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-toolbar-title> My Diary </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+        <q-item-label header> User </q-item-label>
+        <q-item-label header> {{ formattedDate }}</q-item-label>
 
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
+        />
+        <q-btn
+          class="q-ma-sm"
+          color="primary"
+          label="+ add task"
+          @click="addTask()"
+        />
+        <q-btn
+          class="q-ma-sm"
+          color="secondary"
+          label="+ add process"
+          @click="addProcess()"
         />
       </q-list>
     </q-drawer>
@@ -46,72 +47,103 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
+import EssentialLink from "components/EssentialLink.vue";
+import { defineComponent, ref } from "vue";
+import { date } from "quasar";
+import { useQuasar } from "quasar";
+import addProcessForm from "components/addProcessForm.vue";
+import addTaskForm from "components/addTaskForm.vue";
 
 const linksList = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
+    title: "Main",
+    caption: "",
+    icon: "view_list",
+    link: "/",
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
+    title: "Calendar",
+    caption: "",
+    icon: "event",
+    link: "/calendar",
   },
   {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
+    title: "Global tasks",
+    caption: "",
+    icon: "note",
+    link: "/global-tasks",
   },
   {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
+    title: "Help",
+    caption: "",
+    icon: "help",
+    link: "/help",
   },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
 ];
 
-import { defineComponent, ref } from 'vue'
-
+const $q = useQuasar();
 export default defineComponent({
-  name: 'MainLayout',
+  name: "MainLayout",
 
   components: {
-    EssentialLink
+    EssentialLink,
   },
 
-  setup () {
-    const leftDrawerOpen = ref(false)
+  setup() {
+    const timeStamp = Date.now();
+    const formattedDate = date.formatDate(timeStamp, "dddd, D MMMM YYYY");
+    const leftDrawerOpen = ref(false);
 
     return {
       essentialLinks: linksList,
+      formattedDate,
       leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
-    }
-  }
-})
+      toggleLeftDrawer() {
+        leftDrawerOpen.value = !leftDrawerOpen.value;
+      },
+    };
+  },
+  methods: {
+    addTask() {
+      $q.dialog({
+        component: addTaskForm,
+
+        // props forwarded to your custom component
+        componentProps: {
+          text: "something",
+          // ...more..props...
+        },
+      })
+        .onOk(() => {
+          console.log("OK");
+        })
+        .onCancel(() => {
+          console.log("Cancel");
+        })
+        .onDismiss(() => {
+          console.log("Called on OK or Cancel");
+        });
+    },
+    addProcess() {
+      $q.dialog({
+        component: addProcessForm,
+
+        // props forwarded to your custom component
+        componentProps: {
+          text: "something",
+          // ...more..props...
+        },
+      })
+        .onOk(() => {
+          console.log("OK");
+        })
+        .onCancel(() => {
+          console.log("Cancel");
+        })
+        .onDismiss(() => {
+          console.log("Called on OK or Cancel");
+        });
+    },
+  },
+});
 </script>
