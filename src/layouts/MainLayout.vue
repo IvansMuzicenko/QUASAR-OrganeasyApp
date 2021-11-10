@@ -29,13 +29,13 @@
           class="q-ma-sm"
           color="primary"
           label="+ add task"
-          @click="addTask()"
+          @click="addTask"
         />
         <q-btn
           class="q-ma-sm"
           color="secondary"
           label="+ add process"
-          @click="addProcess()"
+          @click="addProcess"
         />
       </q-list>
     </q-drawer>
@@ -81,20 +81,28 @@ const linksList = [
   },
 ];
 
-const $q = useQuasar();
 export default defineComponent({
-  name: "MainLayout",
-
   components: {
     EssentialLink,
   },
 
   setup() {
+    const $q = useQuasar();
     const timeStamp = Date.now();
     const formattedDate = date.formatDate(timeStamp, "dddd, D MMMM YYYY");
     const leftDrawerOpen = ref(false);
 
     return {
+      addTask() {
+        $q.dialog({
+          component: addTaskForm,
+        });
+      },
+      addProcess() {
+        $q.dialog({
+          component: addProcessForm,
+        });
+      },
       essentialLinks: linksList,
       formattedDate,
       leftDrawerOpen,
@@ -102,48 +110,6 @@ export default defineComponent({
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
     };
-  },
-  methods: {
-    addTask() {
-      $q.dialog({
-        component: addTaskForm,
-
-        // props forwarded to your custom component
-        componentProps: {
-          text: "something",
-          // ...more..props...
-        },
-      })
-        .onOk(() => {
-          console.log("OK");
-        })
-        .onCancel(() => {
-          console.log("Cancel");
-        })
-        .onDismiss(() => {
-          console.log("Called on OK or Cancel");
-        });
-    },
-    addProcess() {
-      $q.dialog({
-        component: addProcessForm,
-
-        // props forwarded to your custom component
-        componentProps: {
-          text: "something",
-          // ...more..props...
-        },
-      })
-        .onOk(() => {
-          console.log("OK");
-        })
-        .onCancel(() => {
-          console.log("Cancel");
-        })
-        .onDismiss(() => {
-          console.log("Called on OK or Cancel");
-        });
-    },
   },
 });
 </script>
