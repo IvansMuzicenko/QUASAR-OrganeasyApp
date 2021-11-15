@@ -3,14 +3,13 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
 import { date } from "quasar";
 const timeStamp = Date.now();
 const formattedDate = date.formatDate(timeStamp, "YYYY/MM/DD");
 export default {
-  setup() {
+  data() {
     return {
-      date: ref(formattedDate),
+      date: formattedDate,
     };
   },
 };

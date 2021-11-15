@@ -211,25 +211,24 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import { date } from "quasar";
 export default {
   data() {
     return {
       todoTitle: "",
       continiousState: "false",
-      todoModel: ref(null),
+      todoModel: null,
       todoType: ["Event", "Task"],
       eventSubtasks: [],
       subtaskInput: "",
-      processesModel: ref(null),
+      processesModel: null,
       processesType: [
         "Brush teeth",
         "Shave beard",
         "Take a shower",
         "Clean kitchen",
       ], // from database processes
-      taskModel: ref(null),
+      taskModel: null,
       taskType: ["Global", "Term", "Repeatable"],
       monthsModel: 0,
       monthsOptions: Array.from({ length: 12 }, (_, index) => index + 1),
@@ -243,7 +242,7 @@ export default {
       minutesOptions: Array.from({ length: 60 }, (_, index) => index + 1),
       secondsModel: 0,
       secondsOptions: Array.from({ length: 60 }, (_, index) => index + 1),
-      currentDate: ref(Date.now()),
+      currentDate: Date.now(),
       formattedDate: date.formatDate(Date.now(), "DD/MM/YYYY HH:mm"),
     };
   },

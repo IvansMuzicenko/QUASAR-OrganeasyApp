@@ -14,10 +14,7 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "EssentialLink",
+export default {
   props: {
     title: {
       type: String,
@@ -39,5 +36,5 @@ export default defineComponent({
       default: "",
     },
   },
-});
+};
 </script>

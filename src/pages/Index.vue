@@ -21,15 +21,13 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
 import { date } from "quasar";
 
-export default defineComponent({
-  name: "PageIndex",
-  setup() {
+export default {
+  data() {
     const timeStamp = Date.now();
     const formattedDate = date.formatDate(timeStamp, "dddd, D MMMM YYYY");
     return { formattedDate };
   },
-});
+};
 </script>
