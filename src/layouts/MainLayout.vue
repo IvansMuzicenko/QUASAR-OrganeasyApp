@@ -17,7 +17,8 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label header> User </q-item-label>
+        <q-item-label v-if="email" header> {{ email }}</q-item-label>
+        <q-item-label v-else header clickable to="/auth">Sign In </q-item-label>
         <q-item-label header> {{ formattedDate }}</q-item-label>
 
         <EssentialLink
@@ -48,9 +49,7 @@
 
 <script>
 import EssentialLink from "components/EssentialLink.vue";
-import { defineComponent, ref } from "vue";
 import { date } from "quasar";
-import { useQuasar } from "quasar";
 import addProcessForm from "components/addProcessForm.vue";
 import addTaskForm from "components/addTaskForm.vue";
 
@@ -81,35 +80,43 @@ const linksList = [
   },
 ];
 
-export default defineComponent({
+export default {
   components: {
     EssentialLink,
   },
+  computed: {
+    email() {
+      console.log(this.$store);
+      return this.$store.getters["users/email"];
+    },
+  },
 
-  setup() {
-    const $q = useQuasar();
+  data() {
     const timeStamp = Date.now();
     const formattedDate = date.formatDate(timeStamp, "dddd, D MMMM YYYY");
-    const leftDrawerOpen = ref(false);
+    const leftDrawerOpen = false;
 
     return {
-      addTask() {
-        $q.dialog({
-          component: addTaskForm,
-        });
-      },
-      addProcess() {
-        $q.dialog({
-          component: addProcessForm,
-        });
-      },
       essentialLinks: linksList,
       formattedDate,
+
       leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
     };
   },
-});
+  methods: {
+    addTask() {
+      this.$q.dialog({
+        component: addTaskForm,
+      });
+    },
+    addProcess() {
+      this.$q.dialog({
+        component: addProcessForm,
+      });
+    },
+    toggleLeftDrawer() {
+      leftDrawerOpen.value = !leftDrawerOpen.value;
+    },
+  },
+};
 </script>

@@ -1,10 +1,14 @@
 <template>
   <router-view />
 </template>
-<script>
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  name: "App",
-});
+<script>
+export default {
+  beforeCreate() {
+    const user = this.$q.localStorage.getItem("user");
+    if (user) {
+      this.$store.dispatch("users/setUser", user);
+    }
+  },
+};
 </script>
