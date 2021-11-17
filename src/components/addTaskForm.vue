@@ -2,19 +2,30 @@
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
       <q-card-section>
-        <q-input bottom-slots v-model="todoTitle" label="Title" :dense="false">
+        <q-input
+          bottom-slots
+          v-model="todoTitle"
+          label="Title"
+          lazy-rules
+          @blur="checkValidity()"
+          :rules="[(val) => val !== '']"
+          :dense="false"
+        >
         </q-input>
-        <q-card-section>
-          <p>Continious action</p>
-          <q-radio v-model="continiousState" val="true" label="true" />
-          <q-radio v-model="continiousState" val="false" label="false" />
-        </q-card-section>
         <q-select
           outlined
           v-model="todoModel"
           :options="todoType"
           label="Type"
+          @blur="checkValidity()"
+          lazy-rules
+          :rules="[(val) => val !== null]"
         />
+        <q-card-section>
+          <p>Continuous action</p>
+          <q-radio v-model="continuousState" :val="true" label="true" />
+          <q-radio v-model="continuousState" :val="false" label="false" />
+        </q-card-section>
 
         <q-card-section v-if="todoModel === 'Event'">
           <q-select
@@ -56,7 +67,7 @@
           />
 
           <q-card-section v-if="taskModel === 'Term'">
-            <q-input filled v-model="formattedDate" label="Start">
+            <q-input filled v-model="formattedDate" label="Term">
               <template v-slot:prepend>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
@@ -203,7 +214,12 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn color="primary" label="Add" @click="onOKClick" />
+        <q-btn
+          color="primary"
+          label="Add"
+          :disable="error"
+          @click="onOKClick"
+        />
         <q-btn color="negative" label="Cancel" @click="onCancelClick" />
       </q-card-actions>
     </q-card>
@@ -212,22 +228,20 @@
 
 <script>
 import { date } from "quasar";
+import { getDatabase, ref, set } from "firebase/database";
+
 export default {
   data() {
     return {
+      error: true,
       todoTitle: "",
-      continiousState: "false",
+      continuousState: false,
       todoModel: null,
       todoType: ["Event", "Task"],
       eventSubtasks: [],
       subtaskInput: "",
       processesModel: null,
-      processesType: [
-        "Brush teeth",
-        "Shave beard",
-        "Take a shower",
-        "Clean kitchen",
-      ], // from database processes
+      processesType: this.$store.getters["users/userData"].processes,
       taskModel: null,
       taskType: ["Global", "Term", "Repeatable"],
       monthsModel: 0,
@@ -247,48 +261,78 @@ export default {
     };
   },
 
-  emits: [
-    // REQUIRED
-    "ok",
-    "hide",
-  ],
+  emits: ["ok", "hide"],
 
   methods: {
+    checkValidity() {
+      if (this.todoTitle === "" || this.todoModel === null) {
+        this.error = true;
+      } else {
+        this.error = false;
+      }
+    },
     addSubtask(newSubtask) {
       this.eventSubtasks.push(newSubtask);
       this.subtaskInput = "";
     },
-    // following method is REQUIRED
-    // (don't change its name --> "show")
+
     show() {
       this.$refs.dialog.show();
     },
 
-    // following method is REQUIRED
-    // (don't change its name --> "hide")
     hide() {
       this.$refs.dialog.hide();
     },
 
     onDialogHide() {
-      // required to be emitted
-      // when QDialog emits "hide" event
       this.$emit("hide");
     },
 
     onOKClick() {
-      // on OK, it is REQUIRED to
-      // emit "ok" event (with optional payload)
-      // before hiding the QDialog
-      this.$emit("ok");
-      // or with payload: this.$emit('ok', { ... })
+      let newTodo = {
+        title: this.todoTitle,
+        continuous: this.continuousState,
+        type: this.todoModel,
+        taskType: this.taskModel,
+        time: this.formattedDate,
+        repeat: {
+          months: this.monthsModel,
+          weeks: this.weeksModel,
+          days: this.daysModel,
+          hours: this.hoursModel,
+          minutes: this.minutesModel,
+          seconds: this.secondsModel,
+        },
+      };
+      if (this.todoModel === "Event") {
+        newTodo = {
+          title: this.todoTitle,
+          continuous: this.continuousState,
+          type: this.todoModel,
+          processes: this.processesModel,
+          subtasks: this.eventSubtasks,
+        };
+      }
+      const db = getDatabase();
+      set(
+        ref(
+          db,
+          this.$store.getters["users/userId"] +
+            "/" +
+            this.todoModel.toLowerCase() +
+            "s" +
+            "/" +
+            this.todoTitle
+        ),
+        newTodo
+      );
 
-      // then hiding dialog
+      this.$emit("ok");
+
       this.hide();
     },
 
     onCancelClick() {
-      // we just need to hide the dialog
       this.hide();
     },
   },

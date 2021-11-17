@@ -10,9 +10,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Frozen Yogurt</td>
-          <td>159</td>
+        <tr v-for="task in tasks" :key="task">
+          <td>{{ task["time"] }}</td>
+          <td>{{ task["title"] }}</td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -24,10 +24,18 @@
 import { date } from "quasar";
 
 export default {
+  computed: {
+    tasks() {
+      return this.$store.getters["users/userData"].tasks;
+    },
+  },
+
   data() {
     const timeStamp = Date.now();
     const formattedDate = date.formatDate(timeStamp, "dddd, D MMMM YYYY");
-    return { formattedDate };
+    return {
+      formattedDate,
+    };
   },
 };
 </script>

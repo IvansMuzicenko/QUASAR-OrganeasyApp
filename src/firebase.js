@@ -1,6 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 
+import { getDatabase } from "firebase/database";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAVfbdakVWhg_Sh60yailj4njpQ-Gky-ZQ",
   authDomain: "quasar-todo-552da.firebaseapp.com",
@@ -15,4 +17,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const firebase = initializeApp(firebaseConfig);
+const database = getDatabase(firebase);
+
 export default firebase;

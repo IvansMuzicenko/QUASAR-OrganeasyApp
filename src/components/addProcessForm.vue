@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { getDatabase, ref, set } from "firebase/database";
 export default {
   data() {
     return {
@@ -54,6 +55,17 @@ export default {
     },
 
     onOKClick() {
+      const newProcess = { title: this.processTitle, time: this.processTime };
+      const db = getDatabase();
+      set(
+        ref(
+          db,
+          this.$store.getters["users/userId"] +
+            "/processes/" +
+            this.processTitle
+        ),
+        newProcess
+      );
       this.$emit("ok");
 
       this.hide();
