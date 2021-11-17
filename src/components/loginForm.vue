@@ -1,29 +1,41 @@
 <template>
-  <div class="q-pa-md" style="max-width: 400px">
+  <div class="q-pa-lg q-mx-auto" style="max-width: 400px">
     <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+      <h6 class="q-ma-sm text-center">Sign In</h6>
+      <p v-if="error" class="text-red">
+        Incorrect e-mail or password. Try again!
+      </p>
       <q-input
         filled
         v-model="email"
         type="e-mail"
         label="E-mail"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        :rules="[
+          (val) =>
+            (val && val.length > 0 && val.includes('@') && val.includes('.')) ||
+            'Please type correct e-mail',
+        ]"
       />
 
       <q-input
         filled
         v-model="password"
-        type="password"
+        :type="isPwd ? 'password' : 'text'"
         label="Password"
         lazy-rules
-        :rules="[
-          (val) => (val !== null && val !== '') || 'Please type your age',
-          (val) => val.length > 6 || 'minimum 6',
-        ]"
-      />
+      >
+        <template v-slot:append>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isPwd = !isPwd"
+          />
+        </template>
+      </q-input>
 
       <div>
-        <q-btn label="Submit" type="submit" color="primary" />
+        <q-btn label="Sign In" type="submit" color="primary" />
         <q-btn
           label="Reset"
           type="reset"
@@ -33,6 +45,7 @@
         />
       </div>
     </q-form>
+    <slot></slot>
   </div>
 </template>
 <script>
@@ -44,8 +57,11 @@ export default {
     return {
       email: null,
       password: null,
+      error: false,
+      isPwd: true,
     };
   },
+
   methods: {
     onSubmit() {
       signInWithEmailAndPassword(auth, this.email, this.password)
@@ -59,8 +75,10 @@ export default {
             userId: user.uid,
             email: this.email,
           });
+          this.$router.push("/");
         })
         .catch((error) => {
+          this.error = true;
           const errorCode = error.code;
           const errorMessage = error.message;
         });
@@ -69,6 +87,7 @@ export default {
     onReset() {
       this.email = null;
       this.password = null;
+      this.error = false;
     },
   },
 };

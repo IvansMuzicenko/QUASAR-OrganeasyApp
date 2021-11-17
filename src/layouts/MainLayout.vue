@@ -17,22 +17,32 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label v-if="email" header> {{ email }}</q-item-label>
-        <q-item-label v-else header clickable to="/auth">Sign In </q-item-label>
+        <q-item-label v-if="email" header>
+          {{ email.slice(0, email.indexOf("@")) }}</q-item-label
+        >
+        <q-btn
+          v-else
+          class="full-width q-ma-lg"
+          color="secondary"
+          label="Sign In"
+          to="/auth"
+        />
         <q-item-label header> {{ formattedDate }}</q-item-label>
 
         <EssentialLink
-          v-for="link in essentialLinks"
+          v-for="link in email ? essentialLinks : unauthLinks"
           :key="link.title"
           v-bind="link"
         />
         <q-btn
+          v-if="email"
           class="q-ma-sm"
           color="primary"
           label="+ add task"
           @click="addTask"
         />
         <q-btn
+          v-if="email"
           class="q-ma-sm"
           color="secondary"
           label="+ add process"
@@ -53,40 +63,12 @@ import { date } from "quasar";
 import addProcessForm from "components/addProcessForm.vue";
 import addTaskForm from "components/addTaskForm.vue";
 
-const linksList = [
-  {
-    title: "Main",
-    caption: "",
-    icon: "view_list",
-    link: "/",
-  },
-  {
-    title: "Calendar",
-    caption: "",
-    icon: "event",
-    link: "/calendar",
-  },
-  {
-    title: "Global tasks",
-    caption: "",
-    icon: "note",
-    link: "/global-tasks",
-  },
-  {
-    title: "Help",
-    caption: "",
-    icon: "help",
-    link: "/help",
-  },
-];
-
 export default {
   components: {
     EssentialLink,
   },
   computed: {
     email() {
-      console.log(this.$store);
       return this.$store.getters["users/email"];
     },
   },
@@ -94,13 +76,44 @@ export default {
   data() {
     const timeStamp = Date.now();
     const formattedDate = date.formatDate(timeStamp, "dddd, D MMMM YYYY");
-    const leftDrawerOpen = false;
 
     return {
-      essentialLinks: linksList,
+      leftDrawerOpen: false,
+      essentialLinks: [
+        {
+          title: "Main",
+          caption: "",
+          icon: "view_list",
+          link: "/",
+        },
+        {
+          title: "Calendar",
+          caption: "",
+          icon: "event",
+          link: "/calendar",
+        },
+        {
+          title: "Global tasks",
+          caption: "",
+          icon: "note",
+          link: "/global-tasks",
+        },
+        {
+          title: "Help",
+          caption: "",
+          icon: "help",
+          link: "/help",
+        },
+      ],
+      unauthLinks: [
+        {
+          title: "Help",
+          caption: "",
+          icon: "help",
+          link: "/help",
+        },
+      ],
       formattedDate,
-
-      leftDrawerOpen,
     };
   },
   methods: {
@@ -115,7 +128,7 @@ export default {
       });
     },
     toggleLeftDrawer() {
-      leftDrawerOpen.value = !leftDrawerOpen.value;
+      this.leftDrawerOpen = !this.leftDrawerOpen;
     },
   },
 };

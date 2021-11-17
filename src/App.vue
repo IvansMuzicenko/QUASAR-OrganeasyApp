@@ -10,5 +10,10 @@ export default {
       this.$store.dispatch("users/setUser", user);
     }
   },
+  beforeMount() {
+    if (!this.$store.getters["users/email"]) {
+      this.$router.push("/auth");
+    }
+  },
 };
 </script>
