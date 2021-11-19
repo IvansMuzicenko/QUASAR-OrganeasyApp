@@ -32,15 +32,26 @@ export default {
     },
     dayTasks() {
       const tasks = this.$store.getters["users/userData"].tasks;
+      const tasksArray = [];
+
+      for (const task in tasks) {
+        tasksArray.push(tasks[task]);
+      }
+
       let dayTasks = {};
       let i = 0;
-      for (const task in tasks) {
+      for (const task in tasksArray.sort(function (a, b) {
+        return (
+          a.time.slice(a.time.indexOf(" ")).replace(":", ".") -
+          b.time.slice(b.time.indexOf(" ")).replace(":", ".")
+        );
+      })) {
         i++;
         if (
-          tasks[task].time.slice(0, tasks[task].time.indexOf(" ")) ==
+          tasksArray[task].time.slice(0, tasksArray[task].time.indexOf(" ")) ==
           this.formattedDate.slice(this.formattedDate.indexOf(" ") + 1)
         ) {
-          dayTasks[task] = tasks[task];
+          dayTasks[task] = tasksArray[task];
         }
       }
       return dayTasks;
