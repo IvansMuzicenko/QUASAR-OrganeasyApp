@@ -12,7 +12,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="task in dayTasks" :key="task">
+        <tr v-for="(task, index) in dayTasks" :key="index">
           <td>{{ task["time"].slice(task["time"].indexOf(" ")) }}</td>
           <td>{{ task["title"] }}</td>
         </tr>
@@ -32,35 +32,22 @@ export default {
     },
     dayTasks() {
       const tasks = this.$store.getters["users/userData"].tasks;
-      const tasksArray = [];
-
-      for (const task in tasks) {
-        tasksArray.push(tasks[task]);
+      const daysDate = this.formattedDate.slice(
+        this.formattedDate.indexOf(" ") + 1
+      );
+      let dayTasks = [];
+      if (tasks) {
+        for (const task in tasks[daysDate])
+          dayTasks.push(tasks[daysDate][task]);
       }
 
-      let dayTasks = {};
-      let i = 0;
-      for (const task in tasksArray.sort(function (a, b) {
-        return (
-          a.time.slice(a.time.indexOf(" ")).replace(":", ".") -
-          b.time.slice(b.time.indexOf(" ")).replace(":", ".")
-        );
-      })) {
-        i++;
-        if (
-          tasksArray[task].time.slice(0, tasksArray[task].time.indexOf(" ")) ==
-          this.formattedDate.slice(this.formattedDate.indexOf(" ") + 1)
-        ) {
-          dayTasks[task] = tasksArray[task];
-        }
-      }
       return dayTasks;
     },
   },
 
   data() {
     const timeStamp = Date.now();
-    const formattedDate = date.formatDate(timeStamp, "dddd, DD/MM/YYYY");
+    const formattedDate = date.formatDate(timeStamp, "dddd, DD-MM-YYYY");
     return {
       timeStamp,
       formattedDate,
@@ -69,11 +56,11 @@ export default {
   methods: {
     nextDay() {
       this.timeStamp += 86400000;
-      this.formattedDate = date.formatDate(this.timeStamp, "dddd, DD/MM/YYYY");
+      this.formattedDate = date.formatDate(this.timeStamp, "dddd, DD-MM-YYYY");
     },
     previousDay() {
       this.timeStamp -= 86400000;
-      this.formattedDate = date.formatDate(this.timeStamp, "dddd, DD/MM/YYYY");
+      this.formattedDate = date.formatDate(this.timeStamp, "dddd, DD-MM-YYYY");
     },
   },
 };
