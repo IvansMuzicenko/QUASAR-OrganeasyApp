@@ -28,6 +28,44 @@
         </q-card-section>
 
         <q-card-section v-if="todoModel === 'Event'">
+          <p>Event starting</p>
+          <q-input filled v-model="formattedDate">
+            <template v-slot:prepend>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date v-model="formattedDate" mask="DD-MM-YYYY HH:mm">
+                    <div class="items-center justify-end row">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-time
+                    v-model="formattedDate"
+                    mask="DD-MM-YYYY HH:mm"
+                    format24h
+                  >
+                    <div class="items-center justify-end row">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
           <q-select
             outlined
             multiple
@@ -75,8 +113,8 @@
                     transition-show="scale"
                     transition-hide="scale"
                   >
-                    <q-date v-model="currentDate" mask="YYYY-MM-DD HH:mm">
-                      <div class="row items-center justify-end">
+                    <q-date v-model="currentDate" mask="DD-MM-YYYY HH:mm">
+                      <div class="items-center justify-end row">
                         <q-btn
                           v-close-popup
                           label="Close"
@@ -98,10 +136,10 @@
                   >
                     <q-time
                       v-model="currentDate"
-                      mask="YYYY-MM-DD HH:mm"
+                      mask="DD-MM-YYYY HH:mm"
                       format24h
                     >
-                      <div class="row items-center justify-end">
+                      <div class="items-center justify-end row">
                         <q-btn
                           v-close-popup
                           label="Close"
@@ -125,8 +163,8 @@
                     transition-show="scale"
                     transition-hide="scale"
                   >
-                    <q-date v-model="formattedDate" mask="YYYY-MM-DD HH:mm">
-                      <div class="row items-center justify-end">
+                    <q-date v-model="formattedDate" mask="DD-MM-YYYY HH:mm">
+                      <div class="items-center justify-end row">
                         <q-btn
                           v-close-popup
                           label="Close"
@@ -148,10 +186,10 @@
                   >
                     <q-time
                       v-model="formattedDate"
-                      mask="YYYY-MM-DD HH:mm"
+                      mask="DD-MM-YYYY HH:mm"
                       format24h
                     >
-                      <div class="row items-center justify-end">
+                      <div class="items-center justify-end row">
                         <q-btn
                           v-close-popup
                           label="Close"
@@ -257,7 +295,7 @@ export default {
       secondsModel: 0,
       secondsOptions: Array.from({ length: 60 }, (_, index) => index + 1),
       currentDate: Date.now(),
-      formattedDate: date.formatDate(Date.now(), "DD/MM/YYYY HH:mm"),
+      formattedDate: date.formatDate(Date.now(), "DD-MM-YYYY HH:mm"),
     };
   },
 
@@ -289,40 +327,49 @@ export default {
     },
 
     onOKClick() {
-      let newTodo = {
-        title: this.todoTitle,
-        continuous: this.continuousState,
-        type: this.todoModel,
-        taskType: this.taskModel,
-        time: this.formattedDate,
-        repeat: {
-          months: this.monthsModel,
-          weeks: this.weeksModel,
-          days: this.daysModel,
-          hours: this.hoursModel,
-          minutes: this.minutesModel,
-          seconds: this.secondsModel,
-        },
-      };
+      let newTodo = {};
       if (this.todoModel === "Event") {
         newTodo = {
           title: this.todoTitle,
           continuous: this.continuousState,
           type: this.todoModel,
+          time: this.formattedDate,
           processes: this.processesModel,
           subtasks: this.eventSubtasks,
+        };
+      } else if (this.todoModel === "Task" && this.taskType === "Global") {
+        newTodo = {
+          title: this.todoTitle,
+          type: this.todoModel,
+          taskType: this.taskModel,
+        };
+      } else {
+        newTodo = {
+          title: this.todoTitle,
+          continuous: this.continuousState,
+          type: this.todoModel,
+          taskType: this.taskModel,
+          time: this.formattedDate,
+          repeat: {
+            months: this.monthsModel,
+            weeks: this.weeksModel,
+            days: this.daysModel,
+            hours: this.hoursModel,
+            minutes: this.minutesModel,
+            seconds: this.secondsModel,
+          },
         };
       }
       const db = getDatabase();
       set(
         ref(
           db,
-          this.$store.getters["users/userId"] +
-            "/" +
-            this.todoModel.toLowerCase() +
-            "s" +
-            "/" +
-            this.todoTitle
+          `${
+            this.$store.getters["users/userId"]
+          }/${this.todoModel.toLowerCase()}s/${this.formattedDate.slice(
+            0,
+            this.formattedDate.indexOf(" ")
+          )}/${this.todoTitle}`
         ),
         newTodo
       );
