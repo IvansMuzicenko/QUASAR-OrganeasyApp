@@ -1,7 +1,9 @@
 <template>
-  <div>
-    <h1>help</h1>
-  </div>
+  <q-page>
+    <div>
+      <h1>help</h1>
+    </div>
+  </q-page>
 </template>
 
 <script>

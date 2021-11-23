@@ -1,5 +1,7 @@
 <template>
-  <q-date v-model="date" />
+  <q-page>
+    <q-date v-model="date" />
+  </q-page>
 </template>
 
 <script>

@@ -89,7 +89,7 @@ export default {
       leftDrawerOpen: false,
       essentialLinks: [
         {
-          title: "Main",
+          title: "Diary",
           caption: "",
           icon: "view_list",
           link: "/",
@@ -101,10 +101,16 @@ export default {
           link: "/calendar",
         },
         {
-          title: "Global tasks",
+          title: "Notes",
           caption: "",
           icon: "note",
-          link: "/global-tasks",
+          link: "/notes",
+        },
+        {
+          title: "Processes",
+          caption: "",
+          icon: "update",
+          link: "/processes",
         },
         {
           title: "Help",
