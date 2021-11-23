@@ -327,6 +327,7 @@ export default {
     },
 
     onOKClick() {
+      const db = getDatabase();
       let newTodo = {};
       if (this.todoModel === "Event") {
         newTodo = {
@@ -354,7 +355,7 @@ export default {
           },
         };
       }
-      const db = getDatabase();
+
       set(
         ref(
           db,
@@ -363,7 +364,7 @@ export default {
           }/${this.todoModel.toLowerCase()}s/${this.formattedDate.slice(
             0,
             this.formattedDate.indexOf(" ")
-          )}/${this.todoTitle}`
+          )}/id-${this.todoTitle}/`
         ),
         newTodo
       );
