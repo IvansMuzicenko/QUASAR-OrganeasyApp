@@ -114,7 +114,7 @@
                     transition-show="scale"
                     transition-hide="scale"
                   >
-                    <q-date v-model="currentDate" mask="DD-MM-YYYY HH:mm">
+                    <q-date v-model="formattedDate" mask="DD-MM-YYYY HH:mm">
                       <div class="items-center justify-end row">
                         <q-btn
                           v-close-popup
@@ -136,7 +136,7 @@
                     transition-hide="scale"
                   >
                     <q-time
-                      v-model="currentDate"
+                      v-model="formattedDate"
                       mask="DD-MM-YYYY HH:mm"
                       format24h
                     >
@@ -295,7 +295,6 @@ export default {
       minutesOptions: Array.from({ length: 60 }, (_, index) => index + 1),
       secondsModel: 0,
       secondsOptions: Array.from({ length: 60 }, (_, index) => index + 1),
-      currentDate: Date.now(),
       formattedDate: date.formatDate(Date.now(), "DD-MM-YYYY HH:mm"),
     };
   },
