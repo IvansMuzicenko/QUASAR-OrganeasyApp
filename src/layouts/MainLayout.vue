@@ -95,12 +95,6 @@ export default {
           link: "/",
         },
         {
-          title: "Calendar",
-          caption: "",
-          icon: "event",
-          link: "/calendar",
-        },
-        {
           title: "Notes",
           caption: "",
           icon: "note",

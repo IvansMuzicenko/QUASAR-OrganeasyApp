@@ -1,11 +1,33 @@
 <template>
   <q-page>
-    <q-btn @click="previousDay()">Previous</q-btn>
-    <q-btn @click="nextDay()">Next</q-btn>
     <q-markup-table separator="cell">
       <thead>
         <tr>
-          <th class="text-left text-weight-bolder">{{ formattedDate }}</th>
+          <th class="text-left text-weight-bolder">
+            <span><q-btn flat @click="previousDay()">&lt;</q-btn></span>
+            <span class="cursor-pointer">
+              <q-icon name="event"> </q-icon>
+              {{ formattedDate }}
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+                ref="datePicked"
+              >
+                <q-date
+                  v-model="formattedDate"
+                  :events="calendarEvents"
+                  event-color="teal"
+                  mask="dddd, DD-MM-YYYY"
+                >
+                  <div class="items-center justify-end row">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </span>
+            <span><q-btn flat @click="nextDay()">&gt;</q-btn></span>
+          </th>
           <th class="text-center text-weight-bolder" style="width: 100%">
             Tasks
           </th>
@@ -28,29 +50,36 @@ import { date } from "quasar";
 export default {
   computed: {
     tasks() {
-      return this.$store.getters["users/userData"].tasks;
+      return this.$store.getters["users/tasks"];
+    },
+    calendarEvents() {
+      if (!this.tasks) return [];
+
+      return Object.keys(this.tasks).map((event) =>
+        date.formatDate(date.extractDate(event, "DD-MM-YYYY"), "YYYY/MM/DD")
+      );
     },
     dayTasks() {
-      const tasks = this.$store.getters["users/userData"].tasks;
-      const daysDate = this.formattedDate.slice(
-        this.formattedDate.indexOf(" ") + 1
-      );
-      let dayTasks = [];
-      if (tasks) {
-        for (const task in tasks[daysDate])
-          dayTasks.push(tasks[daysDate][task]);
-      }
+      if (!this.tasks) return [];
 
-      return dayTasks;
+      return this.tasks[
+        this.formattedDate.slice(this.formattedDate.indexOf(" ") + 1)
+      ];
+    },
+  },
+  watch: {
+    formattedDate(newDate) {
+      this.timeStamp = Number(
+        date.formatDate(date.extractDate(newDate, "dddd, DD-MM-YYYY"), "x")
+      );
+      this.$refs.datePicked.hide();
     },
   },
 
   data() {
-    const timeStamp = Date.now();
-    const formattedDate = date.formatDate(timeStamp, "dddd, DD-MM-YYYY");
     return {
-      timeStamp,
-      formattedDate,
+      timeStamp: Date.now(),
+      formattedDate: date.formatDate(Date.now(), "dddd, DD-MM-YYYY"),
     };
   },
   methods: {
