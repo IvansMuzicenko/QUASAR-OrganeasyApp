@@ -8,8 +8,12 @@ const routes = [
       { path: "/help", component: () => import("src/pages/Help.vue") },
       { path: "/calendar", component: () => import("src/pages/Calendar.vue") },
       {
-        path: "/global-tasks",
-        component: () => import("src/pages/GlobalTasks.vue"),
+        path: "/notes",
+        component: () => import("src/pages/Notes.vue"),
+      },
+      {
+        path: "/processes",
+        component: () => import("src/pages/Processes.vue"),
       },
     ],
   },
