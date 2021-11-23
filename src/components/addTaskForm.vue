@@ -96,6 +96,7 @@
             </q-item>
           </q-list>
         </q-card-section>
+
         <q-card-section v-if="todoModel === 'Task'">
           <q-select
             outlined
@@ -281,7 +282,7 @@ export default {
       processesModel: null,
       processesType: this.$store.getters["users/userData"].processes,
       taskModel: null,
-      taskType: ["Global", "Term", "Repeatable"],
+      taskType: ["Term", "Repeatable"],
       monthsModel: 0,
       monthsOptions: Array.from({ length: 12 }, (_, index) => index + 1),
       weeksModel: 0,
@@ -336,12 +337,6 @@ export default {
           time: this.formattedDate,
           processes: this.processesModel,
           subtasks: this.eventSubtasks,
-        };
-      } else if (this.todoModel === "Task" && this.taskType === "Global") {
-        newTodo = {
-          title: this.todoTitle,
-          type: this.todoModel,
-          taskType: this.taskModel,
         };
       } else {
         newTodo = {

@@ -48,6 +48,13 @@
           label="+ add process"
           @click="addProcess"
         />
+        <q-btn
+          v-if="email"
+          class="q-ma-sm"
+          color="secondary"
+          label="+ add note"
+          @click="addNote"
+        />
       </q-list>
     </q-drawer>
 
@@ -62,6 +69,7 @@ import EssentialLink from "components/EssentialLink.vue";
 import { date } from "quasar";
 import addProcessForm from "components/addProcessForm.vue";
 import addTaskForm from "components/addTaskForm.vue";
+import addNoteForm from "components/addNoteForm.vue";
 
 export default {
   components: {
@@ -125,6 +133,11 @@ export default {
     addProcess() {
       this.$q.dialog({
         component: addProcessForm,
+      });
+    },
+    addNote() {
+      this.$q.dialog({
+        component: addNoteForm,
       });
     },
     toggleLeftDrawer() {
