@@ -3,13 +3,7 @@
 </template>
 
 <script>
-import {
-  getDatabase,
-  ref,
-  onValue,
-  // query,
-  // orderByChild,
-} from "firebase/database";
+import { getDatabase, ref, onValue } from "firebase/database";
 export default {
   beforeCreate() {
     const user = this.$q.localStorage.getItem("user");
