@@ -40,7 +40,6 @@
         </tr>
       </tbody>
     </q-markup-table>
-    <q-separator color="orange" inset />
   </q-page>
 </template>
 
