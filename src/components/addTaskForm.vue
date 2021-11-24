@@ -188,7 +188,7 @@
             outlined
             multiple
             v-model="processesModel"
-            :options="processesType"
+            :options="processesList"
             label="Processes"
           />
           <q-separator color="black" inset />
@@ -291,6 +291,16 @@ import { date } from "quasar";
 import { getDatabase, ref, set } from "firebase/database";
 
 export default {
+  computed: {
+    processesList() {
+      const processes = this.$store.getters["users/processes"];
+      let processesArray = [];
+      for (const process in processes) {
+        processesArray.push(processes[process].title);
+      }
+      return processesArray;
+    },
+  },
   data() {
     return {
       error: true,
@@ -307,7 +317,7 @@ export default {
 
       toggleProcesses: false,
       processesModel: null,
-      processesType: this.$store.getters["users/userData"].processes,
+
       processTitle: "",
       processTime: 0,
 
