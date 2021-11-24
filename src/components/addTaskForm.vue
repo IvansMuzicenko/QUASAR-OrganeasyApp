@@ -6,7 +6,7 @@
           bottom-slots
           v-model="todoTitle"
           label="Title"
-          @blur="checkValidity()"
+          @keyup="checkValidity()"
           :rules="[(val) => val !== '' || 'Title is required']"
           :dense="false"
           class="q-px-md"
@@ -216,7 +216,7 @@
           </q-input>
 
           <q-list bordered separator>
-            <q-item v-for="subtask in eventSubtasks" :key="subtask">
+            <q-item v-for="subtask in subtasks" :key="subtask">
               <q-item-section>{{ subtask }}</q-item-section>
             </q-item>
           </q-list>
@@ -312,7 +312,7 @@ export default {
       processTime: 0,
 
       toggleSubtasks: false,
-      eventSubtasks: [],
+      subtasks: [],
       subtaskInput: "",
 
       toggleNotification: false,
@@ -333,7 +333,7 @@ export default {
       notificationPoint: ["start time", "end time"],
 
       toggleRepeat: false,
-      repeatNumber: 1,
+      repeatNumber: 0,
       monthsModel: 0,
       monthsOptions: Array.from({ length: 12 }, (_, index) => index + 1),
       weeksModel: 0,
@@ -351,7 +351,7 @@ export default {
 
   methods: {
     checkValidity() {
-      if (this.todoTitle === "" || this.repeatNumber < 1) {
+      if (this.todoTitle === "" || this.repeatNumber < 0) {
         this.error = true;
       } else {
         this.error = false;
@@ -380,7 +380,7 @@ export default {
       this.notificationForm.splice(index, 1);
     },
     addSubtask(newSubtask) {
-      this.eventSubtasks.push(newSubtask);
+      this.subtasks.push(newSubtask);
       this.subtaskInput = "";
     },
 
@@ -399,37 +399,65 @@ export default {
     onOKClick() {
       const db = getDatabase();
 
-      const newTodo = {
-        title: this.todoTitle,
-        time: this.eventDate,
-        endingTime: this.toggleEventEnd ? this.eventEndingDate : null,
-        notifications: this.toggleNotification ? this.notificationForm : null,
-        continuous: this.continuousState,
-        processes: this.toggleProcesses ? this.processesModel : null,
-        subtasks: this.toggleSubtasks ? this.eventSubtasks : null,
-        repeat: this.toggleRepeat
-          ? {
-              months: this.monthsModel,
-              weeks: this.weeksModel,
-              days: this.daysModel,
-              hours: this.hoursModel,
-              minutes: this.minutesModel,
-            }
-          : null,
-      };
+      for (let i = 0; i < this.repeatNumber + 1; i++) {
+        if (i != 0) {
+          this.eventDate = date.formatDate(
+            date.addToDate(
+              date.extractDate(this.eventDate, "DD-MM-YYYY HH:mm"),
+              {
+                months: this.monthsModel,
+                days: this.daysModel + this.weeksModel * 7,
+                hours: this.hoursModel,
+                minutes: this.minutesModel,
+              }
+            ),
+            "DD-MM-YYYY HH:mm"
+          );
+          this.eventEndingDate = date.formatDate(
+            date.addToDate(
+              date.extractDate(this.eventEndingDate, "DD-MM-YYYY HH:mm"),
+              {
+                months: this.monthsModel,
+                days: this.daysModel + this.weeksModel * 7,
+                hours: this.hoursModel,
+                minutes: this.minutesModel,
+              }
+            ),
+            "DD-MM-YYYY HH:mm"
+          );
+        }
+        const newTodo = {
+          title: this.todoTitle,
+          time: this.eventDate,
+          endingTime: this.toggleEventEnd ? this.eventEndingDate : null,
+          notifications: this.toggleNotification ? this.notificationForm : null,
+          continuous: this.continuousState,
+          processes: this.toggleProcesses ? this.processesModel : null,
+          subtasks: this.toggleSubtasks ? this.subtasks : null,
+          repeat: this.toggleRepeat
+            ? {
+                months: this.monthsModel,
+                weeks: this.weeksModel,
+                days: this.daysModel,
+                hours: this.hoursModel,
+                minutes: this.minutesModel,
+              }
+            : null,
+        };
 
-      set(
-        ref(
-          db,
-          `${
-            this.$store.getters["users/userId"]
-          }/${this.todoModel.toLowerCase()}s/${this.eventDate.slice(
-            0,
-            this.eventDate.indexOf(" ")
-          )}/id-${this.todoTitle}/`
-        ),
-        newTodo
-      );
+        set(
+          ref(
+            db,
+            `${
+              this.$store.getters["users/userId"]
+            }/tasks/${this.eventDate.slice(
+              0,
+              this.eventDate.indexOf(" ")
+            )}/id-${this.todoTitle}/`
+          ),
+          newTodo
+        );
+      }
 
       this.$emit("ok");
 
