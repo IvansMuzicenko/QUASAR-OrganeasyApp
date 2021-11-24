@@ -29,12 +29,14 @@ const mutations = {
     state.user.email = user.email;
   },
   SET_USER_DATA(state, userData) {
-    for (const [key, value] of Object.entries(userData.tasks)) {
-      userData.tasks[key] = Object.values(value).sort(
-        (a, b) =>
-          a.time.slice(a.time.indexOf(" ")).replace(":", ".") -
-          b.time.slice(b.time.indexOf(" ")).replace(":", ".")
-      );
+    if (userData && userData.tasks) {
+      for (const [key, value] of Object.entries(userData.tasks)) {
+        userData.tasks[key] = Object.values(value).sort(
+          (a, b) =>
+            a.time.slice(a.time.indexOf(" ")).replace(":", ".") -
+            b.time.slice(b.time.indexOf(" ")).replace(":", ".")
+        );
+      }
     }
 
     state.user.userData = userData;
@@ -52,6 +54,8 @@ const getters = {
   userId: (state) => state.user.userId,
   userData: (state) => state.user.userData,
   tasks: (state) => state.user?.userData?.tasks || {},
+  notes: (state) => state.user?.userData?.notes || {},
+  processes: (state) => state.user?.userData?.processes || {},
 };
 
 export default {

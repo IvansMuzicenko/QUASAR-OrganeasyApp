@@ -60,9 +60,7 @@ export default {
       set(
         ref(
           db,
-          this.$store.getters["users/userId"] +
-            "/processes/" +
-            this.processTitle
+          `${this.$store.getters["users/userId"]}/processes/id-${this.processTitle}`
         ),
         newProcess
       );

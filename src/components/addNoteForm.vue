@@ -57,7 +57,7 @@ export default {
       set(
         ref(
           db,
-          `${this.$store.getters["users/userId"]}/notes/${this.noteTitle}`
+          `${this.$store.getters["users/userId"]}/notes/id-${this.noteTitle}`
         ),
         newNote
       );

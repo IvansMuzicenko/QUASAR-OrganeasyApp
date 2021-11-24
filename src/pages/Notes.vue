@@ -21,10 +21,10 @@
 
 <script>
 export default {
-  data() {
-    return {
-      notes: this.$store.getters["users/userData"].notes,
-    };
+  computed: {
+    notes() {
+      return this.$store.getters["users/notes"];
+    },
   },
 };
 </script>
