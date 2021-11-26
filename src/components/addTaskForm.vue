@@ -151,7 +151,6 @@
             :options="processesList"
             label="Processes"
           />
-          <q-separator color="black" inset />
         </q-card-section>
       </q-card-section>
 
@@ -229,8 +228,6 @@
               name="close"
               @click="deleteNotification(index)"
             ></q-icon>
-
-            <q-separator color="black" inset />
           </q-card-section>
         </q-card-section>
       </q-card-section>
