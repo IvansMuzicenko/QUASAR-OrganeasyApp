@@ -1,17 +1,16 @@
 <template>
   <q-page>
-    <q-markup-table separator="cell">
-      <q-list>
-        <q-item
-          v-for="(note, index) in notes"
-          :key="index"
-          clickable
-          :to="`/notes/${note['title'].replaceAll(' ', '-')}`"
-        >
-          {{ note["title"] }}
-        </q-item>
-      </q-list>
-    </q-markup-table>
+    <p class="text-h6 text-center">Notes</p>
+    <q-list separator bordered>
+      <q-item
+        v-for="(note, index) in notes"
+        :key="index"
+        clickable
+        :to="`/notes/${note['title'].replaceAll(' ', '-')}`"
+      >
+        {{ note["title"] }}
+      </q-item>
+    </q-list>
   </q-page>
 </template>
 
