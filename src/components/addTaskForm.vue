@@ -96,55 +96,15 @@
       </q-card-section>
 
       <q-card-section>
-        <q-toggle v-model="toggleNotification" label="Add notifications" />
-        <q-card-section v-if="toggleNotification">
-          <p>
-            Notifications
-            <q-btn flat @click="addNotification()">+</q-btn>
-          </p>
-          <q-card-section
-            v-for="(notific, index) in notificationForm"
-            :key="index"
-            class="flex q-pa-0"
-          >
-            <q-select
-              v-model="notificationForm[index]['notificationTimeValuesModel']"
-              :options="notificationTimeValues"
-              class="q-ma-xs"
-              dense
-              style="width: 10%"
-            ></q-select>
-            <q-select
-              v-model="notificationForm[index]['notificationTimeTypeModel']"
-              :options="notificationTimeType"
-              class="q-ma-xs"
-              dense
-              style="width: 25%"
-            ></q-select>
-            <q-select
-              v-model="notificationForm[index]['notificationPeriodModel']"
-              :options="notificationPeriod"
-              class="q-ma-xs"
-              dense
-              style="width: 20%"
-            ></q-select>
-            <q-select
-              v-model="notificationForm[index]['notificationPointModel']"
-              :options="notificationPoint"
-              class="q-ma-xs"
-              dense
-              style="width: 25%"
-            ></q-select>
-
-            <q-icon
-              class="cursor-pointer"
-              name="close"
-              @click="deleteNotification(index)"
-            ></q-icon>
-
-            <q-separator color="black" inset />
-          </q-card-section>
-        </q-card-section>
+        <q-toggle v-model="toggleLocation" label="Add event location" />
+        <q-input
+          v-if="toggleLocation"
+          bottom-slots
+          v-model="eventLocation"
+          label="Location"
+          class="q-px-md"
+        >
+        </q-input>
       </q-card-section>
 
       <q-card-section>
@@ -220,6 +180,58 @@
               <q-item-section>{{ subtask }}</q-item-section>
             </q-item>
           </q-list>
+        </q-card-section>
+      </q-card-section>
+
+      <q-card-section>
+        <q-toggle v-model="toggleNotification" label="Add notifications" />
+        <q-card-section v-if="toggleNotification">
+          <p>
+            Notifications
+            <q-btn flat @click="addNotification()">+</q-btn>
+          </p>
+          <q-card-section
+            v-for="(notific, index) in notificationForm"
+            :key="index"
+            class="flex q-pa-0"
+          >
+            <q-select
+              v-model="notificationForm[index]['notificationTimeValuesModel']"
+              :options="notificationTimeValues"
+              class="q-ma-xs"
+              dense
+              style="width: 10%"
+            ></q-select>
+            <q-select
+              v-model="notificationForm[index]['notificationTimeTypeModel']"
+              :options="notificationTimeType"
+              class="q-ma-xs"
+              dense
+              style="width: 25%"
+            ></q-select>
+            <q-select
+              v-model="notificationForm[index]['notificationPeriodModel']"
+              :options="notificationPeriod"
+              class="q-ma-xs"
+              dense
+              style="width: 20%"
+            ></q-select>
+            <q-select
+              v-model="notificationForm[index]['notificationPointModel']"
+              :options="notificationPoint"
+              class="q-ma-xs"
+              dense
+              style="width: 25%"
+            ></q-select>
+
+            <q-icon
+              class="cursor-pointer"
+              name="close"
+              @click="deleteNotification(index)"
+            ></q-icon>
+
+            <q-separator color="black" inset />
+          </q-card-section>
         </q-card-section>
       </q-card-section>
 
@@ -312,6 +324,9 @@ export default {
         Date.now() + 3600000,
         "DD-MM-YYYY HH:mm"
       ),
+
+      toggleLocation: false,
+      eventLocation: "",
 
       continuousState: false,
 
@@ -440,6 +455,7 @@ export default {
           title: this.todoTitle,
           time: this.eventDate,
           endingTime: this.toggleEventEnd ? this.eventEndingDate : null,
+          location: this.toggleLocation ? this.eventLocation : null,
           notifications: this.toggleNotification ? this.notificationForm : null,
           continuous: this.continuousState,
           processes: this.toggleProcesses ? this.processesModel : null,
