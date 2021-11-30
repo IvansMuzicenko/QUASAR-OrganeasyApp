@@ -55,12 +55,16 @@ export default {
     },
 
     onOKClick() {
-      const newProcess = { title: this.processTitle, time: this.processTime };
+      const newProcess = {
+        id: this.processTitle.replaceAll(" ", "-"),
+        title: this.processTitle,
+        time: this.processTime,
+      };
       const db = getDatabase();
       set(
         ref(
           db,
-          `${this.$store.getters["users/userId"]}/processes/id-${this.processTitle}`
+          `${this.$store.getters["users/userId"]}/processes/id-${newProcess.id}`
         ),
         newProcess
       );
