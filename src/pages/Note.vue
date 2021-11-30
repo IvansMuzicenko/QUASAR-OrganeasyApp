@@ -149,11 +149,13 @@ export default {
         title: this.noteTitle,
         text: this.noteText,
       };
-      const updates = {};
-      updates[
-        `${this.$store.getters["users/userId"]}/notes/id-${this.noteId}`
-      ] = noteChanges;
-      update(ref(db), updates);
+      update(
+        ref(
+          db,
+          `${this.$store.getters["users/userId"]}/notes/id-${this.noteId}`
+        ),
+        noteChanges
+      );
       this.editState = false;
     },
   },
