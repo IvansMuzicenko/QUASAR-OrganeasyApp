@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <p class="text-h6 text-center">Notes</p>
+    <p class="text-h6 text-center">Processes</p>
     <q-list separator bordered>
       <q-item
         v-for="(process, index) in processes"
