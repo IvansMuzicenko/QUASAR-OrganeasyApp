@@ -15,16 +15,16 @@
 
       <q-card-section class="text-h6" @dblclick="toggleEdit()">
         <p v-if="!editState">
-          {{ noteTitle }}
+          {{ note.title }}
         </p>
-        <q-input v-if="editState" v-model="noteTitle" class="text-h6" />
+        <q-input v-if="editState" v-model="note.title" class="text-h6" />
 
         <q-separator v-if="!editState" color="black" inset />
 
-        <p v-if="!editState" v-html="noteText"></p>
+        <p v-if="!editState" v-html="note.text"></p>
         <q-editor
           v-if="editState"
-          v-model="noteText"
+          v-model="note.text"
           dense
           :toolbar="[
             ['undo', 'redo'],
@@ -122,15 +122,15 @@ export default {
     if (!note) {
       return this.$router.push("/notes");
     }
-    this.noteId = id;
-    this.noteTitle = note.title;
-    this.noteText = note.text;
+    this.note = JSON.parse(JSON.stringify(note));
   },
   data() {
     return {
-      noteTitle: "",
-      noteText: "",
-      noteId: "",
+      note: {
+        id: "",
+        title: "",
+        text: "",
+      },
       editState: false,
     };
   },
@@ -144,17 +144,13 @@ export default {
     },
     saveEdit() {
       const db = getDatabase();
-      const noteChanges = {
-        id: this.noteId,
-        title: this.noteTitle,
-        text: this.noteText,
-      };
+
       update(
         ref(
           db,
-          `${this.$store.getters["users/userId"]}/notes/id-${this.noteId}`
+          `${this.$store.getters["users/userId"]}/notes/id-${this.note.id}`
         ),
-        noteChanges
+        this.note
       );
       this.editState = false;
     },
