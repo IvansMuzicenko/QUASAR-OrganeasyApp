@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <p class="text-h6 text-center">Processes</p>
+    <p class="text-center text-h6">Processes</p>
     <q-list separator bordered>
       <q-item
         v-for="(process, index) in processes"
@@ -48,12 +48,13 @@
 import { getDatabase, ref, update } from "firebase/database";
 
 export default {
-  mounted() {
-    this.processes = this.$store.getters["users/processes"];
+  computed: {
+    processes() {
+      return this.$store.getters["users/processes"];
+    },
   },
   data() {
     return {
-      processes: {},
       selectedProcess: {
         id: "",
         title: "",
