@@ -4,10 +4,10 @@
       <q-card-section class="flex justify-between no-padding">
         <q-btn icon="arrow_back" flat @click="routerBack()"></q-btn>
         <q-btn v-if="editState" icon="save" dense flat @click="saveEdit()">
-          Edit
+          Save
         </q-btn>
         <q-btn v-if="!editState" icon="edit" dense flat @click="toggleEdit()">
-          Save
+          Edit
         </q-btn>
       </q-card-section>
 
