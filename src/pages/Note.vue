@@ -1,41 +1,41 @@
 <template>
   <q-page>
     <q-card bordered>
-      <q-btn
-        v-if="editState"
-        icon="save"
-        dense
-        flat
-        class=""
-        @click="saveEdit()"
-      >
-      </q-btn>
-      <q-btn
-        v-if="!editState"
-        icon="edit"
-        dense
-        flat
-        class=""
-        @click="toggleEdit()"
-      >
-      </q-btn>
+      <q-card-section class="flex justify-between no-padding">
+        <q-btn icon="arrow_back" flat @click="routerBack()"></q-btn>
+        <q-btn v-if="editState" icon="save" dense flat @click="saveEdit()">
+          Edit
+        </q-btn>
+        <q-btn v-if="!editState" icon="edit" dense flat @click="toggleEdit()">
+          Save
+        </q-btn>
+      </q-card-section>
 
       <q-separator color="black" />
 
-      <q-card-section class="text-h6">
-        <p v-if="!editState" @click="toggleEdit()">
+      <q-card-section class="text-h6" @dblclick="toggleEdit()">
+        <p v-if="!editState">
           {{ noteTitle }}
         </p>
         <q-input v-if="editState" v-model="noteTitle" class="text-h6" />
-      </q-card-section>
-      <q-separator v-if="!editState" color="black" inset />
-      <q-card-section>
-        <p v-if="!editState" @click="toggleEdit()" v-html="noteText"></p>
+
+        <q-separator v-if="!editState" color="black" inset />
+
+        <p v-if="!editState" v-html="noteText"></p>
         <q-editor
           v-if="editState"
           v-model="noteText"
           dense
           :toolbar="[
+            ['undo', 'redo'],
+            [
+              'bold',
+              'italic',
+              'strike',
+              'underline',
+              'subscript',
+              'superscript',
+            ],
             [
               {
                 label: $q.lang.editor.align,
@@ -50,14 +50,6 @@
                 fixedLabel: true,
                 options: ['left', 'center', 'right', 'justify'],
               },
-            ],
-            [
-              'bold',
-              'italic',
-              'strike',
-              'underline',
-              'subscript',
-              'superscript',
             ],
             ['token', 'hr', 'link', 'custom_btn'],
             ['print', 'fullscreen'],
@@ -104,8 +96,6 @@
               'removeFormat',
             ],
             ['quote', 'unordered', 'ordered', 'outdent', 'indent'],
-
-            ['undo', 'redo'],
           ]"
           :fonts="{
             arial: 'Arial',
@@ -146,8 +136,11 @@ export default {
   },
 
   methods: {
+    routerBack() {
+      return this.$router.back();
+    },
     toggleEdit() {
-      this.editState = !this.editState;
+      this.editState = true;
     },
     saveEdit() {
       const db = getDatabase();
@@ -161,7 +154,7 @@ export default {
         `${this.$store.getters["users/userId"]}/notes/id-${this.noteId}`
       ] = noteChanges;
       update(ref(db), updates);
-      this.toggleEdit();
+      this.editState = false;
     },
   },
 };
