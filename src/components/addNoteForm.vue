@@ -134,15 +134,17 @@ export default {
 
     onOKClick() {
       const newNote = {
+        id: this.noteTitle.replaceAll(" ", "-"),
         title: this.noteTitle,
         text: this.noteText,
       };
 
+      console.log(newNote);
       const db = getDatabase();
       set(
         ref(
           db,
-          `${this.$store.getters["users/userId"]}/notes/id-${this.noteTitle}`
+          `${this.$store.getters["users/userId"]}/notes/id-${newNote.id}`
         ),
         newNote
       );

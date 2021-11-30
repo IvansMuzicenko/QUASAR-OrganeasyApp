@@ -6,7 +6,7 @@
         v-for="(note, index) in notes"
         :key="index"
         clickable
-        :to="`/notes/${note['title'].replaceAll(' ', '-')}`"
+        :to="`/notes/${note['id']}`"
       >
         {{ note["title"] }}
       </q-item>
