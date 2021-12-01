@@ -449,6 +449,7 @@ export default {
           );
         }
         const newTodo = {
+          id: this.todoTitle.replaceAll(" ", "-"),
           title: this.todoTitle,
           time: this.eventDate,
           endingTime: this.toggleEventEnd ? this.eventEndingDate : null,
@@ -473,10 +474,10 @@ export default {
             db,
             `${
               this.$store.getters["users/userId"]
-            }/tasks/${this.eventDate.slice(
+            }/tasks/date-${this.eventDate.slice(
               0,
               this.eventDate.indexOf(" ")
-            )}/id-${this.todoTitle}/`
+            )}/id-${newTodo.id}/`
           ),
           newTodo
         );
