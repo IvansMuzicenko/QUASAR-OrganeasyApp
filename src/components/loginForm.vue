@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-lg q-mx-auto" style="max-width: 400px">
     <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-      <h6 class="q-ma-sm text-center">Sign In</h6>
+      <h6 class="text-center q-ma-sm">Sign In</h6>
       <p v-if="error" class="text-red">
         Incorrect e-mail or password. Try again!
       </p>

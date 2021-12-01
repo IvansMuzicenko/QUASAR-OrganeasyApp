@@ -65,11 +65,11 @@
 </template>
 
 <script>
-import EssentialLink from "components/EssentialLink.vue";
 import { date } from "quasar";
-import addProcessForm from "components/addProcessForm.vue";
-import addTaskForm from "components/addTaskForm.vue";
-import addNoteForm from "components/addNoteForm.vue";
+import EssentialLink from "components/EssentialLink.vue";
+import AddProcessForm from "components/AddProcessForm.vue";
+import AddTaskForm from "components/AddTaskForm.vue";
+import AddNoteForm from "components/AddNoteForm.vue";
 
 export default {
   components: {
@@ -127,17 +127,17 @@ export default {
   methods: {
     addTask() {
       this.$q.dialog({
-        component: addTaskForm,
+        component: AddTaskForm,
       });
     },
     addProcess() {
       this.$q.dialog({
-        component: addProcessForm,
+        component: AddProcessForm,
       });
     },
     addNote() {
       this.$q.dialog({
-        component: addNoteForm,
+        component: AddNoteForm,
       });
     },
     toggleLeftDrawer() {

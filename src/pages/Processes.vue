@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import addProcessForm from "components/addProcessForm.vue";
+import addProcessForm from "src/components/AddProcessForm.vue";
 import { getDatabase, ref, update, remove } from "firebase/database";
 
 const db = getDatabase();

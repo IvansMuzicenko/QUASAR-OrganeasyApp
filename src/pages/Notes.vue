@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <p class="text-h6 text-center">Notes</p>
+    <p class="text-center text-h6">Notes</p>
     <div v-if="!Object.keys(notes).length">
       <p>You have not notes!</p>
       <q-btn color="secondary" @click="addNote()">Add note</q-btn>
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import addNoteForm from "components/addNoteForm.vue";
+import addNoteForm from "src/components/AddNoteForm.vue";
 export default {
   computed: {
     notes() {
