@@ -9,6 +9,9 @@
         <q-btn v-if="!editState" icon="edit" dense flat @click="toggleEdit()">
           Edit
         </q-btn>
+        <q-btn v-if="!editState" icon="delete" dense flat @click="deleteNote()">
+          Delete
+        </q-btn>
       </q-card-section>
 
       <q-separator color="black" />
@@ -108,13 +111,34 @@
             verdana: 'Verdana',
           }"
         />
+
+        <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
+          <q-card class="q-dialog-plugin">
+            <q-card-section>
+              Are you sure to premanently remove '{{ note.title }}' note?
+            </q-card-section>
+            <q-card-actions align="right">
+              <q-btn
+                color="primary"
+                label="Cancel"
+                @click="onConfirmCancelClick"
+              />
+              <q-btn
+                color="negative"
+                label="Delete"
+                @click="onConfirmDeleteClick"
+              />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
       </q-card-section>
     </q-card>
   </q-page>
 </template>
 
 <script>
-import { getDatabase, ref, update } from "firebase/database";
+import { getDatabase, ref, update, remove } from "firebase/database";
+const db = getDatabase();
 export default {
   mounted() {
     const id = this.$route.path.slice(this.$route.path.lastIndexOf("/") + 1);
@@ -142,9 +166,11 @@ export default {
     toggleEdit() {
       this.editState = true;
     },
-    saveEdit() {
-      const db = getDatabase();
+    deleteNote() {
+      this.$refs.confirmDialog.show();
+    },
 
+    saveEdit() {
       update(
         ref(
           db,
@@ -153,6 +179,23 @@ export default {
         this.note
       );
       this.editState = false;
+    },
+
+    onConfirmDialogHide() {
+      this.$emit("hide");
+    },
+    onConfirmCancelClick() {
+      this.$refs.confirmDialog.hide();
+    },
+    onConfirmDeleteClick() {
+      remove(
+        ref(
+          db,
+          `${this.$store.getters["users/userId"]}/notes/id-${this.note.id}`
+        )
+      );
+      this.$refs.confirmDialog.hide();
+      this.$router.push("/notes");
     },
   },
 };
