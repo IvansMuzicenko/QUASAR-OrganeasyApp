@@ -34,8 +34,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(task, index) in dayTasks" :key="index">
-          <td>{{ task["time"].slice(task["time"].indexOf(" ")) }}</td>
+        <tr
+          v-for="(task, index) in dayTasks"
+          :key="index"
+          @click="openTask(task)"
+        >
+          <td>
+            {{ task["time"].slice(task["time"].indexOf(" ")) }}
+          </td>
+
           <td>{{ task["title"] }}</td>
         </tr>
       </tbody>
@@ -55,14 +62,17 @@ export default {
       if (!this.tasks) return [];
 
       return Object.keys(this.tasks).map((event) =>
-        date.formatDate(date.extractDate(event, "DD-MM-YYYY"), "YYYY/MM/DD")
+        date.formatDate(
+          date.extractDate(event.replace("date-", ""), "DD-MM-YYYY"),
+          "YYYY/MM/DD"
+        )
       );
     },
     dayTasks() {
       if (!this.tasks) return [];
 
       return this.tasks[
-        this.formattedDate.slice(this.formattedDate.indexOf(" ") + 1)
+        "date-" + this.formattedDate.slice(this.formattedDate.indexOf(" ") + 1)
       ];
     },
   },
@@ -89,6 +99,10 @@ export default {
     previousDay() {
       this.timeStamp -= 86400000;
       this.formattedDate = date.formatDate(this.timeStamp, "dddd, DD-MM-YYYY");
+    },
+    openTask(task) {
+      const taskDate = task.time.slice(0, task.time.indexOf(" "));
+      this.$router.push(`/${taskDate}/${task.id}`);
     },
   },
 };
