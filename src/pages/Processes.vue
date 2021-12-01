@@ -1,6 +1,10 @@
 <template>
   <q-page>
     <p class="text-center text-h6">Processes</p>
+    <div v-if="!Object.keys(processes).length">
+      <p>You have not processes!</p>
+      <q-btn color="secondary" @click="addProcess()">Add process</q-btn>
+    </div>
     <q-list separator bordered>
       <q-item
         v-for="(process, index) in processes"
@@ -63,6 +67,7 @@
 </template>
 
 <script>
+import addProcessForm from "components/addProcessForm.vue";
 import { getDatabase, ref, update, remove } from "firebase/database";
 
 const db = getDatabase();
@@ -83,6 +88,11 @@ export default {
     };
   },
   methods: {
+    addProcess() {
+      this.$q.dialog({
+        component: addProcessForm,
+      });
+    },
     editProcess(process) {
       this.show();
       this.selectedProcess = JSON.parse(JSON.stringify(process));
