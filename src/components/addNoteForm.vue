@@ -139,7 +139,6 @@ export default {
         text: this.noteText,
       };
 
-      console.log(newNote);
       const db = getDatabase();
       set(
         ref(
