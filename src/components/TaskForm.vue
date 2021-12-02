@@ -8,7 +8,6 @@
         :rules="[(val) => val !== '' || 'Title is required']"
         :dense="false"
         class="q-px-md"
-        @keyup="checkValidity()"
       >
       </q-input>
 
@@ -246,7 +245,6 @@
           min="1"
           label="Repeat count"
           :rules="[(val) => val >= 1 || 'Must be at least 1 repeat']"
-          @blur="checkValidity()"
         />
         <p class="full-width">Repeat in</p>
         <q-select
@@ -357,7 +355,7 @@ export default {
 
         toggleRepeat: false,
         repeat: {
-          repeatNumber: 0,
+          repeatNumber: 1,
           monthsModel: 0,
           weeksModel: 0,
           daysModel: 0,
@@ -367,7 +365,6 @@ export default {
       },
       processTitle: '',
       processTime: 0,
-      error: true,
       monthsOptions: Array.from({ length: 12 }, (_, index) => index + 1),
 
       weeksOptions: Array.from({ length: 4 }, (_, index) => index + 1),
@@ -387,6 +384,17 @@ export default {
     }
   },
   computed: {
+    error() {
+      if (
+        this.form.todoTitle === '' ||
+        !this.form.repeat.repeatNumber ||
+        this.form.repeat.repeatNumber < 1
+      ) {
+        return true
+      } else {
+        return false
+      }
+    },
     processesList() {
       const processes = this.$store.getters['users/processes']
       let processesArray = []
@@ -434,13 +442,6 @@ export default {
       this.$emit('editEvent', this.form)
     },
 
-    checkValidity() {
-      if (this.form.todoTitle === '' || this.form.repeat.repeatNumber < 0) {
-        this.error = true
-      } else {
-        this.error = false
-      }
-    },
     addNotification() {
       this.form.notificationForm.push({
         notificationTimeValuesModel: 1,
