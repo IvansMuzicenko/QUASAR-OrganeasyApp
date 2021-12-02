@@ -1,16 +1,59 @@
 <template>
   <q-page>
-    <q-card v-if="!editState">
-      {{ task.title }}
-      {{ task.time }}
-      {{ task.endingTime }}
-      {{ task.location }}
-      {{ task.notifications }}
-      {{ task.continuous }}
-      {{ task.processes }}
-      {{ task.subtasks }}
-      {{ task.repeat }}
-    </q-card>
+    <q-list v-if="!editState" separator bordered>
+      <q-item v-if="task.title">Title: {{ task.title }}</q-item>
+      <q-item v-if="task.time">Date: {{ task.time }}</q-item>
+      <q-item v-if="task.endingTime">
+        Ending date: {{ task.endingTime }}</q-item
+      >
+      <q-item v-if="task.location">Location: {{ task.location }}</q-item>
+      <q-item v-if="task.notifications"
+        >Notifications:
+        <q-item-section
+          v-for="(notification, index) in task.notifications"
+          :key="index"
+          >{{ notification.notificationTimeValuesModel }}
+          {{ notification.notificationTimeTypeModel }}
+          {{ notification.notificationPeriodModel }}
+          {{ notification.notificationPointModel }}
+        </q-item-section>
+      </q-item>
+      <q-item v-if="task.continuous">Continuous: {{ task.continuous }}</q-item>
+      <q-item v-if="task.processes"
+        >Processes:
+        <q-item-section v-for="process in task.processes" :key="process">{{
+          process
+        }}</q-item-section>
+      </q-item>
+      <q-item v-if="task.subtasks"
+        >Subtasks:
+        <q-item-section v-for="subtask in task.subtasks" :key="subtask">{{
+          subtask
+        }}</q-item-section></q-item
+      >
+      <q-item v-if="task.repeat"
+        >Repeat:
+        <q-item-section
+          >Repeat number: {{ task.repeat.repeatNumber }}</q-item-section
+        >
+
+        <q-item-section v-if="task.repeat.months != 0">
+          Months:{{ task.repeat.months }}</q-item-section
+        >
+        <q-item-section v-if="task.repeat.weeks != 0">
+          Weeks:{{ task.repeat.weeks }}</q-item-section
+        >
+        <q-item-section v-if="task.repeat.days != 0">
+          Days:{{ task.repeat.days }}</q-item-section
+        >
+        <q-item-section v-if="task.repeat.hours != 0">
+          Hours:{{ task.repeat.hours }}</q-item-section
+        >
+        <q-item-section v-if="task.repeat.minutes != 0">
+          Minutes:{{ task.repeat.minutes }}</q-item-section
+        >
+      </q-item>
+    </q-list>
     <q-btn @click="editState = true"> Edit </q-btn>
     <task-form
       v-if="editState"
@@ -37,11 +80,25 @@ export default {
         time: '',
         endingTime: '',
         location: '',
-        notifications: '',
+        notifications: [
+          {
+            notificationPeriodModel: '',
+            notificationPointModel: '',
+            notificationTimeTypeModel: '',
+            notificationTimeValuesModel: 0
+          }
+        ],
         continuous: false,
         processes: [],
-        subtasks: '',
-        repeat: {}
+        subtasks: [],
+        repeat: {
+          repeatNumber: 0,
+          months: 0,
+          weeks: 0,
+          days: 0,
+          hours: 0,
+          minutes: 0
+        }
       },
       editState: false
     }
