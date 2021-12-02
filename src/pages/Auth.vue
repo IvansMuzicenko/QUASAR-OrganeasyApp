@@ -20,34 +20,34 @@
 </template>
 
 <script>
-import registerForm from "src/components/RegisterForm.vue";
-import loginForm from "src/components/LoginForm.vue";
+import registerForm from 'src/components/RegisterForm.vue'
+import loginForm from 'src/components/LoginForm.vue'
 
 export default {
   components: {
     registerForm,
-    loginForm,
+    loginForm
   },
   data() {
     return {
-      authMode: "signIn",
-    };
+      authMode: 'signIn'
+    }
   },
   beforeMount() {
-    if (this.$store.getters["users/email"]) {
-      this.$router.push("/");
+    if (this.$store.getters['users/email']) {
+      this.$router.push('/')
     }
   },
   methods: {
     changeAuthMode() {
-      if (this.authMode === "signIn") {
-        this.authMode = "signUp";
+      if (this.authMode === 'signIn') {
+        this.authMode = 'signUp'
       } else {
-        this.authMode = "signIn";
+        this.authMode = 'signIn'
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style></style>

@@ -5,64 +5,64 @@
 </template>
 
 <script>
-import { date } from "quasar";
-import { getDatabase, ref, set } from "firebase/database";
-import TaskForm from "components/TaskForm.vue";
+import { date } from 'quasar'
+import { getDatabase, ref, set } from 'firebase/database'
+import TaskForm from 'components/TaskForm.vue'
 
 export default {
   components: {
-    TaskForm,
+    TaskForm
   },
 
-  emits: ["ok", "hide"],
+  emits: ['ok', 'hide'],
 
   methods: {
     show() {
-      this.$refs.dialog.show();
+      this.$refs.dialog.show()
     },
 
     hide() {
-      this.$refs.dialog.hide();
+      this.$refs.dialog.hide()
     },
 
     onDialogHide() {
-      this.$emit("hide");
+      this.$emit('hide')
     },
 
     onOKClick(form) {
-      const db = getDatabase();
+      const db = getDatabase()
 
       for (let i = 0; i < form.repeatNumber + 1; i++) {
-        let eventDate = form.eventDate;
-        let eventEndingDate = form.eventEndingDate;
+        let eventDate = form.eventDate
+        let eventEndingDate = form.eventEndingDate
 
         if (i != 0) {
           eventDate = date.formatDate(
-            date.addToDate(date.extractDate(eventDate, "DD-MM-YYYY HH:mm"), {
+            date.addToDate(date.extractDate(eventDate, 'DD-MM-YYYY HH:mm'), {
               months: form.monthsModel,
               days: form.daysModel + form.weeksModel * 7,
               hours: form.hoursModel,
-              minutes: form.minutesModel,
+              minutes: form.minutesModel
             }),
-            "DD-MM-YYYY HH:mm"
-          );
+            'DD-MM-YYYY HH:mm'
+          )
 
           eventEndingDate = date.formatDate(
             date.addToDate(
-              date.extractDate(eventEndingDate, "DD-MM-YYYY HH:mm"),
+              date.extractDate(eventEndingDate, 'DD-MM-YYYY HH:mm'),
               {
                 months: form.monthsModel,
                 days: form.daysModel + form.weeksModel * 7,
                 hours: form.hoursModel,
-                minutes: form.minutesModel,
+                minutes: form.minutesModel
               }
             ),
-            "DD-MM-YYYY HH:mm"
-          );
+            'DD-MM-YYYY HH:mm'
+          )
         }
 
         const newTodo = {
-          id: form.todoTitle.replaceAll(" ", "-"),
+          id: form.todoTitle.replaceAll(' ', '-'),
           title: form.todoTitle,
           time: eventDate,
           endingTime: form.toggleEventEnd ? eventEndingDate : null,
@@ -77,32 +77,32 @@ export default {
                 weeks: form.weeksModel,
                 days: form.daysModel,
                 hours: form.hoursModel,
-                minutes: form.minutesModel,
+                minutes: form.minutesModel
               }
-            : null,
-        };
+            : null
+        }
 
         set(
           ref(
             db,
             `${
-              this.$store.getters["users/userId"]
-            }/tasks/date-${eventDate.slice(0, eventDate.indexOf(" "))}/id-${
+              this.$store.getters['users/userId']
+            }/tasks/date-${eventDate.slice(0, eventDate.indexOf(' '))}/id-${
               newTodo.id
             }/`
           ),
           newTodo
-        );
+        )
       }
 
-      this.$emit("ok");
+      this.$emit('ok')
 
-      this.hide();
+      this.hide()
     },
 
     onCancelClick() {
-      this.hide();
-    },
-  },
-};
+      this.hide()
+    }
+  }
+}
 </script>

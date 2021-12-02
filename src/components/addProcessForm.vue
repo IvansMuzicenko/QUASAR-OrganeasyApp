@@ -3,15 +3,15 @@
     <q-card class="q-dialog-plugin">
       <q-card-section>
         <q-input
-          bottom-slots
           v-model="processTitle"
+          bottom-slots
           label="Title"
           :dense="false"
         >
         </q-input>
         <q-input
-          bottom-slots
           v-model.number="processTime"
+          bottom-slots
           type="number"
           label="Time"
           suffix="Minutes"
@@ -29,53 +29,53 @@
 </template>
 
 <script>
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set } from 'firebase/database'
 export default {
-  data() {
-    return {
-      processTitle: "",
-      processTime: 0,
-    };
-  },
   props: {},
 
-  emits: ["ok", "hide"],
+  emits: ['ok', 'hide'],
+  data() {
+    return {
+      processTitle: '',
+      processTime: 0
+    }
+  },
 
   methods: {
     show() {
-      this.$refs.dialog.show();
+      this.$refs.dialog.show()
     },
 
     hide() {
-      this.$refs.dialog.hide();
+      this.$refs.dialog.hide()
     },
 
     onDialogHide() {
-      this.$emit("hide");
+      this.$emit('hide')
     },
 
     onOKClick() {
       const newProcess = {
-        id: this.processTitle.replaceAll(" ", "-"),
+        id: this.processTitle.replaceAll(' ', '-'),
         title: this.processTitle,
-        time: this.processTime,
-      };
-      const db = getDatabase();
+        time: this.processTime
+      }
+      const db = getDatabase()
       set(
         ref(
           db,
-          `${this.$store.getters["users/userId"]}/processes/id-${newProcess.id}`
+          `${this.$store.getters['users/userId']}/processes/id-${newProcess.id}`
         ),
         newProcess
-      );
-      this.$emit("ok");
+      )
+      this.$emit('ok')
 
-      this.hide();
+      this.hide()
     },
 
     onCancelClick() {
-      this.hide();
-    },
-  },
-};
+      this.hide()
+    }
+  }
+}
 </script>

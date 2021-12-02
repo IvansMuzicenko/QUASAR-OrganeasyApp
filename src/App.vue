@@ -10,31 +10,31 @@
 </template>
 
 <script>
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue } from 'firebase/database'
 export default {
+  data() {
+    return {
+      loading: true
+    }
+  },
   beforeCreate() {
-    const user = this.$q.localStorage.getItem("user");
+    const user = this.$q.localStorage.getItem('user')
     if (user) {
-      this.$store.dispatch("users/setUser", user);
+      this.$store.dispatch('users/setUser', user)
 
-      const db = getDatabase();
-      const dbRef = ref(db, user.userId);
+      const db = getDatabase()
+      const dbRef = ref(db, user.userId)
       onValue(dbRef, (snapshot) => {
-        this.loading = false;
-        const data = snapshot.val();
-        this.$store.dispatch("users/setUserData", data);
-      });
+        this.loading = false
+        const data = snapshot.val()
+        this.$store.dispatch('users/setUserData', data)
+      })
     }
   },
   beforeMount() {
-    if (!this.$store.getters["users/email"]) {
-      this.$router.push("/auth");
+    if (!this.$store.getters['users/email']) {
+      this.$router.push('/auth')
     }
-  },
-  data() {
-    return {
-      loading: true,
-    };
-  },
-};
+  }
+}
 </script>

@@ -9,10 +9,10 @@
               <q-icon name="event"> </q-icon>
               {{ formattedDate }}
               <q-popup-proxy
+                ref="datePicked"
                 cover
                 transition-show="scale"
                 transition-hide="scale"
-                ref="datePicked"
               >
                 <q-date
                   v-model="formattedDate"
@@ -40,10 +40,10 @@
           @click="openTask(task)"
         >
           <td>
-            {{ task["time"].slice(task["time"].indexOf(" ")) }}
+            {{ task['time'].slice(task['time'].indexOf(' ')) }}
           </td>
 
-          <td>{{ task["title"] }}</td>
+          <td>{{ task['title'] }}</td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -51,59 +51,58 @@
 </template>
 
 <script>
-import { date } from "quasar";
+import { date } from 'quasar'
 
 export default {
+  data() {
+    return {
+      timeStamp: Date.now(),
+      formattedDate: date.formatDate(Date.now(), 'dddd, DD-MM-YYYY')
+    }
+  },
   computed: {
     tasks() {
-      return this.$store.getters["users/tasks"];
+      return this.$store.getters['users/tasks']
     },
     calendarEvents() {
-      if (!this.tasks) return [];
+      if (!this.tasks) return []
 
       return Object.keys(this.tasks).map((event) =>
         date.formatDate(
-          date.extractDate(event.replace("date-", ""), "DD-MM-YYYY"),
-          "YYYY/MM/DD"
+          date.extractDate(event.replace('date-', ''), 'DD-MM-YYYY'),
+          'YYYY/MM/DD'
         )
-      );
+      )
     },
     dayTasks() {
-      if (!this.tasks) return [];
+      if (!this.tasks) return []
 
       return this.tasks[
-        "date-" + this.formattedDate.slice(this.formattedDate.indexOf(" ") + 1)
-      ];
-    },
+        'date-' + this.formattedDate.slice(this.formattedDate.indexOf(' ') + 1)
+      ]
+    }
   },
   watch: {
     formattedDate(newDate) {
       this.timeStamp = Number(
-        date.formatDate(date.extractDate(newDate, "dddd, DD-MM-YYYY"), "x")
-      );
-      this.$refs.datePicked.hide();
-    },
-  },
-
-  data() {
-    return {
-      timeStamp: Date.now(),
-      formattedDate: date.formatDate(Date.now(), "dddd, DD-MM-YYYY"),
-    };
+        date.formatDate(date.extractDate(newDate, 'dddd, DD-MM-YYYY'), 'x')
+      )
+      this.$refs.datePicked.hide()
+    }
   },
   methods: {
     nextDay() {
-      this.timeStamp += 86400000;
-      this.formattedDate = date.formatDate(this.timeStamp, "dddd, DD-MM-YYYY");
+      this.timeStamp += 86400000
+      this.formattedDate = date.formatDate(this.timeStamp, 'dddd, DD-MM-YYYY')
     },
     previousDay() {
-      this.timeStamp -= 86400000;
-      this.formattedDate = date.formatDate(this.timeStamp, "dddd, DD-MM-YYYY");
+      this.timeStamp -= 86400000
+      this.formattedDate = date.formatDate(this.timeStamp, 'dddd, DD-MM-YYYY')
     },
     openTask(task) {
-      const taskDate = task.time.slice(0, task.time.indexOf(" "));
-      this.$router.push(`/${taskDate}/${task.id}`);
-    },
-  },
-};
+      const taskDate = task.time.slice(0, task.time.indexOf(' '))
+      this.$router.push(`/${taskDate}/${task.id}`)
+    }
+  }
+}
 </script>

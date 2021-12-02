@@ -18,7 +18,7 @@
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
         <q-item-label v-if="email" header>
-          {{ email.slice(0, email.indexOf("@")) }}</q-item-label
+          {{ email.slice(0, email.indexOf('@')) }}</q-item-label
         >
         <q-btn
           v-else
@@ -29,7 +29,7 @@
         />
         <q-item-label header> {{ formattedDate }}</q-item-label>
 
-        <EssentialLink
+        <essential-link
           v-for="link in email ? essentialLinks : unauthLinks"
           :key="link.title"
           v-bind="link"
@@ -65,84 +65,84 @@
 </template>
 
 <script>
-import { date } from "quasar";
-import EssentialLink from "components/EssentialLink.vue";
-import AddProcessForm from "components/AddProcessForm.vue";
-import AddTaskForm from "components/AddTaskForm.vue";
-import AddNoteForm from "components/AddNoteForm.vue";
+import { date } from 'quasar'
+import EssentialLink from 'components/EssentialLink.vue'
+import AddProcessForm from 'components/AddProcessForm.vue'
+import AddTaskForm from 'components/AddTaskForm.vue'
+import AddNoteForm from 'components/AddNoteForm.vue'
 
 export default {
   components: {
-    EssentialLink,
-  },
-  computed: {
-    email() {
-      return this.$store.getters["users/email"];
-    },
+    EssentialLink
   },
 
   data() {
-    const timeStamp = Date.now();
-    const formattedDate = date.formatDate(timeStamp, "dddd, D MMMM YYYY");
+    const timeStamp = Date.now()
+    const formattedDate = date.formatDate(timeStamp, 'dddd, D MMMM YYYY')
 
     return {
       leftDrawerOpen: false,
       essentialLinks: [
         {
-          title: "Diary",
-          caption: "",
-          icon: "view_list",
-          link: "/",
+          title: 'Diary',
+          caption: '',
+          icon: 'view_list',
+          link: '/'
         },
         {
-          title: "Notes",
-          caption: "",
-          icon: "note",
-          link: "/notes",
+          title: 'Notes',
+          caption: '',
+          icon: 'note',
+          link: '/notes'
         },
         {
-          title: "Processes",
-          caption: "",
-          icon: "update",
-          link: "/processes",
+          title: 'Processes',
+          caption: '',
+          icon: 'update',
+          link: '/processes'
         },
         {
-          title: "Help",
-          caption: "",
-          icon: "help",
-          link: "/help",
-        },
+          title: 'Help',
+          caption: '',
+          icon: 'help',
+          link: '/help'
+        }
       ],
       unauthLinks: [
         {
-          title: "Help",
-          caption: "",
-          icon: "help",
-          link: "/help",
-        },
+          title: 'Help',
+          caption: '',
+          icon: 'help',
+          link: '/help'
+        }
       ],
-      formattedDate,
-    };
+      formattedDate
+    }
+  },
+  computed: {
+    email() {
+      return this.$store.getters['users/email']
+    }
   },
   methods: {
     addTask() {
       this.$q.dialog({
-        component: AddTaskForm,
-      });
+        component: AddTaskForm
+      })
     },
     addProcess() {
       this.$q.dialog({
-        component: AddProcessForm,
-      });
+        component: AddProcessForm
+      })
     },
     addNote() {
       this.$q.dialog({
-        component: AddNoteForm,
-      });
+        component: AddNoteForm
+      })
     },
     toggleLeftDrawer() {
-      this.leftDrawerOpen = !this.leftDrawerOpen;
-    },
-  },
-};
+      this.leftDrawerOpen = !this.leftDrawerOpen
+    }
+  }
+}
 </script>

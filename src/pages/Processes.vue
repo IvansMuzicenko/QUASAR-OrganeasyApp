@@ -8,13 +8,13 @@
     <q-list separator bordered>
       <q-item
         v-for="(process, index) in processes"
-        clickable
         :key="index"
+        clickable
         @click="editProcess(process)"
       >
-        <q-item-section>{{ process["title"] }}</q-item-section>
+        <q-item-section>{{ process['title'] }}</q-item-section>
         <q-separator vertical />
-        <q-item-section side>{{ process["time"] }} minutes</q-item-section>
+        <q-item-section side>{{ process['time'] }} minutes</q-item-section>
       </q-item>
     </q-list>
 
@@ -22,15 +22,15 @@
       <q-card class="q-dialog-plugin">
         <q-card-section>
           <q-input
-            bottom-slots
             v-model="selectedProcess.title"
+            bottom-slots
             label="Title"
             :dense="false"
           >
           </q-input>
           <q-input
-            bottom-slots
             v-model.number="selectedProcess.time"
+            bottom-slots
             type="number"
             label="Time"
             suffix="Minutes"
@@ -67,92 +67,93 @@
 </template>
 
 <script>
-import addProcessForm from "src/components/AddProcessForm.vue";
-import { getDatabase, ref, update, remove } from "firebase/database";
+import addProcessForm from 'src/components/AddProcessForm.vue'
+import { getDatabase, ref, update, remove } from 'firebase/database'
 
-const db = getDatabase();
+const db = getDatabase()
 
 export default {
-  computed: {
-    processes() {
-      return this.$store.getters["users/processes"];
-    },
-  },
+  emits: ['ok', 'hide'],
   data() {
     return {
       selectedProcess: {
-        id: "",
-        title: "",
-        time: 0,
-      },
-    };
+        id: '',
+        title: '',
+        time: 0
+      }
+    }
+  },
+  computed: {
+    processes() {
+      return this.$store.getters['users/processes']
+    }
   },
   methods: {
     addProcess() {
       this.$q.dialog({
-        component: addProcessForm,
-      });
+        component: addProcessForm
+      })
     },
     editProcess(process) {
-      this.show();
-      this.selectedProcess = JSON.parse(JSON.stringify(process));
+      this.show()
+      this.selectedProcess = JSON.parse(JSON.stringify(process))
     },
     show() {
-      this.$refs.dialog.show();
+      this.$refs.dialog.show()
     },
 
     hide() {
-      this.$refs.dialog.hide();
+      this.$refs.dialog.hide()
     },
 
     onDialogHide() {
-      this.$emit("hide");
+      this.$emit('hide')
     },
     onConfirmDialogHide() {
-      this.$emit("hide");
+      this.$emit('hide')
     },
 
     onOKClick() {
       const processChanges = {
         id: this.selectedProcess.id,
         title: this.selectedProcess.title,
-        time: this.selectedProcess.time,
-      };
+        time: this.selectedProcess.time
+      }
 
       update(
         ref(
           db,
-          `${this.$store.getters["users/userId"]}/processes/id-${this.selectedProcess.id}`
+          `${this.$store.getters['users/userId']}/processes/id-${this.selectedProcess.id}`
         ),
         processChanges
-      );
+      )
 
-      this.$emit("ok");
+      this.$emit('ok')
 
-      this.hide();
+      this.hide()
     },
 
     onCancelClick() {
-      this.hide();
+      this.hide()
     },
     onConfirmCancelClick() {
-      this.$refs.confirmDialog.hide();
+      this.$refs.confirmDialog.hide()
     },
     onDeleteClick() {
-      this.$refs.confirmDialog.show();
+      this.$refs.confirmDialog.show()
     },
     onConfirmDeleteClick() {
       remove(
         ref(
           db,
-          `${this.$store.getters["users/userId"]}/processes/id-${this.selectedProcess.id}`
+          `${this.$store.getters['users/userId']}/processes/id-${this.selectedProcess.id}`
         )
-      );
-      this.$refs.confirmDialog.hide();
-      this.hide();
-    },
-  },
-};
+      )
+      this.$refs.confirmDialog.hide()
+      this.hide()
+    }
+  }
+}
 </script>
 
 <style></style>

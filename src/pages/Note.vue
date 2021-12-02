@@ -37,7 +37,7 @@
               'strike',
               'underline',
               'subscript',
-              'superscript',
+              'superscript'
             ],
             [
               {
@@ -45,14 +45,14 @@
                 icon: $q.iconSet.editor.align,
                 fixedLabel: true,
                 list: 'only-icons',
-                options: ['left', 'center', 'right', 'justify'],
+                options: ['left', 'center', 'right', 'justify']
               },
               {
                 label: $q.lang.editor.align,
                 icon: $q.iconSet.editor.align,
                 fixedLabel: true,
-                options: ['left', 'center', 'right', 'justify'],
-              },
+                options: ['left', 'center', 'right', 'justify']
+              }
             ],
             ['token', 'hr', 'link', 'custom_btn'],
             ['print', 'fullscreen'],
@@ -61,7 +61,7 @@
                 label: $q.lang.editor.formatting,
                 icon: $q.iconSet.editor.formatting,
                 list: 'no-icons',
-                options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'],
+                options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code']
               },
               {
                 label: $q.lang.editor.fontSize,
@@ -76,8 +76,8 @@
                   'size-4',
                   'size-5',
                   'size-6',
-                  'size-7',
-                ],
+                  'size-7'
+                ]
               },
               {
                 label: $q.lang.editor.defaultFont,
@@ -93,12 +93,12 @@
                   'impact',
                   'lucida_grande',
                   'times_new_roman',
-                  'verdana',
-                ],
+                  'verdana'
+                ]
               },
-              'removeFormat',
+              'removeFormat'
             ],
-            ['quote', 'unordered', 'ordered', 'outdent', 'indent'],
+            ['quote', 'unordered', 'ordered', 'outdent', 'indent']
           ]"
           :fonts="{
             arial: 'Arial',
@@ -108,7 +108,7 @@
             impact: 'Impact',
             lucida_grande: 'Lucida Grande',
             times_new_roman: 'Times New Roman',
-            verdana: 'Verdana',
+            verdana: 'Verdana'
           }"
         />
 
@@ -137,68 +137,69 @@
 </template>
 
 <script>
-import { getDatabase, ref, update, remove } from "firebase/database";
-const db = getDatabase();
+import { getDatabase, ref, update, remove } from 'firebase/database'
+const db = getDatabase()
 export default {
-  mounted() {
-    const id = this.$route.path.slice(this.$route.path.lastIndexOf("/") + 1);
-    const note = this.$store.getters["users/notes"][`id-${id}`];
-    if (!note) {
-      return this.$router.push("/notes");
-    }
-    this.note = JSON.parse(JSON.stringify(note));
-  },
+  emits: ['hide'],
   data() {
     return {
       note: {
-        id: "",
-        title: "",
-        text: "",
+        id: '',
+        title: '',
+        text: ''
       },
-      editState: false,
-    };
+      editState: false
+    }
+  },
+  mounted() {
+    const id = this.$route.path.slice(this.$route.path.lastIndexOf('/') + 1)
+    const note = this.$store.getters['users/notes'][`id-${id}`]
+    if (!note) {
+      return this.$router.push('/notes')
+    }
+    this.note = JSON.parse(JSON.stringify(note))
   },
 
   methods: {
     routerBack() {
-      return this.$router.back();
+      return this.$router.back()
     },
     toggleEdit() {
-      this.editState = true;
+      this.editState = true
     },
     deleteNote() {
-      this.$refs.confirmDialog.show();
+      this.$refs.confirmDialog.show()
     },
 
     saveEdit() {
       update(
         ref(
           db,
-          `${this.$store.getters["users/userId"]}/notes/id-${this.note.id}`
+          `${this.$store.getters['users/userId']}/notes/id-${this.note.id}`
         ),
         this.note
-      );
-      this.editState = false;
+      )
+      this.editState = false
     },
 
     onConfirmDialogHide() {
-      this.$emit("hide");
+      this.$emit('hide')
     },
     onConfirmCancelClick() {
-      this.$refs.confirmDialog.hide();
+      this.$refs.confirmDialog.hide()
     },
     onConfirmDeleteClick() {
       remove(
         ref(
           db,
-          `${this.$store.getters["users/userId"]}/notes/id-${this.note.id}`
+          `${this.$store.getters['users/userId']}/notes/id-${this.note.id}`
         )
-      );
-      this.$refs.confirmDialog.hide();
-      this.$router.push("/notes");
-    },
-  },
-};
+      )
+      this.$refs.confirmDialog.hide()
+      this.$router.push('/notes')
+    }
+  }
+}
 </script>
 
 <style></style>

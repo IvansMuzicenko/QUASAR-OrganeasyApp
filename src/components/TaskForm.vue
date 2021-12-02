@@ -2,18 +2,18 @@
   <q-card class="q-dialog-plugin">
     <q-card-section>
       <q-input
-        bottom-slots
         v-model="form.todoTitle"
+        bottom-slots
         label="Title"
-        @keyup="checkValidity()"
         :rules="[(val) => val !== '' || 'Title is required']"
         :dense="false"
         class="q-px-md"
+        @keyup="checkValidity()"
       >
       </q-input>
 
-      <q-input filled v-model="form.eventDate" label="Event time">
-        <template v-slot:prepend>
+      <q-input v-model="form.eventDate" filled label="Event time">
+        <template #prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy
               cover
@@ -29,7 +29,7 @@
           </q-icon>
         </template>
 
-        <template v-slot:append>
+        <template #append>
           <q-icon name="access_time" class="cursor-pointer">
             <q-popup-proxy
               cover
@@ -56,11 +56,11 @@
 
       <q-input
         v-if="form.toggleEventEnd"
-        filled
         v-model="form.eventEndingDate"
+        filled
         label="Event ending"
       >
-        <template v-slot:prepend>
+        <template #prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy
               cover
@@ -76,7 +76,7 @@
           </q-icon>
         </template>
 
-        <template v-slot:append>
+        <template #append>
           <q-icon name="access_time" class="cursor-pointer">
             <q-popup-proxy
               cover
@@ -102,8 +102,8 @@
       <q-toggle v-model="form.toggleLocation" label="Add event location" />
       <q-input
         v-if="form.toggleLocation"
-        bottom-slots
         v-model="form.eventLocation"
+        bottom-slots
         label="Location"
         class="q-px-md"
       >
@@ -126,15 +126,15 @@
             class="q-pa-sm"
           >
             <q-input
-              bottom-slots
               v-model="form.processTitle"
+              bottom-slots
               label="Title"
               :dense="false"
             >
             </q-input>
             <q-input
-              bottom-slots
               v-model.number="form.processTime"
+              bottom-slots
               type="number"
               label="Time"
               suffix="Minutes"
@@ -148,9 +148,9 @@
         >
 
         <q-select
+          v-model="form.processesModel"
           outlined
           multiple
-          v-model="form.processesModel"
           :options="processesList"
           label="Processes"
         />
@@ -161,12 +161,12 @@
       <q-toggle v-model="form.toggleSubtasks" label="Add subtasks" />
       <q-card-section v-if="form.toggleSubtasks">
         <q-input
-          bottom-slots
           v-model="form.subtaskInput"
+          bottom-slots
           label="Subtasks"
           :dense="false"
         >
-          <template v-slot:append>
+          <template #append>
             <q-btn
               round
               dense
@@ -241,45 +241,45 @@
       <q-toggle v-model="form.toggleRepeat" label="Add repeat" />
       <q-card-section v-if="form.toggleRepeat" class="flex">
         <q-input
+          v-model.number="form.repeatNumber"
           type="number"
           min="1"
-          v-model.number="form.repeatNumber"
           label="Repeat count"
-          @blur="checkValidity()"
           :rules="[(val) => val >= 1 || 'Must be at least 1 repeat']"
+          @blur="checkValidity()"
         />
         <p class="full-width">Repeat in</p>
         <q-select
-          outlined
           v-model="form.monthsModel"
+          outlined
           :options="monthsOptions"
           label="Months"
           style="width: 50%"
         />
         <q-select
-          outlined
           v-model="form.weeksModel"
+          outlined
           :options="weeksOptions"
           label="Weeks"
           style="width: 50%"
         />
         <q-select
-          outlined
           v-model="form.daysModel"
+          outlined
           :options="daysOptions"
           label="Days"
           style="width: 50%"
         />
         <q-select
-          outlined
           v-model="form.hoursModel"
+          outlined
           :options="hoursOptions"
           label="Hours"
           style="width: 50%"
         />
         <q-select
-          outlined
           v-model="form.minutesModel"
+          outlined
           :options="minutesOptions"
           label="Minutes"
           style="width: 50%"
@@ -295,53 +295,45 @@
 </template>
 
 <script>
-import { date } from "quasar";
+import { date } from 'quasar'
+import { getDatabase, ref, set } from 'firebase/database'
 export default {
-  computed: {
-    processesList() {
-      const processes = this.$store.getters["users/processes"];
-      let processesArray = [];
-      for (const process in processes) {
-        processesArray.push(processes[process].title);
-      }
-      return processesArray;
-    },
-  },
+  emits: ['OKEvent', 'cancelEvent'],
   data() {
     return {
       form: {
-        todoTitle: "",
-        eventDate: date.formatDate(Date.now(), "DD-MM-YYYY HH:mm"),
+        todoTitle: '',
+        eventDate: date.formatDate(Date.now(), 'DD-MM-YYYY HH:mm'),
 
         toggleEventEnd: false,
         eventEndingDate: date.formatDate(
           Date.now() + 3600000,
-          "DD-MM-YYYY HH:mm"
+          'DD-MM-YYYY HH:mm'
         ),
 
         toggleLocation: false,
-        eventLocation: "",
+        eventLocation: '',
 
         continuousState: false,
 
         toggleProcesses: false,
         processesModel: null,
 
-        processTitle: "",
+        processTitle: '',
         processTime: 0,
 
         toggleSubtasks: false,
         subtasks: [],
-        subtaskInput: "",
+        subtaskInput: '',
 
         toggleNotification: false,
         notificationForm: [
           {
             notificationTimeValuesModel: 1,
-            notificationTimeTypeModel: "minutes",
-            notificationPeriodModel: "before",
-            notificationPointModel: "start time",
-          },
+            notificationTimeTypeModel: 'minutes',
+            notificationPeriodModel: 'before',
+            notificationPointModel: 'start time'
+          }
         ],
 
         toggleRepeat: false,
@@ -350,7 +342,7 @@ export default {
         weeksModel: 0,
         daysModel: 0,
         hoursModel: 0,
-        minutesModel: 0,
+        minutesModel: 0
       },
       error: true,
       monthsOptions: Array.from({ length: 12 }, (_, index) => index + 1),
@@ -366,54 +358,63 @@ export default {
         { length: 99 },
         (_, index) => index + 1
       ),
-      notificationTimeType: ["minutes", "hours", "days", "weeks", "months"],
-      notificationPeriod: ["before", "after"],
-      notificationPoint: ["start time", "end time"],
-    };
+      notificationTimeType: ['minutes', 'hours', 'days', 'weeks', 'months'],
+      notificationPeriod: ['before', 'after'],
+      notificationPoint: ['start time', 'end time']
+    }
   },
-  emits: ["OKEvent", "cancelEvent"],
+  computed: {
+    processesList() {
+      const processes = this.$store.getters['users/processes']
+      let processesArray = []
+      for (const process in processes) {
+        processesArray.push(processes[process].title)
+      }
+      return processesArray
+    }
+  },
   methods: {
     onOKClick() {
-      this.$emit("OKEvent", this.form);
+      this.$emit('OKEvent', this.form)
     },
     onCancelClick() {
-      this.$emit("cancelEvent");
+      this.$emit('cancelEvent')
     },
     checkValidity() {
-      if (this.todoTitle === "" || this.repeatNumber < 0) {
-        this.error = true;
+      if (this.todoTitle === '' || this.repeatNumber < 0) {
+        this.error = true
       } else {
-        this.error = false;
+        this.error = false
       }
     },
     addNotification() {
       this.notificationForm.push({
         notificationTimeValuesModel: 1,
-        notificationTimeTypeModel: "minutes",
-        notificationPeriodModel: "before",
-        notificationPointModel: "start time",
-      });
+        notificationTimeTypeModel: 'minutes',
+        notificationPeriodModel: 'before',
+        notificationPointModel: 'start time'
+      })
     },
     addProcess() {
-      const newProcess = { title: this.processTitle, time: this.processTime };
-      const db = getDatabase();
+      const newProcess = { title: this.processTitle, time: this.processTime }
+      const db = getDatabase()
       set(
         ref(
           db,
-          `${this.$store.getters["users/userId"]}/processes/id-${this.processTitle}`
+          `${this.$store.getters['users/userId']}/processes/id-${this.processTitle}`
         ),
         newProcess
-      );
+      )
     },
     deleteNotification(index) {
-      this.notificationForm.splice(index, 1);
+      this.notificationForm.splice(index, 1)
     },
     addSubtask(newSubtask) {
-      this.subtasks.push(newSubtask);
-      this.subtaskInput = "";
-    },
-  },
-};
+      this.subtasks.push(newSubtask)
+      this.subtaskInput = ''
+    }
+  }
+}
 </script>
 
 <style></style>

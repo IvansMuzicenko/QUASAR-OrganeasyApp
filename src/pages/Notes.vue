@@ -12,28 +12,28 @@
         clickable
         :to="`/notes/${note['id']}`"
       >
-        {{ note["title"] }}
+        {{ note['title'] }}
       </q-item>
     </q-list>
   </q-page>
 </template>
 
 <script>
-import addNoteForm from "src/components/AddNoteForm.vue";
+import addNoteForm from 'src/components/AddNoteForm.vue'
 export default {
   computed: {
     notes() {
-      return this.$store.getters["users/notes"];
-    },
+      return this.$store.getters['users/notes']
+    }
   },
   methods: {
     addNote() {
       this.$q.dialog({
-        component: addNoteForm,
-      });
-    },
-  },
-};
+        component: addNoteForm
+      })
+    }
+  }
+}
 </script>
 
 <style></style>

@@ -3,51 +3,51 @@ const state = () => {
     user: {
       email: null,
       userId: null,
-      userData: {},
-    },
-  };
-};
+      userData: {}
+    }
+  }
+}
 
 const actions = {
   setUser({ commit }, user) {
-    commit("SET_USER", user);
+    commit('SET_USER', user)
   },
   setUserData({ commit }, userData) {
-    commit("SET_USER_DATA", userData);
-  },
+    commit('SET_USER_DATA', userData)
+  }
   // addTask({ commit }, newTask) {
   //   commit("ADD_TASK", newTask);
   // },
   // addProcess({ commit }, newProcess) {
   //   commit("ADD_PROCESS", newProcess);
   // },
-};
+}
 
 const mutations = {
   SET_USER(state, user) {
-    state.user.userId = user.userId;
-    state.user.email = user.email;
+    state.user.userId = user.userId
+    state.user.email = user.email
   },
   SET_USER_DATA(state, userData) {
     if (userData && userData.tasks) {
       for (const [key, value] of Object.entries(userData.tasks)) {
         userData.tasks[key] = Object.values(value).sort(
           (a, b) =>
-            a.time.slice(a.time.indexOf(" ")).replace(":", ".") -
-            b.time.slice(b.time.indexOf(" ")).replace(":", ".")
-        );
+            a.time.slice(a.time.indexOf(' ')).replace(':', '.') -
+            b.time.slice(b.time.indexOf(' ')).replace(':', '.')
+        )
       }
     }
 
-    state.user.userData = userData;
+    state.user.userData = userData
   },
   ADD_TASK(state, newTask) {
-    state.user.userData.tasks[state.user.userData.tasks.length] = newTask;
+    state.user.userData.tasks[state.user.userData.tasks.length] = newTask
   },
   ADD_PROCESS(state, newProcess) {
-    state.user.userData.tasks[state.user.userData.tasks.length] = newProcess;
-  },
-};
+    state.user.userData.tasks[state.user.userData.tasks.length] = newProcess
+  }
+}
 
 const getters = {
   email: (state) => state.user.email,
@@ -55,13 +55,13 @@ const getters = {
   userData: (state) => state.user.userData,
   tasks: (state) => state.user?.userData?.tasks || {},
   notes: (state) => state.user?.userData?.notes || {},
-  processes: (state) => state.user?.userData?.processes || {},
-};
+  processes: (state) => state.user?.userData?.processes || {}
+}
 
 export default {
   namespaced: true,
   getters,
   mutations,
   actions,
-  state,
-};
+  state
+}
