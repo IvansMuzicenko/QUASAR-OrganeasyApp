@@ -32,17 +32,17 @@ export default {
     onOKClick(form) {
       const db = getDatabase()
 
-      for (let i = 0; i < form.repeatNumber + 1; i++) {
+      for (let i = 0; i < form.repeat.repeatNumber + 1; i++) {
         let eventDate = form.eventDate
         let eventEndingDate = form.eventEndingDate
 
         if (i != 0) {
           eventDate = date.formatDate(
             date.addToDate(date.extractDate(eventDate, 'DD-MM-YYYY HH:mm'), {
-              months: form.monthsModel,
-              days: form.daysModel + form.weeksModel * 7,
-              hours: form.hoursModel,
-              minutes: form.minutesModel
+              months: form.repeat.monthsModel,
+              days: form.repeat.daysModel + form.repeat.weeksModel * 7,
+              hours: form.repeat.hoursModel,
+              minutes: form.repeat.minutesModel
             }),
             'DD-MM-YYYY HH:mm'
           )
@@ -51,10 +51,10 @@ export default {
             date.addToDate(
               date.extractDate(eventEndingDate, 'DD-MM-YYYY HH:mm'),
               {
-                months: form.monthsModel,
-                days: form.daysModel + form.weeksModel * 7,
-                hours: form.hoursModel,
-                minutes: form.minutesModel
+                months: form.repeat.monthsModel,
+                days: form.repeat.daysModel + form.repeat.weeksModel * 7,
+                hours: form.repeat.hoursModel,
+                minutes: form.repeat.minutesModel
               }
             ),
             'DD-MM-YYYY HH:mm'
@@ -73,11 +73,12 @@ export default {
           subtasks: form.toggleSubtasks ? form.subtasks : null,
           repeat: form.toggleRepeat
             ? {
-                months: form.monthsModel,
-                weeks: form.weeksModel,
-                days: form.daysModel,
-                hours: form.hoursModel,
-                minutes: form.minutesModel
+                repeatNumber: form.repeat.repeatNumber,
+                months: form.repeat.monthsModel,
+                weeks: form.repeat.weeksModel,
+                days: form.repeat.daysModel,
+                hours: form.repeat.hoursModel,
+                minutes: form.repeat.minutesModel
               }
             : null
         }

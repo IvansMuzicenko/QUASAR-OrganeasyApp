@@ -126,14 +126,14 @@
             class="q-pa-sm"
           >
             <q-input
-              v-model="form.processTitle"
+              v-model="processTitle"
               bottom-slots
               label="Title"
               :dense="false"
             >
             </q-input>
             <q-input
-              v-model.number="form.processTime"
+              v-model.number="processTime"
               bottom-slots
               type="number"
               label="Time"
@@ -241,7 +241,7 @@
       <q-toggle v-model="form.toggleRepeat" label="Add repeat" />
       <q-card-section v-if="form.toggleRepeat" class="flex">
         <q-input
-          v-model.number="form.repeatNumber"
+          v-model.number="form.repeat.repeatNumber"
           type="number"
           min="1"
           label="Repeat count"
@@ -250,35 +250,35 @@
         />
         <p class="full-width">Repeat in</p>
         <q-select
-          v-model="form.monthsModel"
+          v-model="form.repeat.monthsModel"
           outlined
           :options="monthsOptions"
           label="Months"
           style="width: 50%"
         />
         <q-select
-          v-model="form.weeksModel"
+          v-model="form.repeat.weeksModel"
           outlined
           :options="weeksOptions"
           label="Weeks"
           style="width: 50%"
         />
         <q-select
-          v-model="form.daysModel"
+          v-model="form.repeat.daysModel"
           outlined
           :options="daysOptions"
           label="Days"
           style="width: 50%"
         />
         <q-select
-          v-model="form.hoursModel"
+          v-model="form.repeat.hoursModel"
           outlined
           :options="hoursOptions"
           label="Hours"
           style="width: 50%"
         />
         <q-select
-          v-model="form.minutesModel"
+          v-model="form.repeat.minutesModel"
           outlined
           :options="minutesOptions"
           label="Minutes"
@@ -288,7 +288,20 @@
     </q-card-section>
 
     <q-card-actions align="right">
-      <q-btn color="primary" label="Add" :disable="error" @click="onOKClick" />
+      <q-btn
+        v-if="editTask"
+        color="primary"
+        label="Edit"
+        :disable="error"
+        @click="onEditClick"
+      />
+      <q-btn
+        v-else
+        color="primary"
+        label="Add"
+        :disable="error"
+        @click="onOKClick"
+      />
       <q-btn color="negative" label="Cancel" @click="onCancelClick" />
     </q-card-actions>
   </q-card>
@@ -298,10 +311,19 @@
 import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
 export default {
-  emits: ['OKEvent', 'cancelEvent'],
+  props: {
+    editTask: {
+      type: Object,
+      required: false,
+      default: null
+    }
+  },
+  emits: ['OKEvent', 'cancelEvent', 'editEvent'],
+
   data() {
     return {
       form: {
+        id: '',
         todoTitle: '',
         eventDate: date.formatDate(Date.now(), 'DD-MM-YYYY HH:mm'),
 
@@ -319,9 +341,6 @@ export default {
         toggleProcesses: false,
         processesModel: null,
 
-        processTitle: '',
-        processTime: 0,
-
         toggleSubtasks: false,
         subtasks: [],
         subtaskInput: '',
@@ -337,13 +356,17 @@ export default {
         ],
 
         toggleRepeat: false,
-        repeatNumber: 0,
-        monthsModel: 0,
-        weeksModel: 0,
-        daysModel: 0,
-        hoursModel: 0,
-        minutesModel: 0
+        repeat: {
+          repeatNumber: 0,
+          monthsModel: 0,
+          weeksModel: 0,
+          daysModel: 0,
+          hoursModel: 0,
+          minutesModel: 0
+        }
       },
+      processTitle: '',
+      processTime: 0,
       error: true,
       monthsOptions: Array.from({ length: 12 }, (_, index) => index + 1),
 
@@ -373,6 +396,33 @@ export default {
       return processesArray
     }
   },
+  mounted() {
+    if (this.editTask) {
+      this.form.id = this.editTask.id
+      this.form.todoTitle = this.editTask.title
+      this.form.eventDate = this.editTask.time
+      this.form.toggleEventEnd = this.editTask.endingTime ? true : false
+      this.form.eventEndingDate = this.editTask.endingTime
+      this.form.toggleLocation = this.editTask.location ? true : false
+      this.form.eventLocation = this.editTask.location
+      this.form.continuousState = this.editTask.continuous
+      this.form.toggleProcesses = this.editTask.processes ? true : false
+      this.form.processesModel = this.editTask.processes
+      this.form.toggleSubtasks = this.editTask.subtasks ? true : false
+      this.form.subtasks = this.editTask.subtasks
+      this.form.toggleNotification = this.editTask.notifications ? true : false
+      this.form.notificationForm = this.editTask.notifications
+      this.form.toggleRepeat = this.editTask.repeat ? true : false
+      if (this.editTask.repeat) {
+        this.form.repeat.repeatNumber = this.editTask.repeat.repeatNumber
+        this.form.repeat.monthsModel = this.editTask.repeat.months
+        this.form.repeat.weeksModel = this.editTask.repeat.weeks
+        this.form.repeat.daysModel = this.editTask.repeat.days
+        this.form.repeat.hoursModel = this.editTask.repeat.hours
+        this.form.repeat.minutesModel = this.editTask.repeat.minutes
+      }
+    }
+  },
   methods: {
     onOKClick() {
       this.$emit('OKEvent', this.form)
@@ -380,15 +430,19 @@ export default {
     onCancelClick() {
       this.$emit('cancelEvent')
     },
+    onEditClick() {
+      this.$emit('editEvent', this.form)
+    },
+
     checkValidity() {
-      if (this.todoTitle === '' || this.repeatNumber < 0) {
+      if (this.form.todoTitle === '' || this.form.repeat.repeatNumber < 0) {
         this.error = true
       } else {
         this.error = false
       }
     },
     addNotification() {
-      this.notificationForm.push({
+      this.form.notificationForm.push({
         notificationTimeValuesModel: 1,
         notificationTimeTypeModel: 'minutes',
         notificationPeriodModel: 'before',
@@ -407,11 +461,11 @@ export default {
       )
     },
     deleteNotification(index) {
-      this.notificationForm.splice(index, 1)
+      this.form.notificationForm.splice(index, 1)
     },
     addSubtask(newSubtask) {
-      this.subtasks.push(newSubtask)
-      this.subtaskInput = ''
+      this.form.subtasks.push(newSubtask)
+      this.form.subtaskInput = ''
     }
   }
 }
