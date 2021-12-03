@@ -1,10 +1,12 @@
 <template>
   <q-page>
     <q-card class="flex justify-between no-padding">
+      <q-btn icon="arrow_back" flat @click="routerBack()"></q-btn>
       <q-btn
         v-if="!editState"
         icon="edit"
         color="secondary"
+        flat
         @click="editState = true"
       >
         Edit
@@ -13,6 +15,7 @@
         v-if="editState"
         icon="save"
         color="positive"
+        flat
         @click="callEditClick"
       >
         Save
@@ -21,63 +24,101 @@
         v-if="editState"
         icon="delete"
         color="negative"
+        flat
         @click="onDeleteClick"
       >
         Delete
       </q-btn>
     </q-card>
     <q-list v-if="!editState" separator bordered>
-      <q-item v-if="task.title">Title: {{ task.title }}</q-item>
-      <q-item v-if="task.time">Date: {{ task.time }}</q-item>
+      <q-item v-if="task.title">
+        <q-item-section avatar>Title:</q-item-section>
+        {{ task.title }}
+      </q-item>
+
+      <q-item v-if="task.time">
+        <q-item-section avatar>Date:</q-item-section>
+        {{ task.time }}
+      </q-item>
+
       <q-item v-if="task.endingTime">
-        Ending date: {{ task.endingTime }}</q-item
-      >
-      <q-item v-if="task.location">Location: {{ task.location }}</q-item>
-      <q-item v-if="task.notifications"
-        >Notifications:
-        <q-item-section
-          v-for="(notification, index) in task.notifications"
-          :key="index"
-          >{{ notification.notificationTimeValuesModel }}
-          {{ notification.notificationTimeTypeModel }}
-          {{ notification.notificationPeriodModel }}
-          {{ notification.notificationPointModel }}
+        <q-item-section avatar>Ending date:</q-item-section>
+        {{ task.endingTime }}
+      </q-item>
+
+      <q-item v-if="task.location">
+        <q-item-section avatar>Location:</q-item-section>
+        {{ task.location }}
+      </q-item>
+
+      <q-item v-if="task.notifications">
+        <q-item-section avatar> Notifications: </q-item-section>
+        <q-item-section>
+          <q-item-section
+            v-for="(notification, index) in task.notifications"
+            :key="index"
+          >
+            <q-separator v-if="index > 0" spaced="sm" />
+            {{ notification.notificationTimeValuesModel }}
+            {{ notification.notificationTimeTypeModel }}
+            {{ notification.notificationPeriodModel }}
+            {{ notification.notificationPointModel }}
+          </q-item-section>
         </q-item-section>
       </q-item>
-      <q-item v-if="task.continuous">Continuous: {{ task.continuous }}</q-item>
-      <q-item v-if="task.processes"
-        >Processes:
-        <q-item-section v-for="process in task.processes" :key="process">{{
-          process
-        }}</q-item-section>
-      </q-item>
-      <q-item v-if="task.subtasks"
-        >Subtasks:
-        <q-item-section v-for="subtask in task.subtasks" :key="subtask">{{
-          subtask
-        }}</q-item-section></q-item
-      >
-      <q-item v-if="task.repeat"
-        >Repeat:
-        <q-item-section
-          >Repeat number: {{ task.repeat.repeatNumber }}</q-item-section
-        >
 
-        <q-item-section v-if="task.repeat.months">
-          Months:{{ task.repeat.months }}</q-item-section
-        >
-        <q-item-section v-if="task.repeat.weeks">
-          Weeks:{{ task.repeat.weeks }}</q-item-section
-        >
-        <q-item-section v-if="task.repeat.days">
-          Days:{{ task.repeat.days }}</q-item-section
-        >
-        <q-item-section v-if="task.repeat.hours">
-          Hours:{{ task.repeat.hours }}</q-item-section
-        >
-        <q-item-section v-if="task.repeat.minutes">
-          Minutes:{{ task.repeat.minutes }}</q-item-section
-        >
+      <q-item v-if="task.continuous">
+        <q-item-section avatar>Continuous:</q-item-section>
+        {{ task.continuous }}
+      </q-item>
+
+      <q-item v-if="task.processes">
+        <q-item-section avatar> Processes: </q-item-section>
+        <q-item-section>
+          <q-item-section
+            v-for="(process, index) in task.processes"
+            :key="process"
+            ><q-separator v-if="index > 0" spaced="sm" />{{ process }}
+          </q-item-section>
+        </q-item-section>
+      </q-item>
+
+      <q-item v-if="task.subtasks">
+        <q-item-section avatar> Subtasks: </q-item-section>
+        <q-item-section>
+          <q-item-section
+            v-for="(subtask, index) in task.subtasks"
+            :key="subtask"
+            ><q-separator v-if="index > 0" spaced="sm" />{{
+              subtask
+            }}</q-item-section
+          >
+        </q-item-section>
+      </q-item>
+
+      <q-item v-if="task.repeat">
+        <q-item-section avatar>Repeat:</q-item-section>
+        <q-item-section>
+          <q-item-section>
+            Repeat number: {{ task.repeat.repeatNumber }}</q-item-section
+          >
+
+          <q-item-section v-if="task.repeat.months">
+            Months:{{ task.repeat.months }}</q-item-section
+          >
+          <q-item-section v-if="task.repeat.weeks">
+            Weeks:{{ task.repeat.weeks }}</q-item-section
+          >
+          <q-item-section v-if="task.repeat.days">
+            Days:{{ task.repeat.days }}</q-item-section
+          >
+          <q-item-section v-if="task.repeat.hours">
+            Hours:{{ task.repeat.hours }}</q-item-section
+          >
+          <q-item-section v-if="task.repeat.minutes">
+            Minutes:{{ task.repeat.minutes }}</q-item-section
+          >
+        </q-item-section>
       </q-item>
     </q-list>
 
@@ -89,6 +130,17 @@
       @cancelEvent="onCancelClick"
     />
   </q-page>
+  <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
+    <q-card class="q-dialog-plugin">
+      <q-card-section>
+        Are you sure to premanently remove '{{ task.title }}' task?
+      </q-card-section>
+      <q-card-actions align="right">
+        <q-btn color="primary" label="Cancel" @click="onConfirmCancelClick" />
+        <q-btn color="negative" label="Delete" @click="onConfirmDeleteClick" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -99,6 +151,7 @@ export default {
   components: {
     TaskForm
   },
+  emits: ['hide'],
   data() {
     return {
       task: {
@@ -150,6 +203,9 @@ export default {
       }
       this.task = JSON.parse(JSON.stringify(task))
     },
+    routerBack() {
+      return this.$router.back()
+    },
     callEditClick() {
       this.$refs.taskForm.onEditClick()
     },
@@ -193,6 +249,12 @@ export default {
       this.editState = false
     },
     onDeleteClick() {
+      this.$refs.confirmDialog.show()
+    },
+    onCancelClick() {
+      this.editState = false
+    },
+    onConfirmDeleteClick() {
       remove(
         ref(
           db,
@@ -206,8 +268,11 @@ export default {
       )
       this.$router.push('/')
     },
-    onCancelClick() {
-      this.editState = false
+    onConfirmDialogHide() {
+      this.$emit('hide')
+    },
+    onConfirmCancelClick() {
+      this.$refs.confirmDialog.hide()
     }
   }
 }

@@ -40,7 +40,7 @@
           </q-input>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn color="primary" label="Edit" @click="onOKClick" />
+          <q-btn color="positive" icon="save" label="Edit" @click="onOKClick" />
           <q-btn color="primary" label="Cancel" @click="onCancelClick" />
           <q-btn color="negative" label="Delete" @click="onDeleteClick" />
         </q-card-actions>
@@ -57,6 +57,7 @@
           <q-btn color="primary" label="Cancel" @click="onConfirmCancelClick" />
           <q-btn
             color="negative"
+            icon="delete"
             label="Delete"
             @click="onConfirmDeleteClick"
           />
