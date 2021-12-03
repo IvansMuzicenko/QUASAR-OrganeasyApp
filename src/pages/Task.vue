@@ -1,5 +1,6 @@
 <template>
   <q-page>
+    <q-btn v-if="!editState" @click="editState = true"> Edit </q-btn>
     <q-list v-if="!editState" separator bordered>
       <q-item v-if="task.title">Title: {{ task.title }}</q-item>
       <q-item v-if="task.time">Date: {{ task.time }}</q-item>
@@ -37,24 +38,24 @@
           >Repeat number: {{ task.repeat.repeatNumber }}</q-item-section
         >
 
-        <q-item-section v-if="task.repeat.months != 0">
+        <q-item-section v-if="task.repeat.months">
           Months:{{ task.repeat.months }}</q-item-section
         >
-        <q-item-section v-if="task.repeat.weeks != 0">
+        <q-item-section v-if="task.repeat.weeks">
           Weeks:{{ task.repeat.weeks }}</q-item-section
         >
-        <q-item-section v-if="task.repeat.days != 0">
+        <q-item-section v-if="task.repeat.days">
           Days:{{ task.repeat.days }}</q-item-section
         >
-        <q-item-section v-if="task.repeat.hours != 0">
+        <q-item-section v-if="task.repeat.hours">
           Hours:{{ task.repeat.hours }}</q-item-section
         >
-        <q-item-section v-if="task.repeat.minutes != 0">
+        <q-item-section v-if="task.repeat.minutes">
           Minutes:{{ task.repeat.minutes }}</q-item-section
         >
       </q-item>
     </q-list>
-    <q-btn @click="editState = true"> Edit </q-btn>
+
     <task-form
       v-if="editState"
       :edit-task="task"
@@ -104,15 +105,18 @@ export default {
     }
   },
   mounted() {
-    const path = this.$route.path
-    const taskDate = path.slice(path.indexOf('/') + 1, path.lastIndexOf('/'))
-    const taskId = path.slice(path.lastIndexOf('/') + 1)
-    const task = this.$store.getters['users/tasks'][`date-${taskDate}`].find(
-      (element) => Object.values(element).indexOf(`${taskId}`) >= 0
-    )
-    this.task = JSON.parse(JSON.stringify(task))
+    this.updateTaskData()
   },
   methods: {
+    updateTaskData() {
+      const path = this.$route.path
+      const taskDate = path.slice(path.indexOf('/') + 1, path.lastIndexOf('/'))
+      const taskId = path.slice(path.lastIndexOf('/') + 1)
+      const task = this.$store.getters['users/tasks'][`date-${taskDate}`].find(
+        (element) => Object.values(element).indexOf(`${taskId}`) >= 0
+      )
+      this.task = JSON.parse(JSON.stringify(task))
+    },
     onEditClick(form) {
       const updateTodo = {
         id: form.id,
@@ -127,11 +131,13 @@ export default {
         repeat: form.toggleRepeat
           ? {
               repeatNumber: form.repeat.repeatNumber,
-              months: form.repeat.monthsModel,
-              weeks: form.repeat.weeksModel,
-              days: form.repeat.daysModel,
-              hours: form.repeat.hoursModel,
+              months: form.repeat.monthsModel ? form.repeat.monthsModel : null,
+              weeks: form.repeat.weeksModel ? form.repeat.weeksModel : null,
+              days: form.repeat.daysModel ? form.repeat.daysModel : null,
+              hours: form.repeat.hoursModel ? form.repeat.hoursModel : null,
               minutes: form.repeat.minutesModel
+                ? form.repeat.minutesModel
+                : null
             }
           : null
       }
@@ -147,7 +153,7 @@ export default {
         ),
         updateTodo
       )
-
+      this.updateTaskData()
       this.editState = false
     },
     onCancelClick() {

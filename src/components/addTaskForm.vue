@@ -74,11 +74,15 @@ export default {
           repeat: form.toggleRepeat
             ? {
                 repeatNumber: form.repeat.repeatNumber,
-                months: form.repeat.monthsModel,
-                weeks: form.repeat.weeksModel,
-                days: form.repeat.daysModel,
-                hours: form.repeat.hoursModel,
+                months: form.repeat.monthsModel
+                  ? form.repeat.monthsModel
+                  : null,
+                weeks: form.repeat.weeksModel ? form.repeat.weeksModel : null,
+                days: form.repeat.daysModel ? form.repeat.daysModel : null,
+                hours: form.repeat.hoursModel ? form.repeat.hoursModel : null,
                 minutes: form.repeat.minutesModel
+                  ? form.repeat.minutesModel
+                  : null
               }
             : null
         }

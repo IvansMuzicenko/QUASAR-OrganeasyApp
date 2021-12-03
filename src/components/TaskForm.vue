@@ -281,8 +281,26 @@
           :options="minutesOptions"
           label="Minutes"
           style="width: 50%"
+          :rules="[
+            (form.repeat.monthsModel != 0 &&
+              form.repeat.weeksModel != 0 &&
+              form.repeat.daysModel != 0 &&
+              form.repeat.hoursModel != 0 &&
+              form.repeat.minutesModel != 0) ||
+              'Must be selected at least 1 repeat period'
+          ]"
         />
       </q-card-section>
+    </q-card-section>
+
+    <q-card-section v-if="errorMessages.length > 0">
+      <p
+        v-for="errorMessage in errorMessages"
+        :key="errorMessage"
+        class="text-negative"
+      >
+        {{ errorMessage }}
+      </p>
     </q-card-section>
 
     <q-card-actions align="right">
@@ -337,7 +355,7 @@ export default {
         continuousState: false,
 
         toggleProcesses: false,
-        processesModel: null,
+        processesModel: [],
 
         toggleSubtasks: false,
         subtasks: [],
@@ -358,7 +376,7 @@ export default {
           repeatNumber: 1,
           monthsModel: 0,
           weeksModel: 0,
-          daysModel: 0,
+          daysModel: 1,
           hoursModel: 0,
           minutesModel: 0
         }
@@ -380,18 +398,45 @@ export default {
       ),
       notificationTimeType: ['minutes', 'hours', 'days', 'weeks', 'months'],
       notificationPeriod: ['before', 'after'],
-      notificationPoint: ['start time', 'end time']
+      notificationPoint: ['start time', 'end time'],
+      errorMessages: []
     }
   },
   computed: {
     error() {
-      if (
-        this.form.todoTitle === '' ||
-        !this.form.repeat.repeatNumber ||
-        this.form.repeat.repeatNumber < 1
+      if (this.form.todoTitle === '') {
+        this.addErrorMessage('Title must not be empty')
+        return true
+      } else if (
+        this.form.toggleRepeat == true &&
+        (!this.form.repeat.repeatNumber || this.form.repeat.repeatNumber < 1)
       ) {
+        this.addErrorMessage(
+          'Must be at least 1 repeat number if repeats enabled'
+        )
+        return true
+      } else if (
+        this.form.toggleRepeat == true &&
+        this.form.repeat.monthsModel == 0 &&
+        this.form.repeat.weeksModel == 0 &&
+        this.form.repeat.daysModel == 0 &&
+        this.form.repeat.hoursModel == 0 &&
+        this.form.repeat.minutesModel == 0
+      ) {
+        this.addErrorMessage(
+          'Must be at least 1 repeat time value if repeats enabled'
+        )
+        return true
+      } else if (
+        this.form.toggleProcesses == true &&
+        this.form.processesModel.length == 0
+      ) {
+        this.addErrorMessage(
+          'Must be at least 1 process selected if processes enabled'
+        )
         return true
       } else {
+        this.clearErrorMessages()
         return false
       }
     },
@@ -411,23 +456,43 @@ export default {
       this.form.eventDate = this.editTask.time
       this.form.toggleEventEnd = this.editTask.endingTime ? true : false
       this.form.eventEndingDate = this.editTask.endingTime
+        ? this.editTask.endingTime
+        : ''
       this.form.toggleLocation = this.editTask.location ? true : false
       this.form.eventLocation = this.editTask.location
+        ? this.editTask.location
+        : ''
       this.form.continuousState = this.editTask.continuous
       this.form.toggleProcesses = this.editTask.processes ? true : false
       this.form.processesModel = this.editTask.processes
+        ? this.editTask.processes
+        : []
       this.form.toggleSubtasks = this.editTask.subtasks ? true : false
-      this.form.subtasks = this.editTask.subtasks
+      this.form.subtasks = this.editTask.subtasks ? this.editTask.subtasks : []
       this.form.toggleNotification = this.editTask.notifications ? true : false
       this.form.notificationForm = this.editTask.notifications
+        ? this.editTask.notifications
+        : []
       this.form.toggleRepeat = this.editTask.repeat ? true : false
       if (this.editTask.repeat) {
         this.form.repeat.repeatNumber = this.editTask.repeat.repeatNumber
+          ? this.editTask.repeat.repeatNumber
+          : 0
         this.form.repeat.monthsModel = this.editTask.repeat.months
+          ? this.editTask.repeat.months
+          : 0
         this.form.repeat.weeksModel = this.editTask.repeat.weeks
+          ? this.editTask.repeat.weeks
+          : 0
         this.form.repeat.daysModel = this.editTask.repeat.days
+          ? this.editTask.repeat.days
+          : 0
         this.form.repeat.hoursModel = this.editTask.repeat.hours
+          ? this.editTask.repeat.hours
+          : 0
         this.form.repeat.minutesModel = this.editTask.repeat.minutes
+          ? this.editTask.repeat.minutes
+          : 0
       }
     }
   },
@@ -467,6 +532,14 @@ export default {
     addSubtask(newSubtask) {
       this.form.subtasks.push(newSubtask)
       this.form.subtaskInput = ''
+    },
+    addErrorMessage(message) {
+      if (!this.errorMessages.includes(message)) {
+        this.errorMessages.push(message)
+      }
+    },
+    clearErrorMessages() {
+      this.errorMessages = []
     }
   }
 }
