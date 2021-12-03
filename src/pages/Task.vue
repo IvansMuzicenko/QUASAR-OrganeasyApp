@@ -1,13 +1,28 @@
 <template>
   <q-page>
     <q-card class="flex justify-between no-padding">
-      <q-btn v-if="!editState" color="secondary" @click="editState = true">
+      <q-btn
+        v-if="!editState"
+        icon="edit"
+        color="secondary"
+        @click="editState = true"
+      >
         Edit
       </q-btn>
-      <q-btn v-if="editState" color="positive" @click="onEditClick">
+      <q-btn
+        v-if="editState"
+        icon="save"
+        color="positive"
+        @click="callEditClick"
+      >
         Save
       </q-btn>
-      <q-btn v-if="editState" color="negative" @click="onDeleteClick">
+      <q-btn
+        v-if="editState"
+        icon="delete"
+        color="negative"
+        @click="onDeleteClick"
+      >
         Delete
       </q-btn>
     </q-card>
@@ -68,6 +83,7 @@
 
     <task-form
       v-if="editState"
+      ref="taskForm"
       :edit-task="task"
       @editEvent="onEditClick"
       @cancelEvent="onCancelClick"
@@ -133,6 +149,9 @@ export default {
         return this.$router.push('/')
       }
       this.task = JSON.parse(JSON.stringify(task))
+    },
+    callEditClick() {
+      this.$refs.taskForm.onEditClick()
     },
     onEditClick(form) {
       const updateTodo = {

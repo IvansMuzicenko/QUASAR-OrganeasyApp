@@ -306,19 +306,20 @@
     <q-card-actions align="right">
       <q-btn
         v-if="editTask"
-        color="primary"
+        icon="save"
+        color="positive"
         label="Edit"
         :disable="error"
         @click="onEditClick"
       />
       <q-btn
         v-else
-        color="primary"
+        color="positive"
         label="Add"
         :disable="error"
         @click="onOKClick"
       />
-      <q-btn color="negative" label="Cancel" @click="onCancelClick" />
+      <q-btn color="secondary" label="Cancel" @click="onCancelClick" />
     </q-card-actions>
   </q-card>
 </template>
