@@ -1,6 +1,16 @@
 <template>
   <q-page>
-    <q-btn v-if="!editState" @click="editState = true"> Edit </q-btn>
+    <q-card class="flex justify-between no-padding">
+      <q-btn v-if="!editState" color="secondary" @click="editState = true">
+        Edit
+      </q-btn>
+      <q-btn v-if="editState" color="positive" @click="onEditClick">
+        Save
+      </q-btn>
+      <q-btn v-if="editState" color="negative" @click="onDeleteClick">
+        Delete
+      </q-btn>
+    </q-card>
     <q-list v-if="!editState" separator bordered>
       <q-item v-if="task.title">Title: {{ task.title }}</q-item>
       <q-item v-if="task.time">Date: {{ task.time }}</q-item>
@@ -66,7 +76,7 @@
 </template>
 
 <script>
-import { getDatabase, ref, update } from 'firebase/database'
+import { getDatabase, ref, update, remove } from 'firebase/database'
 const db = getDatabase()
 import TaskForm from 'components/TaskForm.vue'
 export default {
@@ -112,9 +122,16 @@ export default {
       const path = this.$route.path
       const taskDate = path.slice(path.indexOf('/') + 1, path.lastIndexOf('/'))
       const taskId = path.slice(path.lastIndexOf('/') + 1)
-      const task = this.$store.getters['users/tasks'][`date-${taskDate}`].find(
+      const dayTasks = this.$store.getters['users/tasks'][`date-${taskDate}`]
+      if (!dayTasks) {
+        return this.$router.push('/')
+      }
+      const task = dayTasks.find(
         (element) => Object.values(element).indexOf(`${taskId}`) >= 0
       )
+      if (!task) {
+        return this.$router.push('/')
+      }
       this.task = JSON.parse(JSON.stringify(task))
     },
     onEditClick(form) {
@@ -155,6 +172,20 @@ export default {
       )
       this.updateTaskData()
       this.editState = false
+    },
+    onDeleteClick() {
+      remove(
+        ref(
+          db,
+          `${
+            this.$store.getters['users/userId']
+          }/tasks/date-${this.task.time.slice(
+            0,
+            this.task.time.indexOf(' ')
+          )}/id-${this.task.id}`
+        )
+      )
+      this.$router.push('/')
     },
     onCancelClick() {
       this.editState = false
