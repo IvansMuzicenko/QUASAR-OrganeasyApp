@@ -32,27 +32,38 @@
     </q-card>
     <q-list v-if="!editState" separator bordered>
       <q-item v-if="task.title">
-        <q-item-section avatar>Title:</q-item-section>
+        <q-item-section avatar class="taskInfo">Title</q-item-section>
+        <q-separator vertical spaced="md" />
         {{ task.title }}
       </q-item>
 
       <q-item v-if="task.time">
-        <q-item-section avatar>Date:</q-item-section>
+        <q-item-section avatar class="taskInfo">Date</q-item-section>
+        <q-separator vertical spaced="md" />
         {{ task.time }}
       </q-item>
 
       <q-item v-if="task.endingTime">
-        <q-item-section avatar>Ending date:</q-item-section>
+        <q-item-section avatar class="taskInfo">Ending date</q-item-section>
+        <q-separator vertical spaced="md" />
         {{ task.endingTime }}
       </q-item>
 
       <q-item v-if="task.location">
-        <q-item-section avatar>Location:</q-item-section>
-        {{ task.location }}
+        <q-item-section avatar class="taskInfo">Location</q-item-section>
+        <q-separator vertical spaced="md" />
+        <a
+          :href="`https://www.google.com/maps/search/${task.location.replace(
+            ' ',
+            '+'
+          )}`"
+          >{{ task.location }}</a
+        >
       </q-item>
 
       <q-item v-if="task.notifications">
-        <q-item-section avatar> Notifications: </q-item-section>
+        <q-item-section avatar class="taskInfo"> Notifications </q-item-section>
+        <q-separator vertical spaced="md" />
         <q-item-section>
           <q-item-section
             v-for="(notification, index) in task.notifications"
@@ -68,23 +79,27 @@
       </q-item>
 
       <q-item v-if="task.continuous">
-        <q-item-section avatar>Continuous:</q-item-section>
+        <q-item-section avatar class="taskInfo">Continuous</q-item-section>
+        <q-separator vertical spaced="md" />
         {{ task.continuous }}
       </q-item>
 
       <q-item v-if="task.processes">
-        <q-item-section avatar> Processes: </q-item-section>
+        <q-item-section avatar class="taskInfo">Processes</q-item-section>
+        <q-separator vertical spaced="md" />
         <q-item-section>
           <q-item-section
             v-for="(process, index) in task.processes"
             :key="process"
-            ><q-separator v-if="index > 0" spaced="sm" />{{ process }}
+          >
+            <q-separator v-if="index > 0" spaced="sm" />{{ process }}
           </q-item-section>
         </q-item-section>
       </q-item>
 
       <q-item v-if="task.subtasks">
-        <q-item-section avatar> Subtasks: </q-item-section>
+        <q-item-section avatar class="taskInfo">Subtasks</q-item-section>
+        <q-separator vertical spaced="md" />
         <q-item-section>
           <q-item-section
             v-for="(subtask, index) in task.subtasks"
@@ -97,7 +112,8 @@
       </q-item>
 
       <q-item v-if="task.repeat">
-        <q-item-section avatar>Repeat:</q-item-section>
+        <q-item-section avatar class="taskInfo">Repeat</q-item-section>
+        <q-separator vertical spaced="md" />
         <q-item-section>
           <q-item-section>
             Repeat number: {{ task.repeat.repeatNumber }}</q-item-section
@@ -278,4 +294,10 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.taskInfo {
+  width: 5rem;
+  overflow-wrap: anywhere;
+  padding: 0;
+}
+</style>
