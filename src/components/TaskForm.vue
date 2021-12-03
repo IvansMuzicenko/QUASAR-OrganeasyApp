@@ -177,8 +177,16 @@
         </q-input>
 
         <q-list bordered separator>
-          <q-item v-for="subtask in form.subtasks" :key="subtask">
+          <q-item v-for="(subtask, index) in form.subtasks" :key="subtask">
             <q-item-section>{{ subtask }}</q-item-section>
+            <q-item-section side>
+              <q-btn
+                icon="cancel"
+                flat
+                round
+                @click="deleteSubtask(index)"
+              ></q-btn
+            ></q-item-section>
           </q-item>
         </q-list>
       </q-card-section>
@@ -533,6 +541,9 @@ export default {
     addSubtask(newSubtask) {
       this.form.subtasks.push(newSubtask)
       this.form.subtaskInput = ''
+    },
+    deleteSubtask(index) {
+      this.form.subtasks.splice(index, 1)
     },
     addErrorMessage(message) {
       if (!this.errorMessages.includes(message)) {
