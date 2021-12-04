@@ -3,8 +3,12 @@
     <q-markup-table separator="cell">
       <thead>
         <tr>
-          <th class="text-left text-weight-bolder">
-            <span><q-btn flat @click="previousDay()">&lt;</q-btn></span>
+          <th class="text-left text-weight-bolder no-padding">
+            <span
+              ><q-btn flat class="q-pr-xs" @click="previousDay()"
+                >&lt;</q-btn
+              ></span
+            >
             <span class="cursor-pointer">
               <q-icon name="event"> </q-icon>
               {{ formattedDate }}
@@ -26,7 +30,9 @@
                 </q-date>
               </q-popup-proxy>
             </span>
-            <span><q-btn flat @click="nextDay()">&gt;</q-btn></span>
+            <span
+              ><q-btn flat class="q-pl-xs" @click="nextDay()">&gt;</q-btn></span
+            >
           </th>
           <th class="text-center text-weight-bolder" style="width: 100%">
             Tasks
