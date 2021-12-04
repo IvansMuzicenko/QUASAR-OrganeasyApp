@@ -15,12 +15,6 @@ const actions = {
   setUserData({ commit }, userData) {
     commit('SET_USER_DATA', userData)
   }
-  // addTask({ commit }, newTask) {
-  //   commit("ADD_TASK", newTask);
-  // },
-  // addProcess({ commit }, newProcess) {
-  //   commit("ADD_PROCESS", newProcess);
-  // },
 }
 
 const mutations = {
@@ -37,6 +31,11 @@ const mutations = {
             b.time.slice(b.time.indexOf(' ')).replace(':', '.')
         )
       }
+    }
+    if (userData && userData.processes) {
+      userData.processes = Object.values(userData.processes).sort(
+        (a, b) => a.time - b.time
+      )
     }
 
     state.user.userData = userData
