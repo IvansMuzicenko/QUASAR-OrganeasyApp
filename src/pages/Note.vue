@@ -176,7 +176,7 @@ export default {
 
   methods: {
     routerBack() {
-      return this.$router.back()
+      return this.$router.push('/notes')
     },
     toggleEdit() {
       this.editState = true
