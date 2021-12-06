@@ -32,7 +32,7 @@ export default {
     onOKClick(form) {
       const db = getDatabase()
 
-      for (let i = 0; i < form.repeat.repeatNumber + 1; i++) {
+      for (let i = 0; i < form.repeat.repeatNumber; i++) {
         let eventDate = form.eventDate
         let eventEndingDate = form.eventEndingDate
 
