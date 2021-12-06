@@ -4,6 +4,15 @@
       <q-btn icon="arrow_back" flat @click="routerBack()"></q-btn>
       <q-btn
         v-if="!editState"
+        :icon="task['progress'] ? 'close' : 'check'"
+        :color="task['progress'] ? 'red' : 'positive'"
+        flat
+        @click="changeProgress"
+      >
+        {{ task['progress'] ? 'Undone' : 'Done' }}
+      </q-btn>
+      <q-btn
+        v-if="!editState"
         icon="edit"
         color="secondary"
         flat
@@ -11,6 +20,7 @@
       >
         Edit
       </q-btn>
+
       <q-btn
         v-if="editState"
         icon="save"
@@ -281,6 +291,21 @@ export default {
       )
       this.updateTaskData()
       this.$router.push(this.$route.path)
+    },
+    changeProgress() {
+      update(
+        ref(
+          db,
+          `${
+            this.$store.getters['users/userId']
+          }/tasks/date-${this.task.time.slice(
+            0,
+            this.task.time.indexOf(' ')
+          )}/id-${this.task.id}`
+        ),
+        { progress: !this.task.progress }
+      )
+      this.updateTaskData()
     },
     onDeleteClick() {
       this.$refs.confirmDialog.show()

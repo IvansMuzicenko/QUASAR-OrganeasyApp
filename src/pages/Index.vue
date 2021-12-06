@@ -37,7 +37,7 @@
         <tr
           v-for="(task, index) in dayTasks"
           :key="index"
-          v-touch-hold:400:12:15.mouse="holdSuccess"
+          v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
           :style="task['progress'] ? ' background: lightgrey' : ''"
           @click="openTask(task)"
         >
@@ -47,7 +47,7 @@
 
           <td>{{ task['title'] }}</td>
           <q-popup-proxy
-            ref="taskHold"
+            :ref="`taskHold-${index}`"
             cover
             :breakpoint="10000"
             transition-show="scale"
@@ -55,15 +55,25 @@
           >
             <q-card>
               <q-card-section>
-                <q-btn color="primary" @click="openTask(task)">View</q-btn>
+                <q-btn color="primary" icon="visibility" @click="openTask(task)"
+                  >View</q-btn
+                >
               </q-card-section>
               <q-card-section>
-                <q-btn color="secondary" @click="openTask(task, true)"
+                <q-btn
+                  color="secondary"
+                  icon="edit"
+                  @click="openTask(task, true)"
                   >Edit</q-btn
                 >
               </q-card-section>
               <q-card-section>
-                <q-btn color="positive" @click="doneTask">Done</q-btn>
+                <q-btn
+                  :icon="task['progress'] ? 'close' : 'check'"
+                  :color="task['progress'] ? 'red' : 'positive'"
+                  @click="changeProgress(task)"
+                  >{{ task['progress'] ? 'Undone' : 'Done' }}</q-btn
+                >
               </q-card-section>
             </q-card>
           </q-popup-proxy>
@@ -75,6 +85,8 @@
 
 <script>
 import { date } from 'quasar'
+import { getDatabase, ref, update } from 'firebase/database'
+const db = getDatabase()
 
 export default {
   data() {
@@ -131,10 +143,21 @@ export default {
       }
     },
 
-    doneTask() {},
+    changeProgress(task) {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/tasks/date-${task.time.slice(
+            0,
+            task.time.indexOf(' ')
+          )}/id-${task.id}`
+        ),
+        { progress: !task.progress }
+      )
+    },
 
-    holdSuccess() {
-      this.$refs.taskHold.show()
+    holdSuccess(event, index) {
+      this.$refs[`taskHold-${index}`].show()
     }
   }
 }
