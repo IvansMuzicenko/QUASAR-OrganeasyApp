@@ -17,7 +17,7 @@ export default {
       loading: true
     }
   },
-  beforeCreate() {
+  beforeMount() {
     const user = this.$q.localStorage.getItem('user')
     if (user) {
       this.$store.dispatch('users/setUser', user)
@@ -29,11 +29,9 @@ export default {
         const data = snapshot.val()
         this.$store.dispatch('users/setUserData', data)
       })
-    }
-  },
-  beforeMount() {
-    if (!this.$store.getters['users/email']) {
+    } else {
       this.$router.push('/auth')
+      this.loading = false
     }
   }
 }
