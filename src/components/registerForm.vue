@@ -96,7 +96,7 @@ export default {
             userId: user.uid,
             email: this.email
           })
-          this.$router.push('/')
+          this.$router.go('/')
         })
         .catch((error) => {
           this.error = true
