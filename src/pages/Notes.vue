@@ -1,11 +1,20 @@
 <template>
   <q-page>
-    <p class="text-center text-h6">Notes</p>
+    <q-card class="flex">
+      <q-btn
+        icon="arrow_back"
+        flat
+        class="absolute"
+        @click="$router.push('/')"
+      />
+
+      <p class="text-center text-h6 full-width">Notes</p>
+    </q-card>
     <div v-if="!Object.keys(notes).length">
       <p>You have not notes!</p>
       <q-btn color="secondary" @click="addNote()">Add note</q-btn>
     </div>
-    <q-list separator bordered>
+    <q-list v-else separator bordered>
       <q-item
         v-for="(note, index) in notes"
         :key="index"
