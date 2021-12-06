@@ -99,7 +99,12 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn color="primary" label="Add" @click="onOKClick" />
+        <q-btn
+          color="primary"
+          :disable="error"
+          label="Add"
+          @click="onOKClick"
+        />
         <q-btn color="negative" label="Cancel" @click="onCancelClick" />
       </q-card-actions>
     </q-card>
@@ -117,7 +122,14 @@ export default {
       noteText: ''
     }
   },
-
+  computed: {
+    error() {
+      return (
+        !this.noteText.replace('<br>', '') &&
+        !this.noteTitle.replace('<br>', '')
+      )
+    }
+  },
   methods: {
     show() {
       this.$refs.dialog.show()
@@ -132,6 +144,13 @@ export default {
     },
 
     onOKClick() {
+      if (!this.noteTitle) {
+        const titleText =
+          this.noteText.length > 25 ? this.noteText.slice(0, 25) : this.noteText
+        this.noteTitle = titleText.includes(' ')
+          ? titleText.slice(0, titleText.lastIndexOf(' ') + 1)
+          : titleText.replace('<br>', '')
+      }
       const newNote = {
         id: this.noteTitle.replaceAll(' ', '-'),
         title: this.noteTitle,

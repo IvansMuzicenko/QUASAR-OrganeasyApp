@@ -7,6 +7,7 @@
         icon="save"
         dense
         flat
+        :disable="error"
         color="positive"
         @click="saveEdit()"
       >
@@ -164,6 +165,14 @@ export default {
       editState: false
     }
   },
+  computed: {
+    error() {
+      return (
+        !this.note.text.replace('<br>', '') &&
+        !this.note.title.replace('<br>', '')
+      )
+    }
+  },
   mounted() {
     const id = this.$route.path.slice(this.$route.path.lastIndexOf('/') + 1)
     const note = this.$store.getters['users/notes'][`id-${id}`]
@@ -185,6 +194,15 @@ export default {
     },
 
     saveEdit() {
+      if (!this.note.title) {
+        const titleText =
+          this.note.text.length > 25
+            ? this.note.text.slice(0, 25)
+            : this.note.text
+        this.note.title = titleText.includes(' ')
+          ? titleText.slice(0, titleText.lastIndexOf(' ') + 1)
+          : titleText.replace('<br>', '')
+      }
       update(
         ref(
           db,
