@@ -244,7 +244,9 @@ export default {
       this.task = JSON.parse(JSON.stringify(task))
     },
     routerBack() {
-      return this.$router.push('/')
+      return this.$router.push(
+        '/?date=' + this.task.time.slice(0, this.task.time.indexOf(' '))
+      )
     },
     toggleEdit() {
       this.$router.push(this.$route.path + '?edit=true')

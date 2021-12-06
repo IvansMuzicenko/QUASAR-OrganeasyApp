@@ -123,14 +123,29 @@ export default {
       this.$refs.datePicked.hide()
     }
   },
+  mounted() {
+    const queryDate = this.$route.query.date
+    if (queryDate) {
+      this.timeStamp = Number(
+        date.formatDate(date.extractDate(queryDate, 'DD-MM-YYYY'), 'x')
+      )
+      this.formattedDate = date.formatDate(this.timeStamp, 'dddd, DD-MM-YYYY')
+    }
+  },
   methods: {
     nextDay() {
       this.timeStamp += 86400000
       this.formattedDate = date.formatDate(this.timeStamp, 'dddd, DD-MM-YYYY')
+      this.$router.push(
+        '?date=' + this.formattedDate.slice(this.formattedDate.indexOf(' ') + 1)
+      )
     },
     previousDay() {
       this.timeStamp -= 86400000
       this.formattedDate = date.formatDate(this.timeStamp, 'dddd, DD-MM-YYYY')
+      this.$router.push(
+        '?date=' + this.formattedDate.slice(this.formattedDate.indexOf(' ') + 1)
+      )
     },
     openTask(task, edit) {
       const taskDate = task.time.slice(0, task.time.indexOf(' '))
