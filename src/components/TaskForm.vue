@@ -11,6 +11,20 @@
       >
       </q-input>
 
+      <q-card-section>
+        <q-item v-ripple tag="label">
+          <q-item-section avatar>
+            <q-checkbox v-model="form.progress" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Progress</q-item-label>
+            <q-item-label caption>{{
+              form.progress ? 'done' : 'undone'
+            }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-card-section>
+
       <q-input v-model="form.eventDate" filled label="Event time">
         <template #prepend>
           <q-icon name="event" class="cursor-pointer">
@@ -110,7 +124,7 @@
     </q-card-section>
 
     <q-card-section>
-      <q-toggle v-model="form.continuousState" label="Continuous action" />
+      <q-checkbox v-model="form.continuousState" label="Continuous action" />
     </q-card-section>
 
     <q-card-section>
@@ -350,6 +364,7 @@ export default {
       form: {
         id: '',
         todoTitle: '',
+        progress: false,
         eventDate: date.formatDate(Date.now(), 'DD-MM-YYYY HH:mm'),
 
         toggleEventEnd: false,
@@ -462,6 +477,7 @@ export default {
     if (this.editTask) {
       this.form.id = this.editTask.id
       this.form.todoTitle = this.editTask.title
+      this.form.progress = this.editTask.progress
       this.form.eventDate = this.editTask.time
       this.form.toggleEventEnd = this.editTask.endingTime ? true : false
       this.form.eventEndingDate = this.editTask.endingTime

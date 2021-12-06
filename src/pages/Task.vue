@@ -7,7 +7,7 @@
         icon="edit"
         color="secondary"
         flat
-        @click="editState = true"
+        @click="toggleEdit()"
       >
         Edit
       </q-btn>
@@ -31,13 +31,18 @@
       </q-btn>
     </q-card>
     <q-list v-if="!editState" separator bordered>
-      <q-item v-if="task.title">
+      <q-item>
         <q-item-section avatar class="taskInfo">Title</q-item-section>
         <q-separator vertical spaced="md" />
         {{ task.title }}
       </q-item>
+      <q-item>
+        <q-item-section avatar class="taskInfo">Progress</q-item-section>
+        <q-separator vertical spaced="md" />
+        {{ task.progress ? 'Done' : 'Undone' }}
+      </q-item>
 
-      <q-item v-if="task.time">
+      <q-item>
         <q-item-section avatar class="taskInfo">Date</q-item-section>
         <q-separator vertical spaced="md" />
         {{ task.time }}
@@ -145,18 +150,22 @@
       @editEvent="onEditClick"
       @cancelEvent="onCancelClick"
     />
+    <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
+      <q-card class="q-dialog-plugin">
+        <q-card-section>
+          Are you sure to premanently remove '{{ task.title }}' task?
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn color="primary" label="Cancel" @click="onConfirmCancelClick" />
+          <q-btn
+            color="negative"
+            label="Delete"
+            @click="onConfirmDeleteClick"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
-  <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
-    <q-card class="q-dialog-plugin">
-      <q-card-section>
-        Are you sure to premanently remove '{{ task.title }}' task?
-      </q-card-section>
-      <q-card-actions align="right">
-        <q-btn color="primary" label="Cancel" @click="onConfirmCancelClick" />
-        <q-btn color="negative" label="Delete" @click="onConfirmDeleteClick" />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
 </template>
 
 <script>
@@ -173,6 +182,7 @@ export default {
       task: {
         id: '',
         title: '',
+        progress: false,
         time: '',
         endingTime: '',
         location: '',
@@ -195,11 +205,15 @@ export default {
           hours: 0,
           minutes: 0
         }
-      },
-      editState: false
+      }
     }
   },
-  mounted() {
+  computed: {
+    editState() {
+      return this.$route.query.edit ? true : false
+    }
+  },
+  beforeMount() {
     this.updateTaskData()
   },
   methods: {
@@ -220,7 +234,10 @@ export default {
       this.task = JSON.parse(JSON.stringify(task))
     },
     routerBack() {
-      return this.$router.back()
+      return this.$router.push('/')
+    },
+    toggleEdit() {
+      this.$router.push(this.$route.path + '?edit=true')
     },
     callEditClick() {
       this.$refs.taskForm.onEditClick()
@@ -229,6 +246,7 @@ export default {
       const updateTodo = {
         id: form.id,
         title: form.todoTitle,
+        progress: form.progress,
         time: form.eventDate,
         endingTime: form.toggleEventEnd ? form.eventEndingDate : null,
         location: form.toggleLocation ? form.eventLocation : null,
@@ -262,13 +280,13 @@ export default {
         updateTodo
       )
       this.updateTaskData()
-      this.editState = false
+      this.$router.push(this.$route.path)
     },
     onDeleteClick() {
       this.$refs.confirmDialog.show()
     },
     onCancelClick() {
-      this.editState = false
+      this.$router.push(this.$route.path)
     },
     onConfirmDeleteClick() {
       remove(

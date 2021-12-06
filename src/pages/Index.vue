@@ -43,6 +43,8 @@
         <tr
           v-for="(task, index) in dayTasks"
           :key="index"
+          v-touch-hold:400:12:15.mouse="holdSuccess"
+          :style="task['progress'] ? ' background: lightgrey' : ''"
           @click="openTask(task)"
         >
           <td>
@@ -50,6 +52,19 @@
           </td>
 
           <td>{{ task['title'] }}</td>
+          <q-popup-proxy
+            ref="taskHold"
+            cover
+            :breakpoint="10000"
+            transition-show="scale"
+            transition-hide="scale"
+          >
+            <q-card>
+              <q-btn @click="openTask(task)">View</q-btn>
+              <q-btn @click="openTask(task, true)">Edit</q-btn>
+              <q-btn @click="doneTask">Done</q-btn>
+            </q-card>
+          </q-popup-proxy>
         </tr>
       </tbody>
     </q-markup-table>
@@ -105,9 +120,19 @@ export default {
       this.timeStamp -= 86400000
       this.formattedDate = date.formatDate(this.timeStamp, 'dddd, DD-MM-YYYY')
     },
-    openTask(task) {
+    openTask(task, edit) {
       const taskDate = task.time.slice(0, task.time.indexOf(' '))
-      this.$router.push(`/${taskDate}/${task.id}`)
+      if (!edit) {
+        this.$router.push(`/${taskDate}/${task.id}`)
+      } else {
+        this.$router.push(`/${taskDate}/${task.id}?edit=true`)
+      }
+    },
+
+    doneTask() {},
+
+    holdSuccess() {
+      this.$refs.taskHold.show()
     }
   }
 }

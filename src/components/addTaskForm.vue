@@ -64,6 +64,7 @@ export default {
         const newTodo = {
           id: form.todoTitle.replaceAll(' ', '-'),
           title: form.todoTitle,
+          progress: form.progress,
           time: eventDate,
           endingTime: form.toggleEventEnd ? eventEndingDate : null,
           location: form.toggleLocation ? form.eventLocation : null,
