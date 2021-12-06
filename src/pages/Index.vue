@@ -1,9 +1,10 @@
 <template>
   <q-page>
-    <q-markup-table separator="cell">
+    <q-markup-table wrap-cells separator="cell">
       <thead>
         <tr>
-          <th class="text-weight-bolder no-padding">
+          <th></th>
+          <th class="text-left text-weight-bolder no-padding">
             <span><q-btn flat @click="previousDay()">&lt;</q-btn></span>
             <span class="cursor-pointer wrap">
               {{ formattedDate }}
@@ -27,9 +28,6 @@
               </q-popup-proxy>
             </span>
             <span><q-btn flat @click="nextDay()">&gt;</q-btn></span>
-          </th>
-          <th class="text-center text-weight-bolder" style="width: 100%">
-            Tasks
           </th>
         </tr>
       </thead>
