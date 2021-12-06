@@ -125,6 +125,9 @@
             verdana: 'Verdana'
           }"
         />
+        <q-card-section v-if="error">
+          <p class="text-negative">Title or text is required</p>
+        </q-card-section>
 
         <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
           <q-card class="q-dialog-plugin">

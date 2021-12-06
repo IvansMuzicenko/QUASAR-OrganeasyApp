@@ -97,6 +97,9 @@
           }"
         />
       </q-card-section>
+      <q-card-section v-if="error">
+        <p class="text-negative">Title or text is required</p>
+      </q-card-section>
 
       <q-card-actions align="right">
         <q-btn
