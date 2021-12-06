@@ -1,33 +1,32 @@
 <template>
   <q-page>
+    <q-card class="flex justify-between no-padding">
+      <q-btn icon="arrow_back" flat @click="routerBack()"></q-btn>
+      <q-btn
+        v-if="editState"
+        icon="save"
+        dense
+        flat
+        color="positive"
+        @click="saveEdit()"
+      >
+        Save
+      </q-btn>
+      <q-btn v-if="!editState" icon="edit" dense flat @click="toggleEdit()">
+        Edit
+      </q-btn>
+      <q-btn
+        v-if="!editState"
+        icon="delete"
+        dense
+        flat
+        color="negative"
+        @click="deleteNote()"
+      >
+        Delete
+      </q-btn>
+    </q-card>
     <q-card bordered>
-      <q-card-section class="flex justify-between no-padding">
-        <q-btn icon="arrow_back" flat @click="routerBack()"></q-btn>
-        <q-btn
-          v-if="editState"
-          icon="save"
-          dense
-          flat
-          color="positive"
-          @click="saveEdit()"
-        >
-          Save
-        </q-btn>
-        <q-btn v-if="!editState" icon="edit" dense flat @click="toggleEdit()">
-          Edit
-        </q-btn>
-        <q-btn
-          v-if="!editState"
-          icon="delete"
-          dense
-          flat
-          color="negative"
-          @click="deleteNote()"
-        >
-          Delete
-        </q-btn>
-      </q-card-section>
-
       <q-separator color="black" />
 
       <q-card-section class="text-h6" @dblclick="toggleEdit()">
