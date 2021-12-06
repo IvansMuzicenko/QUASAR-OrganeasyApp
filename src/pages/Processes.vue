@@ -42,13 +42,24 @@
             type="number"
             label="Time"
             suffix="Minutes"
-            min="0"
+            min="1"
             :dense="false"
           >
           </q-input>
         </q-card-section>
+        <q-card-section v-if="error">
+          <p class="text-negative">
+            Title must not be empty and time must be greater than 0
+          </p>
+        </q-card-section>
         <q-card-actions align="right">
-          <q-btn color="positive" icon="save" label="Edit" @click="onOKClick" />
+          <q-btn
+            color="positive"
+            icon="save"
+            :disable="error"
+            label="Edit"
+            @click="onOKClick"
+          />
           <q-btn color="primary" label="Cancel" @click="onCancelClick" />
           <q-btn color="negative" label="Delete" @click="onDeleteClick" />
         </q-card-actions>
@@ -88,11 +99,14 @@ export default {
       selectedProcess: {
         id: '',
         title: '',
-        time: 0
+        time: 1
       }
     }
   },
   computed: {
+    error() {
+      return !this.selectedProcess.title || this.selectedProcess.time <= 0
+    },
     processes() {
       return this.$store.getters['users/processes']
     }
