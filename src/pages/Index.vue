@@ -3,15 +3,11 @@
     <q-markup-table separator="cell">
       <thead>
         <tr>
-          <th class="text-left text-weight-bolder no-padding">
-            <span
-              ><q-btn flat class="q-pr-xs" @click="previousDay()"
-                >&lt;</q-btn
-              ></span
-            >
-            <span class="cursor-pointer">
-              <q-icon name="event"> </q-icon>
+          <th class="text-weight-bolder no-padding">
+            <span><q-btn flat @click="previousDay()">&lt;</q-btn></span>
+            <span class="cursor-pointer wrap">
               {{ formattedDate }}
+
               <q-popup-proxy
                 ref="datePicked"
                 cover
@@ -30,9 +26,7 @@
                 </q-date>
               </q-popup-proxy>
             </span>
-            <span
-              ><q-btn flat class="q-pl-xs" @click="nextDay()">&gt;</q-btn></span
-            >
+            <span><q-btn flat @click="nextDay()">&gt;</q-btn></span>
           </th>
           <th class="text-center text-weight-bolder" style="width: 100%">
             Tasks
@@ -60,9 +54,17 @@
             transition-hide="scale"
           >
             <q-card>
-              <q-btn @click="openTask(task)">View</q-btn>
-              <q-btn @click="openTask(task, true)">Edit</q-btn>
-              <q-btn @click="doneTask">Done</q-btn>
+              <q-card-section>
+                <q-btn color="primary" @click="openTask(task)">View</q-btn>
+              </q-card-section>
+              <q-card-section>
+                <q-btn color="secondary" @click="openTask(task, true)"
+                  >Edit</q-btn
+                >
+              </q-card-section>
+              <q-card-section>
+                <q-btn color="positive" @click="doneTask">Done</q-btn>
+              </q-card-section>
             </q-card>
           </q-popup-proxy>
         </tr>
