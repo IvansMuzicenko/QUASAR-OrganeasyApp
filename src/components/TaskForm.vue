@@ -1,5 +1,5 @@
 <template>
-  <q-card class="q-dialog-plugin">
+  <q-card :class="editTask ? '' : 'q-dialog-plugin'">
     <q-card-section>
       <q-input
         v-model="form.todoTitle"
