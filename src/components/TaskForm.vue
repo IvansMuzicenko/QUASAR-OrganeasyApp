@@ -388,7 +388,7 @@ export default {
         toggleNotification: false,
         notificationForm: [
           {
-            notificationTimeValuesModel: 1,
+            notificationTimeValuesModel: 0,
             notificationTimeTypeModel: 'minutes',
             notificationPeriodModel: 'before',
             notificationPointModel: 'start time'
@@ -416,10 +416,7 @@ export default {
       hoursOptions: Array.from({ length: 24 }, (_, index) => index + 1),
 
       minutesOptions: Array.from({ length: 60 }, (_, index) => index + 1),
-      notificationTimeValues: Array.from(
-        { length: 99 },
-        (_, index) => index + 1
-      ),
+      notificationTimeValues: Array.from({ length: 99 }, (_, index) => index),
       notificationTimeType: ['minutes', 'hours', 'days', 'weeks', 'months'],
       notificationPeriod: ['before', 'after'],
       notificationPoint: ['start time', 'end time'],
@@ -534,7 +531,7 @@ export default {
 
     addNotification() {
       this.form.notificationForm.push({
-        notificationTimeValuesModel: 1,
+        notificationTimeValuesModel: 0,
         notificationTimeTypeModel: 'minutes',
         notificationPeriodModel: 'before',
         notificationPointModel: 'start time'
