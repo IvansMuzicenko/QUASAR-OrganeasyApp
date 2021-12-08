@@ -24,79 +24,81 @@ const actions = {
     let notificationList = []
     for (const tasksDate of Object.keys(tasks)) {
       for (const task of tasks[tasksDate]) {
-        if (task.notifications) {
-          for (const notification of task.notifications) {
-            let time =
-              notification.notificationPointModel == 'start time'
-                ? task.time
-                : task.endingTime
-                ? task.endingTime
-                : task.time
-            if (notification.notificationPeriodModel == 'before') {
-              time = date.subtractFromDate(
-                date.extractDate(time, 'DD-MM-YYYY HH:mm'),
-                {
-                  months:
-                    notification.notificationTimeTypeModel == 'months'
-                      ? notification.notificationTimeValuesModel
-                      : 0,
-                  days:
-                    notification.notificationTimeTypeModel == 'days'
-                      ? notification.notificationTimeValuesModel
-                      : 0,
-                  hours:
-                    notification.notificationTimeTypeModel == 'hours'
-                      ? notification.notificationTimeValuesModel
-                      : notification.notificationTimeTypeModel == 'weeks'
-                      ? notification.notificationTimeValuesModel * 7
-                      : 0,
-                  minutes:
-                    notification.notificationTimeTypeModel == 'minutes'
-                      ? notification.notificationTimeValuesModel
-                      : 0
-                }
-              )
-            } else {
-              time = date.addToDate(
-                date.extractDate(time, 'DD-MM-YYYY HH:mm'),
-                {
-                  months:
-                    notification.notificationTimeTypeModel == 'months'
-                      ? notification.notificationTimeValuesModel
-                      : 0,
-                  days:
-                    notification.notificationTimeTypeModel == 'days'
-                      ? notification.notificationTimeValuesModel
-                      : 0,
-                  hours:
-                    notification.notificationTimeTypeModel == 'hours'
-                      ? notification.notificationTimeValuesModel
-                      : notification.notificationTimeTypeModel == 'weeks'
-                      ? notification.notificationTimeValuesModel * 7
-                      : 0,
-                  minutes:
-                    notification.notificationTimeTypeModel == 'minutes'
-                      ? notification.notificationTimeValuesModel
-                      : 0
-                }
-              )
-            }
-            if (
-              !notificationList.some(
-                (element) => element.id === date.formatDate(time, 'x')
-              )
-            ) {
-              notificationList.push({
-                title: task.title,
-                body: task.title,
-                id: date.formatDate(time, 'x') / 1000,
-                schedule: { at: time },
-                allowWhileIdle: true,
-                sound: null,
-                attachments: null,
-                actionTypeId: '',
-                extra: null
-              })
+        if (!task.progress) {
+          if (task.notifications) {
+            for (const notification of task.notifications) {
+              let time =
+                notification.notificationPointModel == 'start time'
+                  ? task.time
+                  : task.endingTime
+                  ? task.endingTime
+                  : task.time
+              if (notification.notificationPeriodModel == 'before') {
+                time = date.subtractFromDate(
+                  date.extractDate(time, 'DD-MM-YYYY HH:mm'),
+                  {
+                    months:
+                      notification.notificationTimeTypeModel == 'months'
+                        ? notification.notificationTimeValuesModel
+                        : 0,
+                    days:
+                      notification.notificationTimeTypeModel == 'days'
+                        ? notification.notificationTimeValuesModel
+                        : 0,
+                    hours:
+                      notification.notificationTimeTypeModel == 'hours'
+                        ? notification.notificationTimeValuesModel
+                        : notification.notificationTimeTypeModel == 'weeks'
+                        ? notification.notificationTimeValuesModel * 7
+                        : 0,
+                    minutes:
+                      notification.notificationTimeTypeModel == 'minutes'
+                        ? notification.notificationTimeValuesModel
+                        : 0
+                  }
+                )
+              } else {
+                time = date.addToDate(
+                  date.extractDate(time, 'DD-MM-YYYY HH:mm'),
+                  {
+                    months:
+                      notification.notificationTimeTypeModel == 'months'
+                        ? notification.notificationTimeValuesModel
+                        : 0,
+                    days:
+                      notification.notificationTimeTypeModel == 'days'
+                        ? notification.notificationTimeValuesModel
+                        : 0,
+                    hours:
+                      notification.notificationTimeTypeModel == 'hours'
+                        ? notification.notificationTimeValuesModel
+                        : notification.notificationTimeTypeModel == 'weeks'
+                        ? notification.notificationTimeValuesModel * 7
+                        : 0,
+                    minutes:
+                      notification.notificationTimeTypeModel == 'minutes'
+                        ? notification.notificationTimeValuesModel
+                        : 0
+                  }
+                )
+              }
+              if (
+                !notificationList.some(
+                  (element) => element.id === date.formatDate(time, 'x') / 1000
+                )
+              ) {
+                notificationList.push({
+                  title: task.title,
+                  body: task.title,
+                  id: date.formatDate(time, 'x') / 1000,
+                  schedule: { at: time },
+                  allowWhileIdle: true,
+                  sound: null,
+                  attachments: null,
+                  actionTypeId: '',
+                  extra: null
+                })
+              }
             }
           }
         }
