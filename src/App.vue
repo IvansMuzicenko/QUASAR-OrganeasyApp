@@ -12,31 +12,34 @@
 <script>
 import { getDatabase, ref, onValue } from 'firebase/database'
 import { date } from 'quasar'
-// import capacitor from './capacitor.js'
+
 export default {
   data() {
     return {
       loading: true
     }
   },
-  // computed: {
-  //   capacitor() {
-  //     return this.$q.platform.is.capacitor
-  //   }
-  // },
+  computed: {
+    user() {
+      return this.$store.getters['users/userId']
+    }
+  },
+  watch: {
+    user() {
+      const db = getDatabase()
+      const dbRef = ref(db, this.user)
+      onValue(dbRef, (snapshot) => {
+        const data = snapshot.val()
+        this.$store.dispatch('users/setUserData', data)
+        this.loading = false
+        this.capacitor()
+      })
+    }
+  },
   beforeMount() {
     const user = this.$q.localStorage.getItem('user')
     if (user) {
       this.$store.dispatch('users/setUser', user)
-
-      const db = getDatabase()
-      const dbRef = ref(db, user.userId)
-      onValue(dbRef, (snapshot) => {
-        this.loading = false
-        const data = snapshot.val()
-        this.$store.dispatch('users/setUserData', data)
-        this.capacitor()
-      })
     } else {
       this.$router.push('/auth')
       this.loading = false
