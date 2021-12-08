@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> My Diary </q-toolbar-title>
+        <q-toolbar-title> Organizify </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -22,7 +22,7 @@
         >
         <q-btn
           v-else
-          class="full-width q-ma-lg"
+          class="full-width q-ma-lg no-margin"
           color="secondary"
           label="Sign In"
           to="/auth"
