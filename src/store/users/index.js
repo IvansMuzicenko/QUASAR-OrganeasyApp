@@ -8,15 +8,6 @@ const state = () => {
   }
 }
 
-const actions = {
-  setUser({ commit }, user) {
-    commit('SET_USER', user)
-  },
-  setUserData({ commit }, userData) {
-    commit('SET_USER_DATA', userData)
-  }
-}
-
 const mutations = {
   SET_USER(state, user) {
     state.user.userId = user.userId
@@ -45,6 +36,15 @@ const mutations = {
   },
   ADD_PROCESS(state, newProcess) {
     state.user.userData.tasks[state.user.userData.tasks.length] = newProcess
+  }
+}
+
+const actions = {
+  setUser({ commit }, user) {
+    commit('SET_USER', user)
+  },
+  setUserData({ commit }, userData) {
+    commit('SET_USER_DATA', userData)
   }
 }
 
