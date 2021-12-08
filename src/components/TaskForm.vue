@@ -33,7 +33,11 @@
               transition-show="scale"
               transition-hide="scale"
             >
-              <q-date v-model="form.eventDate" mask="DD-MM-YYYY HH:mm">
+              <q-date
+                v-model="form.eventDate"
+                mask="DD-MM-YYYY HH:mm"
+                today-btn
+              >
                 <div class="items-center justify-end row">
                   <q-btn v-close-popup label="Close" color="primary" flat />
                 </div>
@@ -53,6 +57,7 @@
                 v-model="form.eventDate"
                 mask="DD-MM-YYYY HH:mm"
                 format24h
+                now-btn
               >
                 <div class="items-center justify-end row">
                   <q-btn v-close-popup label="Close" color="primary" flat />
@@ -80,7 +85,11 @@
               transition-show="scale"
               transition-hide="scale"
             >
-              <q-date v-model="form.eventEndingDate" mask="DD-MM-YYYY HH:mm">
+              <q-date
+                v-model="form.eventEndingDate"
+                mask="DD-MM-YYYY HH:mm"
+                today-btn
+              >
                 <div class="items-center justify-end row">
                   <q-btn v-close-popup label="Close" color="primary" flat />
                 </div>
@@ -100,6 +109,7 @@
                 v-model="form.eventEndingDate"
                 mask="DD-MM-YYYY HH:mm"
                 format24h
+                now-btn
               >
                 <div class="items-center justify-end row">
                   <q-btn v-close-popup label="Close" color="primary" flat />

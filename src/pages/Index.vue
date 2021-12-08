@@ -20,6 +20,7 @@
                   :events="calendarEvents"
                   event-color="teal"
                   mask="dddd, DD-MM-YYYY"
+                  today-btn
                 >
                   <div class="items-center justify-end row">
                     <q-btn v-close-popup label="Close" color="primary" flat />
