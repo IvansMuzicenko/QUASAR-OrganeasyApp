@@ -593,11 +593,12 @@ export default {
                 : 0
           })
         }
-        notificationsId.push(
-          (Number(date.formatDate(time, 'x')) +
-            (notification.notificationPeriodModel == 'before' ? 1000 : 0)) /
+        notificationsId.push({
+          id:
+            (Number(date.formatDate(time, 'x')) +
+              (notification.notificationPeriodModel == 'before' ? 1000 : 0)) /
             1000
-        )
+        })
       }
       this.form.notificationsId = notificationsId
     },

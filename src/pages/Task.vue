@@ -204,6 +204,7 @@ export default {
             notificationTimeValuesModel: 0
           }
         ],
+        notificationsId: [],
         continuous: false,
         processes: [],
         subtasks: [],
@@ -317,6 +318,11 @@ export default {
       this.$router.push(this.$route.path)
     },
     onConfirmDeleteClick() {
+      const notifsToRemove = []
+      for (const notif of this.task.notificationsId) {
+        notifsToRemove.push({ id: notif.id })
+      }
+      this.$store.dispatch('notification/removeNotifications', notifsToRemove)
       remove(
         ref(
           db,

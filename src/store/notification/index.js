@@ -83,11 +83,10 @@ const actions = {
       ]
     })
     const tasks = rootGetters['users/tasks']
-    let notificationList = []
     for (const tasksDate of Object.keys(tasks)) {
       for (const task of tasks[tasksDate]) {
-        if (!task.progress) {
-          if (task.notificationsId) {
+        if (task.notificationsId) {
+          if (!task.progress) {
             for (const notifId in task.notificationsId) {
               const notificationDate = new Date(
                 Number(task.notificationsId[notifId]) * 1000
@@ -95,55 +94,64 @@ const actions = {
               const pendetNotifs =
                 await capacitor.Plugins.LocalNotifications.getPending()
 
-              console.log(pendetNotifs)
-
               if (
                 !pendetNotifs.notifications.some(
                   (element) =>
-                    Number(element.id) === Number(task.notificationsId[notifId])
+                    Number(element.id) ===
+                    Number(task.notificationsId[notifId].id)
                 )
               ) {
-                notificationList.push({
-                  title: task.title,
-                  body: task.title,
-                  id: Number(task.notificationsId[notifId]),
-                  schedule: { at: notificationDate },
-                  allowWhileIdle: true,
-                  autoCancel: false,
-                  actionTypeId: task.continuous
-                    ? 'CONTINUOUS_TASK_NOTIFICATION'
-                    : 'TASK_NOTIFICATION',
-                  sound: null,
-                  attachments: null,
-                  extra: null
-                })
+                await capacitor.Plugins.LocalNotifications.schedule({
+                  notifications: [
+                    {
+                      title: task.title,
+                      body: task.title,
+                      id: Number(task.notificationsId[notifId].id),
+                      schedule: { at: notificationDate },
+                      allowWhileIdle: true,
+                      autoCancel: false,
+                      actionTypeId: task.continuous
+                        ? 'CONTINUOUS_TASK_NOTIFICATION'
+                        : 'TASK_NOTIFICATION',
+                      sound: null,
+                      attachments: null,
+                      extra: null
+                    }
+                  ]
+                }).then((res) => console.log('scheduled', res))
               }
             }
+          } else {
+            dispatch('removeNotifications', task.notificationsId)
           }
         }
       }
     }
-    const notifs = await capacitor.Plugins.LocalNotifications.schedule({
-      notifications: notificationList
+    console.log(
+      'Pended',
+      await capacitor.Plugins.LocalNotifications.getPending()
+    )
+    //dispatch('clearAllNotifs')
+  },
+  async removeNotifications({ getters }, notifsList) {
+    getters.capacitor.Plugins.LocalNotifications.cancel({
+      notifications: notifsList
     })
-    console.log(notifs)
-    //dispatch('stopLocalPush')
-  } //,
-  // async stopLocalPush({ getters }) {
-  //   try {
-  //     getters.capacitor.Plugins.LocalNotifications.getPending().then(
-  //       (res) => {
-  //         //console.log(res, "elo");
-  //         getters.capacitor.Plugins.LocalNotifications.cancel(res)
-  //       },
-  //       (error) => {
-  //         console.log(error)
-  //       }
-  //     )
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }
+  },
+  async clearAllNotifs({ getters }) {
+    try {
+      getters.capacitor.Plugins.LocalNotifications.getPending().then(
+        (res) => {
+          getters.capacitor.Plugins.LocalNotifications.cancel(res)
+        },
+        (error) => {
+          console.log(error)
+        }
+      )
+    } catch (error) {
+      console.error(error)
+    }
+  }
 }
 
 const getters = {
