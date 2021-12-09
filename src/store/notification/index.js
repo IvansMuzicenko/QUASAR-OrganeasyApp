@@ -87,63 +87,11 @@ const actions = {
     for (const tasksDate of Object.keys(tasks)) {
       for (const task of tasks[tasksDate]) {
         if (!task.progress) {
-          if (task.notifications) {
-            for (const notification of task.notifications) {
-              let time =
-                notification.notificationPointModel == 'start time'
-                  ? task.time
-                  : task.endingTime
-                  ? task.endingTime
-                  : task.time
-              if (notification.notificationPeriodModel == 'before') {
-                time = date.subtractFromDate(
-                  date.extractDate(time, 'DD-MM-YYYY HH:mm'),
-                  {
-                    months:
-                      notification.notificationTimeTypeModel == 'months'
-                        ? notification.notificationTimeValuesModel
-                        : 0,
-                    days:
-                      notification.notificationTimeTypeModel == 'days'
-                        ? notification.notificationTimeValuesModel
-                        : 0,
-                    hours:
-                      notification.notificationTimeTypeModel == 'hours'
-                        ? notification.notificationTimeValuesModel
-                        : notification.notificationTimeTypeModel == 'weeks'
-                        ? notification.notificationTimeValuesModel * 7
-                        : 0,
-                    minutes:
-                      notification.notificationTimeTypeModel == 'minutes'
-                        ? notification.notificationTimeValuesModel
-                        : 0
-                  }
-                )
-              } else {
-                time = date.addToDate(
-                  date.extractDate(time, 'DD-MM-YYYY HH:mm'),
-                  {
-                    months:
-                      notification.notificationTimeTypeModel == 'months'
-                        ? notification.notificationTimeValuesModel
-                        : 0,
-                    days:
-                      notification.notificationTimeTypeModel == 'days'
-                        ? notification.notificationTimeValuesModel
-                        : 0,
-                    hours:
-                      notification.notificationTimeTypeModel == 'hours'
-                        ? notification.notificationTimeValuesModel
-                        : notification.notificationTimeTypeModel == 'weeks'
-                        ? notification.notificationTimeValuesModel * 7
-                        : 0,
-                    minutes:
-                      notification.notificationTimeTypeModel == 'minutes'
-                        ? notification.notificationTimeValuesModel
-                        : 0
-                  }
-                )
-              }
+          if (task.notificationsId) {
+            for (const notifId in task.notificationsId) {
+              const notificationDate = new Date(
+                Number(task.notificationsId[notifId]) * 1000
+              )
               const pendetNotifs =
                 await capacitor.Plugins.LocalNotifications.getPending()
 
@@ -152,16 +100,14 @@ const actions = {
               if (
                 !pendetNotifs.notifications.some(
                   (element) =>
-                    Number(element.id) === date.formatDate(time, 'x') / 1000
+                    Number(element.id) === Number(task.notificationsId[notifId])
                 )
               ) {
                 notificationList.push({
                   title: task.title,
                   body: task.title,
-                  id:
-                    date.formatDate(time, 'x') / 1000 -
-                    (notification.notificationTimeValuesModel == 0 ? 1 : 0),
-                  schedule: { at: time },
+                  id: Number(task.notificationsId[notifId]),
+                  schedule: { at: notificationDate },
                   allowWhileIdle: true,
                   autoCancel: false,
                   actionTypeId: task.continuous
@@ -181,8 +127,8 @@ const actions = {
       notifications: notificationList
     })
     console.log(notifs)
-    // dispatch('stopLocalPush')
-  }
+    //dispatch('stopLocalPush')
+  } //,
   // async stopLocalPush({ getters }) {
   //   try {
   //     getters.capacitor.Plugins.LocalNotifications.getPending().then(

@@ -404,6 +404,7 @@ export default {
             notificationPointModel: 'start time'
           }
         ],
+        notificationsId: [],
 
         toggleRepeat: false,
         repeat: {
@@ -486,25 +487,33 @@ export default {
       this.form.todoTitle = this.editTask.title
       this.form.progress = this.editTask.progress
       this.form.eventDate = this.editTask.time
+
       this.form.toggleEventEnd = this.editTask.endingTime ? true : false
       this.form.eventEndingDate = this.editTask.endingTime
         ? this.editTask.endingTime
         : ''
+
       this.form.toggleLocation = this.editTask.location ? true : false
       this.form.eventLocation = this.editTask.location
         ? this.editTask.location
         : ''
+
       this.form.continuousState = this.editTask.continuous
+
       this.form.toggleProcesses = this.editTask.processes ? true : false
       this.form.processesModel = this.editTask.processes
         ? this.editTask.processes
         : []
+
       this.form.toggleSubtasks = this.editTask.subtasks ? true : false
       this.form.subtasks = this.editTask.subtasks ? this.editTask.subtasks : []
+
       this.form.toggleNotification = this.editTask.notifications ? true : false
       this.form.notificationForm = this.editTask.notifications
         ? this.editTask.notifications
         : []
+      this.form.notificationsId = this.editTask.notificationsId
+
       this.form.toggleRepeat = this.editTask.repeat ? true : false
       if (this.editTask.repeat) {
         this.form.repeat.repeatNumber = this.editTask.repeat.repeatNumber
@@ -529,13 +538,78 @@ export default {
     }
   },
   methods: {
+    addNotifsId() {
+      const notificationsId = []
+      for (const notification of this.form.notificationForm) {
+        let time =
+          notification.notificationPointModel == 'start time'
+            ? this.form.eventDate
+            : this.form.eventEndingDate
+            ? this.form.eventEndingDate
+            : this.form.eventDate
+        if (notification.notificationPeriodModel == 'before') {
+          time = date.subtractFromDate(
+            date.extractDate(time, 'DD-MM-YYYY HH:mm'),
+            {
+              months:
+                notification.notificationTimeTypeModel == 'months'
+                  ? notification.notificationTimeValuesModel
+                  : 0,
+              days:
+                notification.notificationTimeTypeModel == 'days'
+                  ? notification.notificationTimeValuesModel
+                  : 0,
+              hours:
+                notification.notificationTimeTypeModel == 'hours'
+                  ? notification.notificationTimeValuesModel
+                  : notification.notificationTimeTypeModel == 'weeks'
+                  ? notification.notificationTimeValuesModel * 7
+                  : 0,
+              minutes:
+                notification.notificationTimeTypeModel == 'minutes'
+                  ? notification.notificationTimeValuesModel
+                  : 0
+            }
+          )
+        } else {
+          time = date.addToDate(date.extractDate(time, 'DD-MM-YYYY HH:mm'), {
+            months:
+              notification.notificationTimeTypeModel == 'months'
+                ? notification.notificationTimeValuesModel
+                : 0,
+            days:
+              notification.notificationTimeTypeModel == 'days'
+                ? notification.notificationTimeValuesModel
+                : 0,
+            hours:
+              notification.notificationTimeTypeModel == 'hours'
+                ? notification.notificationTimeValuesModel
+                : notification.notificationTimeTypeModel == 'weeks'
+                ? notification.notificationTimeValuesModel * 7
+                : 0,
+            minutes:
+              notification.notificationTimeTypeModel == 'minutes'
+                ? notification.notificationTimeValuesModel
+                : 0
+          })
+        }
+        notificationsId.push(
+          (Number(date.formatDate(time, 'x')) +
+            (notification.notificationPeriodModel == 'before' ? 1000 : 0)) /
+            1000
+        )
+      }
+      this.form.notificationsId = notificationsId
+    },
     onOKClick() {
+      this.addNotifsId()
       this.$emit('OKEvent', this.form)
     },
     onCancelClick() {
       this.$emit('cancelEvent')
     },
     onEditClick() {
+      this.addNotifsId()
       this.$emit('editEvent', this.form)
     },
 

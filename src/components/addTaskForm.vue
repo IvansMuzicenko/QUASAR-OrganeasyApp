@@ -69,6 +69,9 @@ export default {
           endingTime: form.toggleEventEnd ? eventEndingDate : null,
           location: form.toggleLocation ? form.eventLocation : null,
           notifications: form.toggleNotification ? form.notificationForm : null,
+          notificationsId: form.toggleNotification
+            ? form.notificationsId
+            : null,
           continuous: form.continuousState,
           processes: form.toggleProcesses ? form.processesModel : null,
           subtasks: form.toggleSubtasks ? form.subtasks : null,
