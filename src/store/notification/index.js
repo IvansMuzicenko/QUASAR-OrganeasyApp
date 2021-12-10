@@ -1,4 +1,8 @@
 import { date } from 'quasar'
+import { getDatabase, ref, update, remove } from 'firebase/database'
+import firebase from '../../firebase.js'
+
+const db = getDatabase(firebase)
 
 const state = () => {
   return {
@@ -82,6 +86,25 @@ const actions = {
         }
       ]
     })
+    capacitor.Plugins.LocalNotifications.addListener(
+      'localNotificationActionPerformed',
+      (notification) => {
+        const actionId = notification.actionId
+        const notifData = notification.notification
+
+        if (actionId === 'view' || actionId === 'tap') {
+          this.$router.push(notifData.extra)
+        }
+        if (actionId === 'progress') {
+          let taskPath = notifData.extra.replace('/', 'date-')
+          taskPath = taskPath.replace('/', '/id-')
+          console.log(taskPath)
+          update(ref(db, `${rootGetters['users/userId']}/tasks/${taskPath}`), {
+            progress: true
+          })
+        }
+      }
+    )
     const tasks = rootGetters['users/tasks']
     for (const tasksDate of Object.keys(tasks)) {
       for (const task of tasks[tasksDate]) {
@@ -115,7 +138,9 @@ const actions = {
                         : 'TASK_NOTIFICATION',
                       sound: null,
                       attachments: null,
-                      extra: null
+                      extra: `/${task.time.slice(0, task.time.indexOf(' '))}/${
+                        task.id
+                      }`
                     }
                   ]
                 }).then((res) => console.log('scheduled', res))
