@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <q-markup-table wrap-cells separator="cell">
-      <thead>
+      <thead v-touch-swipe:3e-2:10:100.mouse.horizontal="handleSwipe">
         <tr>
           <th></th>
           <th class="text-left text-weight-bolder no-padding">
@@ -134,6 +134,13 @@ export default {
     }
   },
   methods: {
+    handleSwipe(evt) {
+      if (evt.direction && evt.direction == 'right') {
+        this.previousDay()
+      } else if (evt.direction && evt.direction == 'left') {
+        this.nextDay()
+      }
+    },
     nextDay() {
       this.timeStamp += 86400000
       this.formattedDate = date.formatDate(this.timeStamp, 'dddd, DD-MM-YYYY')
