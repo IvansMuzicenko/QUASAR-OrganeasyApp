@@ -1,7 +1,7 @@
 <template>
-  <q-page>
+  <q-page v-touch-swipe:3e-2:10:100.mouse.horizontal="handleSwipe">
     <q-markup-table wrap-cells separator="cell">
-      <thead v-touch-swipe:3e-2:10:100.mouse.horizontal="handleSwipe">
+      <thead>
         <tr>
           <th></th>
           <th class="text-left text-weight-bolder no-padding">
