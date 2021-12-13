@@ -47,10 +47,10 @@ const actions = {
         {
           id: 'CONTINUOUS_TASK_NOTIFICATION',
           actions: [
-            {
-              id: 'view',
-              title: 'Show'
-            },
+            // {
+            //   id: 'view',
+            //   title: 'Show'
+            // },
             {
               id: 'start',
               title: 'Start'
@@ -98,7 +98,6 @@ const actions = {
         if (actionId === 'progress') {
           let taskPath = notifData.extra.replace('/', 'date-')
           taskPath = taskPath.replace('/', '/id-')
-          console.log(taskPath)
           update(ref(db, `${rootGetters['users/userId']}/tasks/${taskPath}`), {
             progress: true
           })
@@ -106,13 +105,14 @@ const actions = {
       }
     )
     const tasks = rootGetters['users/tasks']
+    const dateNow = new Date(Date.now())
     for (const tasksDate of Object.keys(tasks)) {
       for (const task of tasks[tasksDate]) {
         if (task.notificationsId) {
           if (!task.progress) {
             for (const notifId in task.notificationsId) {
               const notificationDate = new Date(
-                Number(task.notificationsId[notifId]) * 1000
+                Number(task.notificationsId[notifId].id) * 1000
               )
               const pendetNotifs =
                 await capacitor.Plugins.LocalNotifications.getPending()
@@ -122,7 +122,8 @@ const actions = {
                   (element) =>
                     Number(element.id) ===
                     Number(task.notificationsId[notifId].id)
-                )
+                ) &&
+                dateNow.getTime() <= notificationDate.getTime()
               ) {
                 await capacitor.Plugins.LocalNotifications.schedule({
                   notifications: [
@@ -132,12 +133,11 @@ const actions = {
                       id: Number(task.notificationsId[notifId].id),
                       schedule: { at: notificationDate },
                       allowWhileIdle: true,
-                      autoCancel: false,
+                      autoCancel: true,
+                      ongoing: true,
                       actionTypeId: task.continuous
                         ? 'CONTINUOUS_TASK_NOTIFICATION'
                         : 'TASK_NOTIFICATION',
-                      sound: null,
-                      attachments: null,
                       extra: `/${task.time.slice(0, task.time.indexOf(' '))}/${
                         task.id
                       }`
