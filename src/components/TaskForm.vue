@@ -593,6 +593,11 @@ export default {
                 : 0
           })
         }
+        const notifsToRemove = []
+        for (const notif of this.form.notificationsId) {
+          notifsToRemove.push({ id: notif.id })
+        }
+        this.$store.dispatch('notification/removeNotifications', notifsToRemove)
         notificationsId.push({
           id:
             (Number(date.formatDate(time, 'x')) +
