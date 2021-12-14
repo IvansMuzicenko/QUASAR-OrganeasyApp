@@ -67,6 +67,24 @@ const actions = {
           ]
         },
         {
+          id: 'CONTINUOUS_TASK_NOTIFICATION_STOP',
+          actions: [
+            // {
+            //   id: 'view',
+            //   title: 'Show'
+            // },
+            {
+              id: 'stop',
+              title: 'Stop'
+            },
+            {
+              id: 'dismiss',
+              title: 'Dismiss',
+              destructive: true
+            }
+          ]
+        },
+        {
           id: 'DAILY_CHECK',
           actions: [
             {
@@ -91,15 +109,38 @@ const actions = {
       (notification) => {
         const actionId = notification.actionId
         const notifData = notification.notification
+        const taskPath = notifData.extra
+          .replace('/', 'date-')
+          .replace('/', '/id-')
 
         if (actionId === 'view' || actionId === 'tap') {
           this.$router.push(notifData.extra)
-        }
-        if (actionId === 'progress') {
-          let taskPath = notifData.extra.replace('/', 'date-')
-          taskPath = taskPath.replace('/', '/id-')
+        } else if (actionId === 'progress') {
           update(ref(db, `${rootGetters['users/userId']}/tasks/${taskPath}`), {
             progress: true
+          })
+        } else if (actionId === 'start') {
+          update(ref(db, `${rootGetters['users/userId']}/tasks/${taskPath}`), {
+            taskStarted: Date.now()
+          })
+          capacitor.Plugins.LocalNotifications.schedule({
+            notifications: [
+              {
+                title: notifData.title,
+                body: notifData.title,
+                id: 334,
+                allowWhileIdle: true,
+                autoCancel: true,
+                ongoing: true,
+                sound: 'none',
+                actionTypeId: 'CONTINUOUS_TASK_NOTIFICATION_STOP',
+                extra: notifData.extra
+              }
+            ]
+          })
+        } else if (actionId === 'stop') {
+          update(ref(db, `${rootGetters['users/userId']}/tasks/${taskPath}`), {
+            taskEnded: Date.now()
           })
         }
       }

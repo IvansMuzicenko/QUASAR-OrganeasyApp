@@ -98,6 +98,21 @@
         <q-separator vertical spaced="md" />
         {{ task.continuous }}
       </q-item>
+      <q-item v-if="task.taskStarted">
+        <q-item-section avatar class="taskInfo">Started</q-item-section>
+        <q-separator vertical spaced="md" />
+        {{ date(task.taskStarted) }}
+      </q-item>
+      <q-item v-if="task.taskEnded">
+        <q-item-section avatar class="taskInfo">Ended</q-item-section>
+        <q-separator vertical spaced="md" />
+        {{ date(task.taskEnded) }}
+      </q-item>
+      <q-item v-if="task.taskStarted && task.taskEnded">
+        <q-item-section avatar class="taskInfo">Spent time</q-item-section>
+        <q-separator vertical spaced="md" />
+        {{ timeSpent }} minutes
+      </q-item>
 
       <q-item v-if="task.processes">
         <q-item-section avatar class="taskInfo">Processes</q-item-section>
@@ -180,8 +195,11 @@
 
 <script>
 import { getDatabase, ref, update, remove } from 'firebase/database'
-const db = getDatabase()
+import { date } from 'quasar'
 import TaskForm from 'components/TaskForm.vue'
+
+const db = getDatabase()
+
 export default {
   components: {
     TaskForm
@@ -206,6 +224,8 @@ export default {
         ],
         notificationsId: [],
         continuous: false,
+        taskStarted: '',
+        taskEnded: '',
         processes: [],
         subtasks: [],
         repeat: {
@@ -222,12 +242,28 @@ export default {
   computed: {
     editState() {
       return this.$route.query.edit ? true : false
+    },
+    timeSpent() {
+      // let timeSpent =
+      //   (Number(this.task.taskEnded) - Number(this.task.taskStarted)) / 1000
+      // timeSpent = timeSpent.toFixed()
+      // const minutesSpent
+
+      const timeSpent = date.getDateDiff(
+        this.task.taskEnded,
+        this.task.taskStarted,
+        'minutes'
+      )
+      return timeSpent
     }
   },
   beforeMount() {
     this.updateTaskData()
   },
   methods: {
+    date(ms) {
+      return date.formatDate(ms, 'DD-MM-YYYY HH:mm')
+    },
     updateTaskData() {
       const path = this.$route.path
       const taskDate = path.slice(path.indexOf('/') + 1, path.lastIndexOf('/'))
