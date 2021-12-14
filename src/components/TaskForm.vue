@@ -143,6 +143,7 @@
         <q-btn outline color="success" class="q-ma-xs">
           Add process
           <q-popup-proxy
+            ref="processPopup"
             cover
             transition-show="scale"
             transition-hide="scale"
@@ -167,6 +168,7 @@
             </q-input>
 
             <q-btn flat @click="addProcess()">Add</q-btn>
+            <q-btn flat @click="hideProcess()">Cancel</q-btn>
           </q-popup-proxy></q-btn
         >
 
@@ -626,6 +628,9 @@ export default {
         notificationPeriodModel: 'before',
         notificationPointModel: 'start time'
       })
+    },
+    hideProcess() {
+      this.$refs.processPopup.hide()
     },
     addProcess() {
       const newProcess = { title: this.processTitle, time: this.processTime }
