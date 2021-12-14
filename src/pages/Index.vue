@@ -47,7 +47,25 @@
             </span>
           </td>
 
-          <td>{{ task['title'] }}</td>
+          <td>
+            <q-item-section avatar>
+              {{ task['title'] }}
+            </q-item-section>
+            <q-separator v-if="task['subtasks']" spaced="sm" />
+            <q-separator v-if="task['subtasks']" spaced="sm" />
+            <q-list separator dense>
+              <q-item
+                v-for="subtask in task['subtasks']"
+                :key="subtask"
+                dense
+                class="no-padding"
+              >
+                <q-item-label>*</q-item-label>
+                <q-separator spaced="sm" />
+                {{ subtask }}
+              </q-item>
+            </q-list>
+          </td>
           <q-popup-proxy
             :ref="`taskHold-${index}`"
             cover
