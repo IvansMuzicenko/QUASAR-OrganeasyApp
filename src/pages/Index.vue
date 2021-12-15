@@ -40,7 +40,7 @@
           :style="task['progress'] ? ' background: lightgrey' : ''"
           @click="openTask(task)"
         >
-          <td class="text-center">
+          <td class="text-center text-weight-bolder">
             {{ task['time'].slice(task['time'].indexOf(' ')) }}
             <span v-if="task['endingTime']">
               - {{ task['endingTime'].slice(task['time'].indexOf(' ')) }}
