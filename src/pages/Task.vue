@@ -134,10 +134,11 @@
           <q-item-section
             v-for="(subtask, index) in task.subtasks"
             :key="subtask"
-            ><q-separator v-if="index > 0" spaced="sm" />{{
-              subtask
-            }}</q-item-section
+            :class="subtask['progress'] ? 'text-strike' : ''"
           >
+            <q-separator v-if="index > 0" spaced="sm" />
+            {{ subtask['title'] }}
+          </q-item-section>
         </q-item-section>
       </q-item>
 

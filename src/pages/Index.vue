@@ -48,21 +48,29 @@
           </td>
 
           <td>
-            <q-item-section avatar>
+            <q-item-section avatar class="text-weight-bolder">
               {{ task['title'] }}
             </q-item-section>
-            <q-separator v-if="task['subtasks']" spaced="sm" />
-            <q-separator v-if="task['subtasks']" spaced="sm" />
+
+            <q-separator v-if="subtasksState(task['subtasks'])" spaced="sm" />
+            <q-separator v-if="subtasksState(task['subtasks'])" spaced="sm" />
+
             <q-list separator dense>
               <q-item
-                v-for="subtask in task['subtasks']"
+                v-for="(subtask, subIndex) in task['subtasks']"
+                v-show="!subtask['progress']"
                 :key="subtask"
+                v-touch-hold:400:12:15.mouse.stop="
+                  (event) => doneSubtask(task, subIndex)
+                "
                 dense
                 class="no-padding"
+                @touchstart.stop
+                @mousedown.stop
               >
                 <q-item-label>*</q-item-label>
-                <q-separator spaced="sm" />
-                {{ subtask }}
+
+                {{ subtask['title'] }}
               </q-item>
             </q-list>
           </td>
@@ -197,9 +205,30 @@ export default {
         { progress: !task.progress }
       )
     },
+    subtasksState(subtasks) {
+      for (const sub of subtasks) {
+        if (!sub['progress']) return true
+      }
+      return false
+    },
+    doneSubtask(task, index) {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/tasks/date-${task.time.slice(
+            0,
+            task.time.indexOf(' ')
+          )}/id-${task.id}/subtasks/${index}`
+        ),
+        { progress: true }
+      )
+    },
 
     holdSuccess(event, index) {
       this.$refs[`taskHold-${index}`].show()
+    },
+    holdSubtask(event, index) {
+      console.log('holded subtask')
     }
   }
 }

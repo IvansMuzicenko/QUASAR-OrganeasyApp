@@ -204,7 +204,7 @@
 
         <q-list bordered separator>
           <q-item v-for="(subtask, index) in form.subtasks" :key="subtask">
-            <q-item-section>{{ subtask }}</q-item-section>
+            <q-item-section>{{ subtask['title'] }}</q-item-section>
             <q-item-section side>
               <q-btn
                 icon="cancel"
@@ -647,7 +647,7 @@ export default {
       this.form.notificationForm.splice(index, 1)
     },
     addSubtask(newSubtask) {
-      this.form.subtasks.push(newSubtask)
+      this.form.subtasks.push({ title: newSubtask, progress: false })
       this.form.subtaskInput = ''
     },
     deleteSubtask(index) {
