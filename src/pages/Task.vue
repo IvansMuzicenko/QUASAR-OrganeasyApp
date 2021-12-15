@@ -141,7 +141,16 @@
           <q-item-section
             v-for="(subtask, index) in task.subtasks"
             :key="subtask"
+            class="cursor-pointer"
             :class="subtask['progress'] ? 'text-strike' : ''"
+            @click="
+              changeSubtaskProgress(
+                task.id,
+                task.time,
+                index,
+                subtask['progress']
+              )
+            "
           >
             <q-separator v-if="index > 0" spaced="sm" />
             {{ subtask['title'] }}
@@ -182,6 +191,7 @@
       :edit-task="task"
       @editEvent="onEditClick"
       @cancelEvent="onCancelClick"
+      @subtaskEvent="changeSubtaskProgress"
     />
     <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
       <q-card class="q-dialog-plugin">
@@ -294,6 +304,19 @@ export default {
     },
     callEditClick() {
       this.$refs.taskForm.onEditClick()
+    },
+    changeSubtaskProgress(taskId, taskDate, index, progress) {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/tasks/date-${taskDate.slice(
+            0,
+            taskDate.indexOf(' ')
+          )}/id-${taskId}/subtasks/${index}`
+        ),
+        { progress: !progress }
+      )
+      this.updateTaskData()
     },
     onEditClick(form) {
       const updateTodo = {

@@ -205,7 +205,18 @@
 
         <q-list bordered separator>
           <q-item v-for="(subtask, index) in form.subtasks" :key="subtask">
-            <q-item-section>{{ subtask['title'] }}</q-item-section>
+            <q-item-section avatar>
+              <q-btn
+                dense
+                flat
+                :color="subtask['progress'] ? 'negative' : 'positive'"
+                :icon="subtask['progress'] ? 'close' : 'check'"
+                @click="onSubtaskClick(index, subtask['progress'])"
+              ></q-btn>
+            </q-item-section>
+            <q-item-section :class="subtask['progress'] ? 'text-strike' : ''">{{
+              subtask['title']
+            }}</q-item-section>
             <q-item-section side>
               <q-btn
                 icon="cancel"
@@ -370,7 +381,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'editEvent'],
+  emits: ['OKEvent', 'cancelEvent', 'editEvent', 'subtaskEvent'],
 
   data() {
     return {
@@ -504,65 +515,72 @@ export default {
     }
   },
   mounted() {
-    if (this.editTask) {
-      this.form.id = this.editTask.id
-      this.form.todoTitle = this.editTask.title
-      this.form.progress = this.editTask.progress
-      this.form.eventDate = this.editTask.time
-
-      this.form.toggleEventEnd = this.editTask.endingTime ? true : false
-      this.form.eventEndingDate = this.editTask.endingTime
-        ? this.editTask.endingTime
-        : ''
-
-      this.form.toggleLocation = this.editTask.location ? true : false
-      this.form.eventLocation = this.editTask.location
-        ? this.editTask.location
-        : ''
-
-      this.form.continuousState = this.editTask.continuous
-
-      this.form.toggleProcesses = this.editTask.processes ? true : false
-      this.form.processesModel = this.editTask.processes
-        ? this.editTask.processes
-        : []
-      this.form.processesTime = this.editTask.processes
-        ? this.editTask.processesTime
-        : 0
-
-      this.form.toggleSubtasks = this.editTask.subtasks ? true : false
-      this.form.subtasks = this.editTask.subtasks ? this.editTask.subtasks : []
-
-      this.form.toggleNotification = this.editTask.notifications ? true : false
-      this.form.notificationForm = this.editTask.notifications
-        ? this.editTask.notifications
-        : []
-      this.form.notificationsId = this.editTask.notificationsId
-
-      this.form.toggleRepeat = this.editTask.repeat ? true : false
-      if (this.editTask.repeat) {
-        this.form.repeat.repeatNumber = this.editTask.repeat.repeatNumber
-          ? this.editTask.repeat.repeatNumber
-          : 0
-        this.form.repeat.monthsModel = this.editTask.repeat.months
-          ? this.editTask.repeat.months
-          : 0
-        this.form.repeat.weeksModel = this.editTask.repeat.weeks
-          ? this.editTask.repeat.weeks
-          : 0
-        this.form.repeat.daysModel = this.editTask.repeat.days
-          ? this.editTask.repeat.days
-          : 0
-        this.form.repeat.hoursModel = this.editTask.repeat.hours
-          ? this.editTask.repeat.hours
-          : 0
-        this.form.repeat.minutesModel = this.editTask.repeat.minutes
-          ? this.editTask.repeat.minutes
-          : 0
-      }
-    }
+    this.updateData()
   },
   methods: {
+    updateData() {
+      if (this.editTask) {
+        this.form.id = this.editTask.id
+        this.form.todoTitle = this.editTask.title
+        this.form.progress = this.editTask.progress
+        this.form.eventDate = this.editTask.time
+
+        this.form.toggleEventEnd = this.editTask.endingTime ? true : false
+        this.form.eventEndingDate = this.editTask.endingTime
+          ? this.editTask.endingTime
+          : ''
+
+        this.form.toggleLocation = this.editTask.location ? true : false
+        this.form.eventLocation = this.editTask.location
+          ? this.editTask.location
+          : ''
+
+        this.form.continuousState = this.editTask.continuous
+
+        this.form.toggleProcesses = this.editTask.processes ? true : false
+        this.form.processesModel = this.editTask.processes
+          ? this.editTask.processes
+          : []
+        this.form.processesTime = this.editTask.processes
+          ? this.editTask.processesTime
+          : 0
+
+        this.form.toggleSubtasks = this.editTask.subtasks ? true : false
+        this.form.subtasks = this.editTask.subtasks
+          ? this.editTask.subtasks
+          : []
+
+        this.form.toggleNotification = this.editTask.notifications
+          ? true
+          : false
+        this.form.notificationForm = this.editTask.notifications
+          ? this.editTask.notifications
+          : []
+        this.form.notificationsId = this.editTask.notificationsId
+
+        this.form.toggleRepeat = this.editTask.repeat ? true : false
+        if (this.editTask.repeat) {
+          this.form.repeat.repeatNumber = this.editTask.repeat.repeatNumber
+            ? this.editTask.repeat.repeatNumber
+            : 0
+          this.form.repeat.monthsModel = this.editTask.repeat.months
+            ? this.editTask.repeat.months
+            : 0
+          this.form.repeat.weeksModel = this.editTask.repeat.weeks
+            ? this.editTask.repeat.weeks
+            : 0
+          this.form.repeat.daysModel = this.editTask.repeat.days
+            ? this.editTask.repeat.days
+            : 0
+          this.form.repeat.hoursModel = this.editTask.repeat.hours
+            ? this.editTask.repeat.hours
+            : 0
+          this.form.repeat.minutesModel = this.editTask.repeat.minutes
+            ? this.editTask.repeat.minutes
+            : 0
+        }
+      }
+    },
     addNotifsId() {
       const notificationsId = []
       for (const notification of this.form.notificationForm) {
@@ -631,6 +649,16 @@ export default {
         })
       }
       this.form.notificationsId = notificationsId
+    },
+    async onSubtaskClick(index, progress) {
+      await this.$emit(
+        'subtaskEvent',
+        this.form.id,
+        this.form.eventDate,
+        index,
+        progress
+      )
+      this.updateData()
     },
     onOKClick() {
       this.addNotifsId()
