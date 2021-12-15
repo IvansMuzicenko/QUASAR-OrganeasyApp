@@ -74,6 +74,7 @@ export default {
             : null,
           continuous: form.continuousState,
           processes: form.toggleProcesses ? form.processesModel : null,
+          processesTime: form.toggleProcesses ? form.processesTime : null,
           subtasks: form.toggleSubtasks ? form.subtasks : null,
           repeat: form.toggleRepeat
             ? {

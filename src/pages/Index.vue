@@ -41,9 +41,12 @@
           @click="openTask(task)"
         >
           <td class="text-center text-weight-bolder">
+            <span v-if="task['processesTime']"
+              >({{ calcPrepTime(task['time'], task['processesTime']) }})</span
+            >
             {{ task['time'].slice(task['time'].indexOf(' ')) }}
             <span v-if="task['endingTime']">
-              - {{ task['endingTime'].slice(task['time'].indexOf(' ')) }}
+              - {{ task['endingTime'].slice(task['endingTime'].indexOf(' ')) }}
             </span>
           </td>
 
@@ -163,6 +166,14 @@ export default {
     }
   },
   methods: {
+    calcPrepTime(taskTime, taskPrep) {
+      return date.formatDate(
+        date.subtractFromDate(date.extractDate(taskTime, 'DD-MM-YYYY HH:mm'), {
+          minutes: taskPrep
+        }),
+        'HH:mm'
+      )
+    },
     handleSwipe(evt) {
       if (evt.direction && evt.direction == 'right') {
         this.previousDay()

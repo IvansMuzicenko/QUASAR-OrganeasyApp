@@ -126,6 +126,13 @@
           </q-item-section>
         </q-item-section>
       </q-item>
+      <q-item>
+        <q-item-section avatar class="taskInfo">
+          Preparation time
+        </q-item-section>
+        <q-separator vertical spaced="md" />
+        <q-item-section>{{ task.processesTime }} minutes</q-item-section>
+      </q-item>
 
       <q-item v-if="task.subtasks">
         <q-item-section avatar class="taskInfo">Subtasks</q-item-section>
@@ -228,6 +235,7 @@ export default {
         taskStarted: '',
         taskEnded: '',
         processes: [],
+        processesTime: 0,
         subtasks: [],
         repeat: {
           repeatNumber: 0,
@@ -245,11 +253,6 @@ export default {
       return this.$route.query.edit ? true : false
     },
     timeSpent() {
-      // let timeSpent =
-      //   (Number(this.task.taskEnded) - Number(this.task.taskStarted)) / 1000
-      // timeSpent = timeSpent.toFixed()
-      // const minutesSpent
-
       const timeSpent = date.getDateDiff(
         this.task.taskEnded,
         this.task.taskStarted,
@@ -304,6 +307,7 @@ export default {
         notificationsId: form.toggleNotification ? form.notificationsId : null,
         continuous: form.continuousState,
         processes: form.toggleProcesses ? form.processesModel : null,
+        processesTime: form.toggleProcesses ? form.processesTime : null,
         subtasks: form.toggleSubtasks ? form.subtasks : null,
         repeat: form.toggleRepeat
           ? {

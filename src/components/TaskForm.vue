@@ -169,8 +169,8 @@
 
             <q-btn flat @click="addProcess()">Add</q-btn>
             <q-btn flat @click="hideProcess()">Cancel</q-btn>
-          </q-popup-proxy></q-btn
-        >
+          </q-popup-proxy>
+        </q-btn>
 
         <q-select
           v-model="form.processesModel"
@@ -179,6 +179,7 @@
           :options="processesList"
           label="Processes"
         />
+        Total time: {{ form.processesTime }} minutes
       </q-card-section>
     </q-card-section>
 
@@ -392,6 +393,7 @@ export default {
 
         toggleProcesses: false,
         processesModel: [],
+        processesTime: null,
 
         toggleSubtasks: false,
         subtasks: [],
@@ -477,10 +479,28 @@ export default {
     processesList() {
       const processes = this.$store.getters['users/processes']
       let processesArray = []
-      for (const process in processes) {
-        processesArray.push(processes[process].title)
+      for (const process of processes) {
+        processesArray.push(process['title'])
       }
       return processesArray
+    },
+    processesTimeCalc() {
+      const processes = this.$store.getters['users/processes']
+      const selectedProcesses = this.form.processesModel
+      let time = 0
+      for (const select of selectedProcesses) {
+        for (const process of processes) {
+          if (select == process['title']) {
+            time += process['time']
+          }
+        }
+      }
+      return time
+    }
+  },
+  watch: {
+    processesTimeCalc() {
+      this.form.processesTime = this.processesTimeCalc
     }
   },
   mounted() {
@@ -506,6 +526,9 @@ export default {
       this.form.processesModel = this.editTask.processes
         ? this.editTask.processes
         : []
+      this.form.processesTime = this.editTask.processes
+        ? this.editTask.processesTime
+        : 0
 
       this.form.toggleSubtasks = this.editTask.subtasks ? true : false
       this.form.subtasks = this.editTask.subtasks ? this.editTask.subtasks : []
