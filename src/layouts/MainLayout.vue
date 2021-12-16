@@ -1,6 +1,20 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-footer elevated reveal class="bg-orange-3 text-black">
+  <q-layout view="LHh Lpr lFf">
+    <q-header elevated class="gt-xs bg-orange-4">
+      <q-toolbar>
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="toggleLeftDrawer"
+        />
+
+        <q-toolbar-title> Organizify </q-toolbar-title>
+      </q-toolbar>
+    </q-header>
+    <q-footer elevated reveal class="lt-sm bg-orange-3 text-black">
       <div v-if="email" class="fixed-bottom text-center q-mb-xl q-pa-sm"></div>
       <q-toolbar class="row no-padding">
         <q-btn
