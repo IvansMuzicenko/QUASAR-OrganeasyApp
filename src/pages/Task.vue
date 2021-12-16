@@ -126,7 +126,7 @@
           </q-item-section>
         </q-item-section>
       </q-item>
-      <q-item>
+      <q-item v-if="task.processesTime">
         <q-item-section avatar class="taskInfo">
           Preparation time
         </q-item-section>
@@ -212,7 +212,7 @@
 </template>
 
 <script>
-import { getDatabase, ref, update, remove } from 'firebase/database'
+import { getDatabase, ref, set, update, remove } from 'firebase/database'
 import { date } from 'quasar'
 import TaskForm from 'components/TaskForm.vue'
 
@@ -319,44 +319,81 @@ export default {
       this.updateTaskData()
     },
     onEditClick(form) {
-      const updateTodo = {
-        id: form.id,
-        title: form.todoTitle,
-        progress: form.progress,
-        time: form.eventDate,
-        endingTime: form.toggleEventEnd ? form.eventEndingDate : null,
-        location: form.toggleLocation ? form.eventLocation : null,
-        notifications: form.toggleNotification ? form.notificationForm : null,
-        notificationsId: form.toggleNotification ? form.notificationsId : null,
-        continuous: form.continuousState,
-        processes: form.toggleProcesses ? form.processesModel : null,
-        processesTime: form.toggleProcesses ? form.processesTime : null,
-        subtasks: form.toggleSubtasks ? form.subtasks : null,
-        repeat: form.toggleRepeat
-          ? {
-              repeatNumber: form.repeat.repeatNumber,
-              months: form.repeat.monthsModel ? form.repeat.monthsModel : null,
-              weeks: form.repeat.weeksModel ? form.repeat.weeksModel : null,
-              days: form.repeat.daysModel ? form.repeat.daysModel : null,
-              hours: form.repeat.hoursModel ? form.repeat.hoursModel : null,
-              minutes: form.repeat.minutesModel
-                ? form.repeat.minutesModel
-                : null
-            }
-          : null
+      for (
+        let i = 0;
+        i <= form.toggleRepeat ? form.repeat.repeatNumber : 0;
+        i++
+      ) {
+        let eventDate = form.eventDate
+        let eventEndingDate = form.eventEndingDate
+
+        if (i != 0) {
+          eventDate = date.formatDate(
+            date.addToDate(date.extractDate(eventDate, 'DD-MM-YYYY HH:mm'), {
+              months: form.repeat.monthsModel * i,
+              days: form.repeat.daysModel * i + form.repeat.weeksModel * 7 * i,
+              hours: form.repeat.hoursModel * i,
+              minutes: form.repeat.minutesModel * i
+            }),
+            'DD-MM-YYYY HH:mm'
+          )
+
+          eventEndingDate = date.formatDate(
+            date.addToDate(
+              date.extractDate(eventEndingDate, 'DD-MM-YYYY HH:mm'),
+              {
+                months: form.repeat.monthsModel * i,
+                days:
+                  form.repeat.daysModel * i + form.repeat.weeksModel * 7 * i,
+                hours: form.repeat.hoursModel * i,
+                minutes: form.repeat.minutesModel * i
+              }
+            ),
+            'DD-MM-YYYY HH:mm'
+          )
+        }
+        const updateTodo = {
+          id: form.id,
+          title: form.todoTitle,
+          progress: form.progress,
+          time: eventDate,
+          endingTime: form.toggleEventEnd ? eventEndingDate : null,
+          location: form.toggleLocation ? form.eventLocation : null,
+          notifications: form.toggleNotification ? form.notificationForm : null,
+          notificationsId: form.toggleNotification
+            ? form.notificationsId
+            : null,
+          continuous: form.continuousState,
+          processes: form.toggleProcesses ? form.processesModel : null,
+          processesTime: form.toggleProcesses ? form.processesTime : null,
+          subtasks: form.toggleSubtasks ? form.subtasks : null,
+          repeat: form.toggleRepeat
+            ? {
+                repeatNumber: form.repeat.repeatNumber - i,
+                months: form.repeat.monthsModel
+                  ? form.repeat.monthsModel
+                  : null,
+                weeks: form.repeat.weeksModel ? form.repeat.weeksModel : null,
+                days: form.repeat.daysModel ? form.repeat.daysModel : null,
+                hours: form.repeat.hoursModel ? form.repeat.hoursModel : null,
+                minutes: form.repeat.minutesModel
+                  ? form.repeat.minutesModel
+                  : null
+              }
+            : null
+        }
+        update(
+          ref(
+            db,
+            `${
+              this.$store.getters['users/userId']
+            }/tasks/date-${eventDate.slice(0, eventDate.indexOf(' '))}/id-${
+              updateTodo.id
+            }/`
+          ),
+          updateTodo
+        )
       }
-      update(
-        ref(
-          db,
-          `${
-            this.$store.getters['users/userId']
-          }/tasks/date-${updateTodo.time.slice(
-            0,
-            updateTodo.time.indexOf(' ')
-          )}/id-${updateTodo.id}`
-        ),
-        updateTodo
-      )
       this.updateTaskData()
       this.$router.push(this.$route.path)
     },
@@ -383,10 +420,14 @@ export default {
     },
     onConfirmDeleteClick() {
       const notifsToRemove = []
-      for (const notif of this.task.notificationsId) {
-        notifsToRemove.push({ id: notif.id })
+      if (this.task.notificationsId) {
+        for (const notif of this.task.notificationsId) {
+          notifsToRemove.push({ id: notif.id })
+        }
+        // if (this.$q.platform.is.capacitor) {
+        this.$store.dispatch('notification/removeNotifications', notifsToRemove)
+        // }
       }
-      this.$store.dispatch('notification/removeNotifications', notifsToRemove)
       remove(
         ref(
           db,

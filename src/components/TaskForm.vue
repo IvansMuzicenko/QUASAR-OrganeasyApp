@@ -433,15 +433,15 @@ export default {
       },
       processTitle: '',
       processTime: 0,
-      monthsOptions: Array.from({ length: 12 }, (_, index) => index + 1),
+      monthsOptions: Array.from({ length: 12 }, (_, index) => index),
 
-      weeksOptions: Array.from({ length: 4 }, (_, index) => index + 1),
+      weeksOptions: Array.from({ length: 4 }, (_, index) => index),
 
-      daysOptions: Array.from({ length: 31 }, (_, index) => index + 1),
+      daysOptions: Array.from({ length: 31 }, (_, index) => index),
 
-      hoursOptions: Array.from({ length: 24 }, (_, index) => index + 1),
+      hoursOptions: Array.from({ length: 24 }, (_, index) => index),
 
-      minutesOptions: Array.from({ length: 60 }, (_, index) => index + 1),
+      minutesOptions: Array.from({ length: 60 }, (_, index) => index),
       notificationTimeValues: Array.from({ length: 99 }, (_, index) => index),
       notificationTimeType: ['minutes', 'hours', 'days', 'weeks', 'months'],
       notificationPeriod: ['before', 'after'],
