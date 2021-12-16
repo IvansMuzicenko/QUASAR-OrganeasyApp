@@ -115,7 +115,7 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-toolbar-title>
-        <div>Organizify</div>
+        <div class="text-center">Organizify</div>
       </q-toolbar-title>
       <q-list>
         <q-item-label v-if="email" header>
@@ -146,15 +146,24 @@
             >
               <q-list style="min-width: 100px">
                 <q-item clickable @click="addTask">
-                  <q-item-section>Task</q-item-section>
+                  <q-item-section avatar>
+                    <q-avatar icon="view_list"></q-avatar>
+                  </q-item-section>
+                  <q-item-section> Task</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable @click="addNote">
-                  <q-item-section>Note</q-item-section>
+                  <q-item-section avatar>
+                    <q-avatar icon="note"></q-avatar>
+                  </q-item-section>
+                  <q-item-section> Note</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable @click="addProcess">
-                  <q-item-section>Process</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="update"></q-icon>
+                  </q-item-section>
+                  <q-item-section> Process</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
