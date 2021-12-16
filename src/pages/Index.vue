@@ -55,8 +55,14 @@
               {{ task['title'] }}
             </q-item-section>
 
-            <q-separator v-if="subtasksState(task['subtasks'])" spaced="sm" />
-            <q-separator v-if="subtasksState(task['subtasks'])" spaced="sm" />
+            <q-separator
+              v-if="task['subtasks'] && subtasksState(task['subtasks'])"
+              spaced="sm"
+            />
+            <q-separator
+              v-if="task['subtasks'] && subtasksState(task['subtasks'])"
+              spaced="sm"
+            />
 
             <q-list separator dense>
               <q-item
