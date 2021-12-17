@@ -14,19 +14,11 @@
         <q-toolbar-title> Organizify </q-toolbar-title>
       </q-toolbar>
     </q-header>
+
     <q-footer elevated reveal class="lt-sm bg-orange-3 text-black">
       <div v-if="email" class="fixed-bottom text-center q-mb-xl q-pa-sm"></div>
       <q-toolbar class="row no-padding">
-        <q-btn
-          flat
-          dense
-          round
-          icon="more_vert"
-          aria-label="Menu"
-          class="no-padding"
-          @click="toggleLeftDrawer"
-        />
-        <div class="col-11">
+        <div class="col-12">
           <q-list class="row">
             <q-item
               class="col justify-center no-padding"
@@ -34,8 +26,13 @@
               exact
               to="/"
             >
-              <q-item-section avatar class="no-padding">
-                <q-avatar icon="view_list"></q-avatar>
+              <q-item-section class="text-center" style="line-height: 0">
+                <q-item-section class="row no-padding">
+                  <q-icon size="sm" name="view_list" class="col"></q-icon>
+                </q-item-section>
+                <q-item-section class="no-margin text-weight-light">
+                  Diary
+                </q-item-section>
               </q-item-section>
             </q-item>
             <q-item
@@ -44,19 +41,22 @@
               exact
               to="/notes"
             >
-              <q-item-section avatar class="no-padding">
-                <q-avatar icon="note"></q-avatar>
+              <q-item-section class="text-center" style="line-height: 0">
+                <q-item-section class="row no-padding">
+                  <q-icon size="sm" name="note" class="col"></q-icon>
+                </q-item-section>
+                <q-item-section class="no-margin text-weight-light">
+                  Notes
+                </q-item-section>
               </q-item-section>
             </q-item>
             <q-item class="col justify-center no-padding" clickable>
-              <q-item-section avatar class="no-padding">
-                <q-avatar
-                  round
-                  color="orange"
-                  text-color="white"
-                  icon="add"
-                ></q-avatar>
-              </q-item-section>
+              <q-avatar
+                round
+                color="orange"
+                text-color="white"
+                icon="add"
+              ></q-avatar>
 
               <q-menu
                 class="text-center"
@@ -94,8 +94,13 @@
               exact
               to="/processes"
             >
-              <q-item-section avatar class="no-padding">
-                <q-icon name="update"></q-icon>
+              <q-item-section class="text-center" style="line-height: 0">
+                <q-item-section class="row no-padding">
+                  <q-icon size="sm" name="update" class="col"></q-icon>
+                </q-item-section>
+                <q-item-section class="no-margin text-weight-light">
+                  Processes
+                </q-item-section>
               </q-item-section>
             </q-item>
             <q-item
@@ -104,8 +109,13 @@
               exact
               to="/settings"
             >
-              <q-item-section avatar class="no-padding">
-                <q-icon name="settings"></q-icon>
+              <q-item-section class="text-center" style="line-height: 0">
+                <q-item-section class="row no-padding">
+                  <q-icon size="sm" name="settings" class="col"></q-icon>
+                </q-item-section>
+                <q-item-section class="no-margin text-weight-light">
+                  Settings
+                </q-item-section>
               </q-item-section>
             </q-item>
           </q-list>
@@ -220,6 +230,12 @@ export default {
           caption: '',
           icon: 'help',
           link: '/help'
+        },
+        {
+          title: 'Settings',
+          caption: '',
+          icon: 'settings',
+          link: '/settings'
         }
       ],
       unauthLinks: [
