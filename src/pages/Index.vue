@@ -243,9 +243,6 @@ export default {
 
     holdSuccess(event, index) {
       this.$refs[`taskHold-${index}`].show()
-    },
-    holdSubtask(event, index) {
-      console.log('holded subtask')
     }
   }
 }
