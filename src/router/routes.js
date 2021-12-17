@@ -18,6 +18,10 @@ const routes = [
       {
         path: '/processes',
         component: () => import('src/pages/Processes.vue')
+      },
+      {
+        path: '/settings',
+        component: () => import('src/pages/Settings.vue')
       }
     ]
   },
