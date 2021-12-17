@@ -15,7 +15,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-footer elevated reveal class="lt-sm bg-orange-3 text-black">
+    <q-footer elevated reveal class="lt-sm bg-orange-3 text-black text-caption">
       <div v-if="email" class="fixed-bottom text-center q-mb-xl q-pa-sm"></div>
       <q-toolbar class="row no-padding">
         <div class="col-12">
