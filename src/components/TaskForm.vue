@@ -620,7 +620,6 @@ export default {
         }
       }
       if (this.form.toggleNotifications) {
-        console.log(12312312312)
         for (const notification of this.form.notificationForm) {
           let time =
             notification.notificationPointModel == 'start time'
