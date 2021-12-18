@@ -597,12 +597,14 @@ export default {
       if (this.form.toggleDefaultNotif) {
         notificationsId.push({
           id:
-            Number(
+            (Number(
               date.formatDate(
                 date.extractDate(this.form.eventDate, 'DD-MM-YYYY HH:mm'),
                 'x'
               )
-            ) / 1000
+            ) +
+              1000) /
+            1000
         })
         if (this.form.toggleEventEnd) {
           notificationsId.push({
