@@ -231,8 +231,15 @@
     </q-card-section>
 
     <q-card-section>
-      <q-toggle v-model="form.toggleNotification" label="Add notifications" />
-      <q-card-section v-if="form.toggleNotification">
+      <q-checkbox
+        v-model="form.toggleDefaultNotif"
+        label="Default notifications"
+      />
+    </q-card-section>
+
+    <q-card-section>
+      <q-toggle v-model="form.toggleNotifications" label="Add notifications" />
+      <q-card-section v-if="form.toggleNotifications">
         <p>
           Notifications
           <q-btn flat @click="addNotification()">+</q-btn>
@@ -410,7 +417,8 @@ export default {
         subtasks: [],
         subtaskInput: '',
 
-        toggleNotification: false,
+        toggleDefaultNotif: false,
+        toggleNotifications: false,
         notificationForm: [
           {
             notificationTimeValuesModel: 0,
@@ -550,13 +558,16 @@ export default {
           ? this.editTask.subtasks
           : []
 
-        this.form.toggleNotification = this.editTask.notifications
+        this.form.toggleNotifications = this.editTask.notifications
           ? true
           : false
         this.form.notificationForm = this.editTask.notifications
           ? this.editTask.notifications
           : []
         this.form.notificationsId = this.editTask.notificationsId
+          ? this.editTask.notificationsId
+          : []
+        this.form.toggleDefaultNotif = this.editTask.toggleDefaultNotif
 
         this.form.toggleRepeat = this.editTask.repeat ? true : false
         if (this.editTask.repeat) {
@@ -581,19 +592,68 @@ export default {
         }
       }
     },
-    addNotifsId() {
+    async addNotifsId() {
       const notificationsId = []
-      for (const notification of this.form.notificationForm) {
-        let time =
-          notification.notificationPointModel == 'start time'
-            ? this.form.eventDate
-            : this.form.eventEndingDate
-            ? this.form.eventEndingDate
-            : this.form.eventDate
-        if (notification.notificationPeriodModel == 'before') {
-          time = date.subtractFromDate(
-            date.extractDate(time, 'DD-MM-YYYY HH:mm'),
-            {
+      if (this.form.toggleDefaultNotif) {
+        notificationsId.push({
+          id:
+            Number(
+              date.formatDate(
+                date.extractDate(this.form.eventDate, 'DD-MM-YYYY HH:mm'),
+                'x'
+              )
+            ) / 1000
+        })
+        if (this.form.toggleEventEnd) {
+          notificationsId.push({
+            id:
+              Number(
+                date.formatDate(
+                  date.extractDate(
+                    this.form.eventEndingDate,
+                    'DD-MM-YYYY HH:mm'
+                  ),
+                  'x'
+                )
+              ) / 1000
+          })
+        }
+      }
+      if (this.form.toggleNotifications) {
+        console.log(12312312312)
+        for (const notification of this.form.notificationForm) {
+          let time =
+            notification.notificationPointModel == 'start time'
+              ? this.form.eventDate
+              : this.form.eventEndingDate
+              ? this.form.eventEndingDate
+              : this.form.eventDate
+          if (notification.notificationPeriodModel == 'before') {
+            time = date.subtractFromDate(
+              date.extractDate(time, 'DD-MM-YYYY HH:mm'),
+              {
+                months:
+                  notification.notificationTimeTypeModel == 'months'
+                    ? notification.notificationTimeValuesModel
+                    : 0,
+                days:
+                  notification.notificationTimeTypeModel == 'days'
+                    ? notification.notificationTimeValuesModel
+                    : 0,
+                hours:
+                  notification.notificationTimeTypeModel == 'hours'
+                    ? notification.notificationTimeValuesModel
+                    : notification.notificationTimeTypeModel == 'weeks'
+                    ? notification.notificationTimeValuesModel * 7
+                    : 0,
+                minutes:
+                  notification.notificationTimeTypeModel == 'minutes'
+                    ? notification.notificationTimeValuesModel
+                    : 0
+              }
+            )
+          } else {
+            time = date.addToDate(date.extractDate(time, 'DD-MM-YYYY HH:mm'), {
               months:
                 notification.notificationTimeTypeModel == 'months'
                   ? notification.notificationTimeValuesModel
@@ -612,41 +672,25 @@ export default {
                 notification.notificationTimeTypeModel == 'minutes'
                   ? notification.notificationTimeValuesModel
                   : 0
-            }
-          )
-        } else {
-          time = date.addToDate(date.extractDate(time, 'DD-MM-YYYY HH:mm'), {
-            months:
-              notification.notificationTimeTypeModel == 'months'
-                ? notification.notificationTimeValuesModel
-                : 0,
-            days:
-              notification.notificationTimeTypeModel == 'days'
-                ? notification.notificationTimeValuesModel
-                : 0,
-            hours:
-              notification.notificationTimeTypeModel == 'hours'
-                ? notification.notificationTimeValuesModel
-                : notification.notificationTimeTypeModel == 'weeks'
-                ? notification.notificationTimeValuesModel * 7
-                : 0,
-            minutes:
-              notification.notificationTimeTypeModel == 'minutes'
-                ? notification.notificationTimeValuesModel
-                : 0
+            })
+          }
+          notificationsId.push({
+            id:
+              (Number(date.formatDate(time, 'x')) +
+                (notification.notificationPeriodModel == 'before' ? 1000 : 0)) /
+              1000
           })
         }
-        const notifsToRemove = []
+      }
+      const notifsToRemove = []
+      if (this.editTask && this.form.notificationsId.length) {
         for (const notif of this.form.notificationsId) {
           notifsToRemove.push({ id: notif.id })
         }
-        this.$store.dispatch('notification/removeNotifications', notifsToRemove)
-        notificationsId.push({
-          id:
-            (Number(date.formatDate(time, 'x')) +
-              (notification.notificationPeriodModel == 'before' ? 1000 : 0)) /
-            1000
-        })
+        await this.$store.dispatch(
+          'notification/removeNotifications',
+          notifsToRemove
+        )
       }
       this.form.notificationsId = notificationsId
     },
@@ -660,15 +704,15 @@ export default {
       )
       this.updateData()
     },
-    onOKClick() {
-      this.addNotifsId()
+    async onOKClick() {
+      await this.addNotifsId()
       this.$emit('OKEvent', this.form)
     },
     onCancelClick() {
       this.$emit('cancelEvent')
     },
-    onEditClick() {
-      this.addNotifsId()
+    async onEditClick() {
+      await this.addNotifsId()
       this.$emit('editEvent', this.form)
     },
 
