@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "quasar dev",
     "mobile": "quasar dev -m capacitor -T android",
+    "mobile:build": "quasar build -m capacitor -T android --ide",
     "lint": "eslint --ext .js,.vue ./",
     "lint-fix": "eslint --ext .js,.vue ./ --fix",
     "test": "echo \"No test specified\" && exit 0"

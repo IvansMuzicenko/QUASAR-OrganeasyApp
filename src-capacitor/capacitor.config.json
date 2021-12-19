@@ -1,12 +1,12 @@
 {
-  "appId": "org.ivansmuzicenko.quasartodo",
-  "appName": "quasar_todo",
+  "appId": "org.ivansmuzicenko.organizify",
+  "appName": "Organizify",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
   "plugins": {
     "LocalNotifications": {
-      "smallIcon": "ic_stat_icon_config_sample",
+      "smallIcon": "ic_organizify",
       "iconColor": "#488AFF",
       "sound": "beep.wav"
     }

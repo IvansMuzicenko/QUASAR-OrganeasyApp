@@ -5,9 +5,8 @@
   "author": "Ivans Muzicenko <ivans.muzicenko@gmail.com>",
   "private": true,
   "dependencies": {
-    "@capacitor/android": "^2.5.0",
-    "@capacitor/cli": "^2.0.0",
-    "@capacitor/core": "^2.0.0",
-    "@capacitor/device": "^1.1.0"
+    "@capacitor/android": "^3.3.3",
+    "@capacitor/cli": "^3.3.3",
+    "@capacitor/core": "^3.3.3"
   }
 }
