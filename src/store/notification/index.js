@@ -155,6 +155,40 @@ const actions = {
               const notificationDate = new Date(
                 Number(task.notificationsId[notifId].id) * 1000
               )
+
+              const notificationTitle = `${task.title} | ${task.time.slice(
+                0,
+                task.time.indexOf(' ')
+              )} (${task.time.slice(task.time.indexOf(' ') + 1)} ${
+                task.endingTime
+                  ? `- ${task.endingTime.slice(
+                      task.endingTime.indexOf(' ') + 1
+                    )}`
+                  : ''
+              })`
+
+              let notificationText = ``
+              const beforeStart = date.getDateDiff(
+                date.extractDate(task.time, 'DD-MM-YYYY HH:mm'),
+                notificationDate,
+                'minutes'
+              )
+              notificationText = `${
+                beforeStart <= 0
+                  ? 'started'
+                  : `starts in ${beforeStart} minutes.`
+              }`
+              if (beforeStart < 0 && task.endingTime) {
+                const beforeEnd = date.getDateDiff(
+                  date.extractDate(task.endingTime, 'DD-MM-YYYY HH:mm'),
+                  notificationDate,
+                  'minutes'
+                )
+                notificationText = `${
+                  beforeEnd <= 0 ? 'ended' : `ends in ${beforeEnd} minutes.`
+                }`
+              }
+
               const pendetNotifs =
                 await capacitor.Plugins.LocalNotifications.getPending()
 
@@ -169,8 +203,8 @@ const actions = {
                 await capacitor.Plugins.LocalNotifications.schedule({
                   notifications: [
                     {
-                      title: task.title,
-                      body: task.title,
+                      title: notificationTitle,
+                      body: notificationText,
                       id: Number(task.notificationsId[notifId].id),
                       schedule: { at: notificationDate },
                       allowWhileIdle: true,
