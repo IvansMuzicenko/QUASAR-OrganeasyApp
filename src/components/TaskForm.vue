@@ -411,7 +411,7 @@ export default {
 
         toggleProcesses: false,
         processesModel: [],
-        processesTime: null,
+        processesTime: 0,
 
         toggleSubtasks: false,
         subtasks: [],
@@ -595,6 +595,22 @@ export default {
     async addNotifsId() {
       const notificationsId = []
       if (this.form.toggleDefaultNotif) {
+        if (this.form.processesTime != 0) {
+          notificationsId.push({
+            id:
+              (Number(
+                date.formatDate(
+                  date.subtractFromDate(
+                    date.extractDate(this.form.eventDate, 'DD-MM-YYYY HH:mm'),
+                    { minutes: this.form.processesTime }
+                  ),
+                  'x'
+                )
+              ) +
+                2000) /
+              1000
+          })
+        }
         notificationsId.push({
           id:
             (Number(

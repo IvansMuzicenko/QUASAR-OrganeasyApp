@@ -152,9 +152,8 @@ const actions = {
         if (task.notificationsId) {
           if (!task.progress) {
             for (const notifId in task.notificationsId) {
-              const notificationDate = new Date(
-                Number(task.notificationsId[notifId].id) * 1000
-              )
+              const notificationId = task.notificationsId[notifId].id
+              const notificationDate = new Date(Number(notificationId) * 1000)
 
               const notificationTitle = `${task.title} | ${task.time.slice(
                 0,
@@ -189,14 +188,27 @@ const actions = {
                 }`
               }
 
+              if (
+                task.processes &&
+                notificationId.toString()[
+                  notificationId.toString().length - 1
+                ] == '2'
+              ) {
+                let processesList = ''
+                for (const process in task.processes) {
+                  processesList +=
+                    (process > 0 ? ', ' : '') + task.processes[process]
+                }
+                console.log(processesList)
+                notificationText = `starts in ${beforeStart} minutes. Preparation processes: ${processesList}`
+              }
+
               const pendetNotifs =
                 await capacitor.Plugins.LocalNotifications.getPending()
 
               if (
                 !pendetNotifs.notifications.some(
-                  (element) =>
-                    Number(element.id) ===
-                    Number(task.notificationsId[notifId].id)
+                  (element) => Number(element.id) === Number(notificationId)
                 ) &&
                 dateNow.getTime() <= notificationDate.getTime()
               ) {
@@ -205,7 +217,7 @@ const actions = {
                     {
                       title: notificationTitle,
                       body: notificationText,
-                      id: Number(task.notificationsId[notifId].id),
+                      id: Number(notificationId),
                       schedule: { at: notificationDate },
                       allowWhileIdle: true,
                       autoCancel: true,
