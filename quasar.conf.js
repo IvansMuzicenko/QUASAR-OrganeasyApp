@@ -141,8 +141,8 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: `Organizify`,
-        short_name: `Organizify`,
+        name: `Organeasy`,
+        short_name: `Organeasy`,
         description: `Life planner with diary, tasks and notes`,
         display: 'standalone',
         orientation: 'portrait',
@@ -206,7 +206,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'Organizify'
+        appId: 'Organeasy'
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Organizify</string>
-    <string name="title_activity_main">Organizify</string>
-    <string name="package_name">org.ivansmuzicenko.organizify</string>
-    <string name="custom_url_scheme">org.ivansmuzicenko.organizify</string>
+    <string name="app_name">Organeasy</string>
+    <string name="title_activity_main">Organeasy</string>
+    <string name="package_name">org.ivansmuzicenko.organeasy</string>
+    <string name="custom_url_scheme">org.ivansmuzicenko.organeasy</string>
 </resources>

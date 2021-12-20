@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Organizify </q-toolbar-title>
+        <q-toolbar-title> Organeasy </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -130,7 +130,7 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-toolbar-title>
-        <div class="text-center">Organizify</div>
+        <div class="text-center">Organeasy</div>
       </q-toolbar-title>
       <q-list>
         <q-item-label v-if="email" header>

@@ -1,12 +1,12 @@
 {
-	"appId": "org.ivansmuzicenko.organizify",
+	"appId": "org.ivansmuzicenko.organeasy",
 	"appName": "quasar_todo",
 	"bundledWebRuntime": false,
 	"npmClient": "npm",
 	"webDir": "www",
 	"plugins": {
 		"LocalNotifications": {
-			"smallIcon": "ic_organizify",
+			"smallIcon": "ic_organeasy",
 			"iconColor": "#488AFF",
 			"sound": "beep.wav"
 		}

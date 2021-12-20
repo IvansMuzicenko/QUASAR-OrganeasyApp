@@ -1,4 +1,4 @@
-# Organizify (Organizify)
+# Organeasy (Organeasy)
 
 Life planner with diary, tasks and notes
 

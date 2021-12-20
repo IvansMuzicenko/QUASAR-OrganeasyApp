@@ -1,6 +1,6 @@
 {
-  "appId": "org.ivansmuzicenko.organizify",
-  "appName": "Organizify",
+  "appId": "org.ivansmuzicenko.organeasy",
+  "appName": "Organeasy",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
