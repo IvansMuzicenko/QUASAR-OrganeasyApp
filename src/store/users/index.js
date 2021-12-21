@@ -31,6 +31,14 @@ const mutations = {
 
     state.user.userData = userData
   },
+  LOGOUT(state) {
+    state.user.email = null
+    state.user.userId = null
+    state.user.userData = {}
+
+    console.log(state)
+    this.$router.push('/auth')
+  },
   ADD_TASK(state, newTask) {
     state.user.userData.tasks[state.user.userData.tasks.length] = newTask
   },
@@ -45,6 +53,9 @@ const actions = {
   },
   setUserData({ commit }, userData) {
     commit('SET_USER_DATA', userData)
+  },
+  logout({ commit }) {
+    commit('LOGOUT')
   }
 }
 
