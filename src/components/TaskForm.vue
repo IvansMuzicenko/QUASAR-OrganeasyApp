@@ -15,7 +15,7 @@
     <q-card-section>
       <q-item v-ripple tag="label" class="no-padding">
         <q-item-section avatar>
-          <q-checkbox v-model="form.progress" />
+          <q-toggle v-model="form.progress" />
         </q-item-section>
         <q-item-section>
           <q-item-label>Progress</q-item-label>
@@ -24,6 +24,17 @@
           }}</q-item-label>
         </q-item-section>
       </q-item>
+    </q-card-section>
+
+    <q-card-section>
+      <q-toggle v-model="form.continuousState" label="Continuous action" />
+    </q-card-section>
+
+    <q-card-section>
+      <q-toggle
+        v-model="form.toggleDefaultNotif"
+        label="Default notifications"
+      />
     </q-card-section>
 
     <q-card-section>
@@ -72,179 +83,238 @@
     </q-card-section>
 
     <q-card-section>
-      <q-toggle v-model="form.toggleEventEnd" label="Add event ending" />
+      <q-checkbox
+        v-if="!form.toggleEventEnd"
+        v-model="form.toggleEventEnd"
+        label="Add event ending"
+      />
 
-      <q-input
-        v-if="form.toggleEventEnd"
-        v-model="form.eventEndingDate"
-        filled
-        label="Event ending"
-      >
-        <template #prepend>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy
-              cover
-              transition-show="scale"
-              transition-hide="scale"
-            >
-              <q-date
-                v-model="form.eventEndingDate"
-                mask="DD-MM-YYYY HH:mm"
-                today-btn
-              >
-                <div class="items-center justify-end row">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-
-        <template #append>
-          <q-icon name="access_time" class="cursor-pointer">
-            <q-popup-proxy
-              cover
-              transition-show="scale"
-              transition-hide="scale"
-            >
-              <q-time
-                v-model="form.eventEndingDate"
-                mask="DD-MM-YYYY HH:mm"
-                format24h
-                now-btn
-              >
-                <div class="items-center justify-end row">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
-                </div>
-              </q-time>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
-    </q-card-section>
-
-    <q-card-section>
-      <q-toggle v-model="form.toggleLocation" label="Add event location" />
-      <q-input
-        v-if="form.toggleLocation"
-        v-model="form.eventLocation"
-        bottom-slots
-        label="Location"
-        class="q-px-md"
-      >
-      </q-input>
-    </q-card-section>
-
-    <q-card-section>
-      <q-checkbox v-model="form.continuousState" label="Continuous action" />
-    </q-card-section>
-
-    <q-card-section>
-      <q-toggle v-model="form.toggleProcesses" label="Add processes" />
-      <q-card-section v-if="form.toggleProcesses">
-        <q-btn outline color="success" class="q-ma-xs">
-          Add process
-          <q-popup-proxy
-            ref="processPopup"
-            cover
-            transition-show="scale"
-            transition-hide="scale"
-            class="q-pa-sm"
-          >
-            <q-input
-              v-model="processTitle"
-              bottom-slots
-              label="Title"
-              :dense="false"
-            >
-            </q-input>
-            <q-input
-              v-model.number="processTime"
-              bottom-slots
-              type="number"
-              label="Time"
-              suffix="Minutes"
-              min="0"
-              :dense="false"
-            >
-            </q-input>
-
-            <q-btn flat @click="addProcess()">Add</q-btn>
-            <q-btn flat @click="hideProcess()">Cancel</q-btn>
-          </q-popup-proxy>
-        </q-btn>
-
-        <q-select
-          v-model="form.processesModel"
-          outlined
-          multiple
-          :options="processesList"
-          label="Processes"
-        />
-        Total time: {{ form.processesTime }} minutes
-      </q-card-section>
-    </q-card-section>
-
-    <q-card-section>
-      <q-toggle v-model="form.toggleSubtasks" label="Add subtasks" />
-      <q-card-section v-if="form.toggleSubtasks">
+      <q-card-section v-if="form.toggleEventEnd" class="row no-padding">
         <q-input
-          v-model="form.subtaskInput"
-          bottom-slots
-          label="Subtasks"
-          :dense="false"
+          v-model="form.eventEndingDate"
+          filled
+          label="Event ending"
+          class="col"
         >
+          <template #prepend>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date
+                  v-model="form.eventEndingDate"
+                  mask="DD-MM-YYYY HH:mm"
+                  today-btn
+                >
+                  <div class="items-center justify-end row">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+
           <template #append>
-            <q-btn
-              round
-              dense
-              flat
-              icon="add"
-              @click="addSubtask(form.subtaskInput)"
-            />
+            <q-icon name="access_time" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-time
+                  v-model="form.eventEndingDate"
+                  mask="DD-MM-YYYY HH:mm"
+                  format24h
+                  now-btn
+                >
+                  <div class="items-center justify-end row">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-time>
+              </q-popup-proxy>
+            </q-icon>
           </template>
         </q-input>
-
-        <q-list bordered separator>
-          <q-item v-for="(subtask, index) in form.subtasks" :key="subtask">
-            <q-item-section v-if="editTask && editTask.subtasks" avatar>
-              <q-btn
-                dense
-                flat
-                :color="subtask['progress'] ? 'negative' : 'positive'"
-                :icon="subtask['progress'] ? 'close' : 'check'"
-                @click="onSubtaskClick(index, subtask['progress'])"
-              ></q-btn>
-            </q-item-section>
-            <q-item-section :class="subtask['progress'] ? 'text-strike' : ''">{{
-              subtask['title']
-            }}</q-item-section>
-            <q-item-section side>
-              <q-btn
-                icon="cancel"
-                flat
-                round
-                @click="deleteSubtask(index)"
-              ></q-btn
-            ></q-item-section>
-          </q-item>
-        </q-list>
+        <q-icon
+          class="col-1 cursor-pointer float-right"
+          color="red"
+          name="close"
+          size="md"
+          @click="form.toggleEventEnd = !form.toggleEventEnd"
+        ></q-icon>
       </q-card-section>
     </q-card-section>
 
     <q-card-section>
       <q-checkbox
-        v-model="form.toggleDefaultNotif"
-        label="Default notifications"
+        v-if="!form.toggleLocation"
+        v-model="form.toggleLocation"
+        label="Add event location"
       />
+      <q-card-section v-if="form.toggleLocation" class="row no-padding">
+        <q-input
+          v-model="form.eventLocation"
+          bottom-slots
+          label="Location"
+          class="col"
+        >
+        </q-input>
+        <q-icon
+          class="col-1 cursor-pointer float-right"
+          color="red"
+          name="close"
+          size="md"
+          @click="form.toggleLocation = !form.toggleLocation"
+        ></q-icon>
+      </q-card-section>
     </q-card-section>
 
     <q-card-section>
-      <q-toggle v-model="form.toggleNotifications" label="Add notifications" />
-      <q-card-section v-if="form.toggleNotifications">
+      <q-checkbox
+        v-if="!form.toggleProcesses"
+        v-model="form.toggleProcesses"
+        label="Add processes"
+      />
+      <q-card-section v-if="form.toggleProcesses" class="row no-padding">
+        <q-card-section class="no-padding col">
+          <q-select
+            v-model="form.processesModel"
+            outlined
+            multiple
+            :options="processesList"
+            label="Processes"
+          />
+          <q-btn outline color="success" class="q-ma-xs">
+            Add process
+            <q-popup-proxy
+              ref="processPopup"
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+              class="q-pa-sm"
+            >
+              <q-card>
+                <q-card-section>
+                  <q-input
+                    v-model="processTitle"
+                    bottom-slots
+                    label="Title"
+                    :dense="false"
+                  >
+                  </q-input>
+                  <q-input
+                    v-model.number="processTime"
+                    bottom-slots
+                    type="number"
+                    label="Time"
+                    suffix="Minutes"
+                    min="0"
+                    :dense="false"
+                  >
+                  </q-input>
+                </q-card-section>
+                <q-card-actions>
+                  <q-btn flat text-color="green" @click="addProcess()"
+                    >Add</q-btn
+                  >
+                  <q-btn flat @click="hideProcess()">Cancel</q-btn>
+                </q-card-actions>
+              </q-card>
+            </q-popup-proxy>
+          </q-btn>
+          <p>Total time: {{ form.processesTime }} minutes</p>
+        </q-card-section>
+        <q-icon
+          class="col-1 cursor-pointer float-right"
+          color="red"
+          name="close"
+          size="md"
+          @click="form.toggleProcesses = !form.toggleProcesses"
+        ></q-icon>
+      </q-card-section>
+    </q-card-section>
+
+    <q-card-section>
+      <q-checkbox
+        v-if="!form.toggleSubtasks"
+        v-model="form.toggleSubtasks"
+        label="Add subtasks"
+      />
+      <q-card-section v-if="form.toggleSubtasks" class="row no-padding">
+        <q-card-section class="col no-padding">
+          <q-input
+            v-model="form.subtaskInput"
+            bottom-slots
+            label="Subtasks"
+            :dense="false"
+          >
+            <template #append>
+              <q-btn
+                round
+                dense
+                flat
+                icon="add"
+                @click="addSubtask(form.subtaskInput)"
+              />
+            </template>
+          </q-input>
+
+          <q-list v-if="form.subtasks.length" bordered separator>
+            <q-item v-for="(subtask, index) in form.subtasks" :key="subtask">
+              <q-item-section v-if="editTask && editTask.subtasks" avatar>
+                <q-btn
+                  dense
+                  flat
+                  :color="subtask['progress'] ? 'negative' : 'positive'"
+                  :icon="subtask['progress'] ? 'close' : 'check'"
+                  @click="onSubtaskClick(index, subtask['progress'])"
+                ></q-btn>
+              </q-item-section>
+              <q-item-section
+                :class="subtask['progress'] ? 'text-strike' : ''"
+                >{{ subtask['title'] }}</q-item-section
+              >
+              <q-item-section side>
+                <q-btn
+                  icon="cancel"
+                  flat
+                  round
+                  @click="deleteSubtask(index)"
+                ></q-btn
+              ></q-item-section>
+            </q-item>
+          </q-list>
+        </q-card-section>
+
+        <q-icon
+          class="col-1 cursor-pointer float-right"
+          color="red"
+          name="close"
+          size="md"
+          @click="form.toggleSubtasks = !form.toggleSubtasks"
+        ></q-icon>
+      </q-card-section>
+    </q-card-section>
+
+    <q-card-section>
+      <q-checkbox
+        v-if="!form.toggleNotifications"
+        v-model="form.toggleNotifications"
+        label="Add notifications"
+      />
+      <q-card-section v-if="form.toggleNotifications" class="no-padding">
         <p>
           Notifications
           <q-btn flat @click="addNotification()">+</q-btn>
+          <q-icon
+            class="cursor-pointer float-right"
+            color="red"
+            name="close"
+            size="md"
+            @click="form.toggleNotifications = !form.toggleNotifications"
+          ></q-icon>
         </p>
         <q-card-section
           v-for="(notific, index) in form.notificationForm"
@@ -292,14 +362,28 @@
     </q-card-section>
 
     <q-card-section>
-      <q-toggle v-model="form.toggleRepeat" label="Add repeat" />
-      <q-card-section v-if="form.toggleRepeat" class="flex">
-        <q-input
-          v-model.number="form.repeat.repeatNumber"
-          type="number"
-          min="1"
+      <q-checkbox
+        v-if="!form.toggleRepeat"
+        v-model="form.toggleRepeat"
+        label="Add repeat"
+      />
+      <q-card-section v-if="form.toggleRepeat" class="flex no-padding">
+        <p class="full-width">
+          Repeat
+          <q-icon
+            class="cursor-pointer float-right"
+            color="red"
+            name="close"
+            size="md"
+            @click="form.toggleRepeat = !form.toggleRepeat"
+          ></q-icon>
+        </p>
+        <q-select
+          v-model="form.repeat.repeatNumber"
+          outlined
+          :options="repeatCountOptions"
           label="Repeat count"
-          :rules="[(val) => val >= 1 || 'Must be at least 1 repeat']"
+          style="width: 50%"
         />
         <p class="full-width">Repeat in</p>
         <q-select
@@ -443,6 +527,9 @@ export default {
       },
       processTitle: '',
       processTime: 0,
+
+      repeatCountOptions: Array.from({ length: 99 }, (_, index) => index + 1),
+
       monthsOptions: Array.from({ length: 13 }, (_, index) => index),
 
       weeksOptions: Array.from({ length: 5 }, (_, index) => index),
