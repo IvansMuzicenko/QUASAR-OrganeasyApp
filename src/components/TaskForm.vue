@@ -1,6 +1,6 @@
 <template>
   <q-card :class="editTask ? '' : 'q-dialog-plugin'">
-    <q-card-section>
+    <q-card-section class="no-padding">
       <q-input
         v-model="form.todoTitle"
         bottom-slots
@@ -10,21 +10,23 @@
         class="q-px-md"
       >
       </q-input>
+    </q-card-section>
 
-      <q-card-section>
-        <q-item v-ripple tag="label">
-          <q-item-section avatar>
-            <q-checkbox v-model="form.progress" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Progress</q-item-label>
-            <q-item-label caption>{{
-              form.progress ? 'done' : 'undone'
-            }}</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-card-section>
+    <q-card-section>
+      <q-item v-ripple tag="label" class="no-padding">
+        <q-item-section avatar>
+          <q-checkbox v-model="form.progress" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>Progress</q-item-label>
+          <q-item-label caption>{{
+            form.progress ? 'done' : 'undone'
+          }}</q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-card-section>
 
+    <q-card-section>
       <q-input v-model="form.eventDate" filled label="Event time">
         <template #prepend>
           <q-icon name="event" class="cursor-pointer">
@@ -205,7 +207,7 @@
 
         <q-list bordered separator>
           <q-item v-for="(subtask, index) in form.subtasks" :key="subtask">
-            <q-item-section avatar>
+            <q-item-section v-if="editTask && editTask.subtasks" avatar>
               <q-btn
                 dense
                 flat
@@ -441,16 +443,16 @@ export default {
       },
       processTitle: '',
       processTime: 0,
-      monthsOptions: Array.from({ length: 12 }, (_, index) => index),
+      monthsOptions: Array.from({ length: 13 }, (_, index) => index),
 
-      weeksOptions: Array.from({ length: 4 }, (_, index) => index),
+      weeksOptions: Array.from({ length: 5 }, (_, index) => index),
 
-      daysOptions: Array.from({ length: 31 }, (_, index) => index),
+      daysOptions: Array.from({ length: 32 }, (_, index) => index),
 
-      hoursOptions: Array.from({ length: 24 }, (_, index) => index),
+      hoursOptions: Array.from({ length: 25 }, (_, index) => index),
 
-      minutesOptions: Array.from({ length: 60 }, (_, index) => index),
-      notificationTimeValues: Array.from({ length: 99 }, (_, index) => index),
+      minutesOptions: Array.from({ length: 61 }, (_, index) => index),
+      notificationTimeValues: Array.from({ length: 100 }, (_, index) => index),
       notificationTimeType: ['minutes', 'hours', 'days', 'weeks', 'months'],
       notificationPeriod: ['before', 'after'],
       notificationPoint: ['start time', 'end time'],
@@ -700,7 +702,11 @@ export default {
         }
       }
       const notifsToRemove = []
-      if (this.editTask && this.form.notificationsId.length) {
+      if (
+        this.$q.platform.is.capacitor &&
+        this.editTask &&
+        this.form.notificationsId.length
+      ) {
         for (const notif of this.form.notificationsId) {
           notifsToRemove.push({ id: notif.id })
         }
