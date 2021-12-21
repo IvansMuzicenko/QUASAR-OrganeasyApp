@@ -25,14 +25,16 @@ export default {
   },
   watch: {
     user() {
-      const db = getDatabase()
-      const dbRef = ref(db, this.user)
-      onValue(dbRef, (snapshot) => {
-        const data = snapshot.val()
-        this.$store.dispatch('users/setUserData', data)
-        this.loading = false
-        this.capacitor()
-      })
+      if (this.user) {
+        const db = getDatabase()
+        const dbRef = ref(db, this.user)
+        onValue(dbRef, (snapshot) => {
+          const data = snapshot.val()
+          this.$store.dispatch('users/setUserData', data)
+          this.loading = false
+          this.capacitor()
+        })
+      }
     }
   },
   beforeMount() {

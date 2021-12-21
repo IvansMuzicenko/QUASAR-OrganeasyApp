@@ -6,7 +6,7 @@
       <q-input
         v-model="email"
         filled
-        type="e-mail"
+        type="email"
         label="E-mail"
         lazy-rules
         :rules="[
