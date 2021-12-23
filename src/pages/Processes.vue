@@ -154,6 +154,13 @@ export default {
       this.$emit('ok')
 
       this.hide()
+
+      this.$q.notify({
+        position: 'top',
+        message: 'Process edited',
+        color: 'blue',
+        timeout: 1000
+      })
     },
 
     onCancelClick() {
@@ -174,6 +181,12 @@ export default {
       )
       this.$refs.confirmDialog.hide()
       this.hide()
+      this.$q.notify({
+        position: 'top',
+        message: 'Process removed',
+        color: 'red',
+        timeout: 1000
+      })
     }
   }
 }

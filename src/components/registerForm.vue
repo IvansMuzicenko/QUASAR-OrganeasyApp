@@ -97,6 +97,13 @@ export default {
             email: this.email
           })
           this.$router.push('/')
+
+          this.$q.notify({
+            position: 'top',
+            message: 'Registered successfully',
+            color: 'green',
+            timeout: 1500
+          })
         })
         .catch((error) => {
           this.error = true

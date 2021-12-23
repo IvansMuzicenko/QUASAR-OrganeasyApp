@@ -214,6 +214,13 @@ export default {
         this.note
       )
       this.editState = false
+
+      this.$q.notify({
+        position: 'top',
+        message: 'Note edited',
+        color: 'blue',
+        timeout: 1000
+      })
     },
 
     onConfirmDialogHide() {
@@ -231,6 +238,13 @@ export default {
       )
       this.$refs.confirmDialog.hide()
       this.$router.push('/notes')
+
+      this.$q.notify({
+        position: 'top',
+        message: 'Note removed',
+        color: 'red',
+        timeout: 1000
+      })
     }
   }
 }

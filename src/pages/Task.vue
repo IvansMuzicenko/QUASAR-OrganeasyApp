@@ -397,6 +397,13 @@ export default {
       }
       this.updateTaskData()
       this.$router.push(this.$route.path)
+
+      this.$q.notify({
+        position: 'top',
+        message: 'Task edited',
+        color: 'blue',
+        timeout: 1000
+      })
     },
     changeProgress() {
       update(
@@ -441,6 +448,13 @@ export default {
         )
       )
       this.$router.push('/')
+
+      this.$q.notify({
+        position: 'top',
+        message: 'Task removed',
+        color: 'red',
+        timeout: 1000
+      })
     },
     onConfirmDialogHide() {
       this.$emit('hide')

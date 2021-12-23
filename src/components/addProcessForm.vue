@@ -86,6 +86,12 @@ export default {
       this.$emit('ok')
 
       this.hide()
+      this.$q.notify({
+        position: 'top',
+        message: 'Process added',
+        color: 'green',
+        timeout: 1000
+      })
     },
 
     onCancelClick() {

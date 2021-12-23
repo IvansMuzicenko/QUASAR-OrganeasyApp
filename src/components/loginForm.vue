@@ -75,6 +75,13 @@ export default {
             email: this.email
           })
           this.$router.push('/')
+
+          this.$q.notify({
+            position: 'top',
+            message: 'Logged in',
+            color: 'green',
+            timeout: 1000
+          })
         })
         .catch((error) => {
           this.error = true
