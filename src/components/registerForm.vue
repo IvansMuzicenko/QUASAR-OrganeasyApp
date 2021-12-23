@@ -108,6 +108,7 @@ export default {
     onReset() {
       this.email = null
       this.password = null
+      this.passwordConfirm = null
       this.error = false
     }
   }
