@@ -11,6 +11,7 @@
 
 <script>
 import { getDatabase, ref, onValue } from 'firebase/database'
+import { App as CapacitorApp } from '@capacitor/app'
 
 export default {
   data() {
@@ -38,6 +39,12 @@ export default {
     }
   },
   beforeMount() {
+    CapacitorApp.addListener('backButton', () => {
+      if (this.$route.path == '/auth') {
+        CapacitorApp.exitApp()
+      }
+    })
+
     const user = this.$q.localStorage.getItem('user')
 
     if (user) {

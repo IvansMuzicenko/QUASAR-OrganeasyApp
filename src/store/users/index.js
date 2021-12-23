@@ -36,7 +36,6 @@ const mutations = {
     state.user.userId = null
     state.user.userData = {}
 
-    console.log(state)
     this.$router.push('/auth')
   },
   ADD_TASK(state, newTask) {
