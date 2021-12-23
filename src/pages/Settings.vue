@@ -10,6 +10,7 @@ export default {
   methods: {
     async logout() {
       await this.$store.dispatch('users/logout')
+      this.$q.localStorage.remove('user')
     }
   }
 }
