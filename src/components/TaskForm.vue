@@ -184,6 +184,8 @@
             outlined
             multiple
             :options="processesList"
+            use-chips
+            stack-label
             label="Processes"
           />
           <q-btn outline color="success" class="q-ma-xs">
