@@ -1,6 +1,8 @@
 <template>
   <q-page>
-    settings
+    <p class="text-center">Settings</p>
+    <a href="https://organeasy.netlify.app/" class="text-h6">Organeasy Web</a>
+    <br />
     <q-btn color="red-8" @click="logout()"> Logout </q-btn>
   </q-page>
 </template>
