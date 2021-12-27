@@ -190,43 +190,8 @@
             label="Processes"
           />
           <p v-else>Processes list is empty</p>
-          <q-btn outline color="success" class="q-ma-xs">
+          <q-btn outline color="success" class="q-ma-xs" @click="addProcess">
             Add process
-            <q-popup-proxy
-              ref="processPopup"
-              cover
-              transition-show="scale"
-              transition-hide="scale"
-              class="q-pa-sm"
-            >
-              <q-card>
-                <q-card-section>
-                  <q-input
-                    v-model="processTitle"
-                    bottom-slots
-                    label="Title"
-                    :dense="false"
-                  >
-                  </q-input>
-                  <q-input
-                    v-model.number="processTime"
-                    bottom-slots
-                    type="number"
-                    label="Time"
-                    suffix="Minutes"
-                    min="0"
-                    :dense="false"
-                  >
-                  </q-input>
-                </q-card-section>
-                <q-card-actions>
-                  <q-btn flat text-color="green" @click="addProcess()"
-                    >Add</q-btn
-                  >
-                  <q-btn flat @click="hideProcess()">Close</q-btn>
-                </q-card-actions>
-              </q-card>
-            </q-popup-proxy>
           </q-btn>
           <p>Total time: {{ form.processesTime }} minutes</p>
         </q-card-section>
@@ -470,6 +435,9 @@
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
+
+import AddProcessForm from 'components/AddProcessForm.vue'
+
 export default {
   props: {
     editTask: {
@@ -844,27 +812,9 @@ export default {
       this.$refs.processPopup.hide()
     },
     addProcess() {
-      const newProcess = {
-        id: this.processTitle.replaceAll(' ', '-'),
-        title: this.processTitle,
-        time: this.processTime
-      }
-      const db = getDatabase()
-      set(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/processes/id-${this.processTitle}`
-        ),
-        newProcess
-      )
-      this.$q.notify({
-        position: 'top',
-        message: 'Process added',
-        color: 'green',
-        timeout: 1000
+      this.$q.dialog({
+        component: AddProcessForm
       })
-      this.processTitle = ''
-      this.processTime = 0
     },
     deleteNotification(index) {
       this.form.notificationForm.splice(index, 1)
