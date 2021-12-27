@@ -64,6 +64,27 @@
         {{ task.endingTime }}
       </q-item>
 
+      <q-item v-if="task.continuous">
+        <q-item-section avatar class="taskInfo">Continuous</q-item-section>
+        <q-separator vertical spaced="md" />
+        {{ task.continuous }}
+      </q-item>
+      <q-item v-if="task.taskStarted">
+        <q-item-section avatar class="taskInfo">Started</q-item-section>
+        <q-separator vertical spaced="md" />
+        {{ date(task.taskStarted) }}
+      </q-item>
+      <q-item v-if="task.taskEnded">
+        <q-item-section avatar class="taskInfo">Ended</q-item-section>
+        <q-separator vertical spaced="md" />
+        {{ date(task.taskEnded) }}
+      </q-item>
+      <q-item v-if="task.taskStarted && task.taskEnded">
+        <q-item-section avatar class="taskInfo">Spent time</q-item-section>
+        <q-separator vertical spaced="md" />
+        {{ timeSpent }} minutes
+      </q-item>
+
       <q-item v-if="task.location">
         <q-item-section avatar class="taskInfo">Location</q-item-section>
         <q-separator vertical spaced="md" />
@@ -91,27 +112,6 @@
             {{ notification.notificationPointModel }}
           </q-item-section>
         </q-item-section>
-      </q-item>
-
-      <q-item v-if="task.continuous">
-        <q-item-section avatar class="taskInfo">Continuous</q-item-section>
-        <q-separator vertical spaced="md" />
-        {{ task.continuous }}
-      </q-item>
-      <q-item v-if="task.taskStarted">
-        <q-item-section avatar class="taskInfo">Started</q-item-section>
-        <q-separator vertical spaced="md" />
-        {{ date(task.taskStarted) }}
-      </q-item>
-      <q-item v-if="task.taskEnded">
-        <q-item-section avatar class="taskInfo">Ended</q-item-section>
-        <q-separator vertical spaced="md" />
-        {{ date(task.taskEnded) }}
-      </q-item>
-      <q-item v-if="task.taskStarted && task.taskEnded">
-        <q-item-section avatar class="taskInfo">Spent time</q-item-section>
-        <q-separator vertical spaced="md" />
-        {{ timeSpent }} minutes
       </q-item>
 
       <q-item v-if="task.processes">
