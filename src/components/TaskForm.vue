@@ -554,7 +554,7 @@
 import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
 
-import AddProcessForm from 'components/AddProcessForm.vue'
+import AddProcessForm from 'src/components/AddProcessForm.vue'
 
 export default {
   props: {

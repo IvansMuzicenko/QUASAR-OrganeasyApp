@@ -46,14 +46,6 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
-      extendWebpack(cfg, { isServer, isClient }) {
-        cfg.resolve.alias = {
-          ...cfg.resolve.alias, // This adds the existing alias
-
-          // Add your own alias like this
-          components: path.resolve(__dirname, './src/components')
-        }
-      },
       // env: envparser(),
 
       // transpile: false,

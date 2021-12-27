@@ -195,10 +195,10 @@
 
 <script>
 import { date } from 'quasar'
-import EssentialLink from 'components/EssentialLink.vue'
-import AddProcessForm from 'components/AddProcessForm.vue'
-import AddTaskForm from 'components/AddTaskForm.vue'
-import AddNoteForm from 'components/AddNoteForm.vue'
+import EssentialLink from 'src/components/EssentialLink.vue'
+import AddProcessForm from 'src/components/AddProcessForm.vue'
+import AddTaskForm from 'src/components/AddTaskForm.vue'
+import AddNoteForm from 'src/components/AddNoteForm.vue'
 
 export default {
   components: {
