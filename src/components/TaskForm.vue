@@ -149,6 +149,124 @@
 
     <q-card-section>
       <q-checkbox
+        v-if="!form.toggleNotes"
+        v-model="form.toggleNotes"
+        label="Add notes"
+      />
+      <q-card-section v-if="form.toggleNotes" class="no-padding">
+        <p>
+          Notes
+          <q-icon
+            class="cursor-pointer float-right"
+            color="red"
+            name="close"
+            size="md"
+            @click="form.toggleNotes = !form.toggleNotes"
+          ></q-icon>
+        </p>
+
+        <q-select
+          v-if="notesList.length"
+          v-model="form.notes.attachedNotes"
+          outlined
+          multiple
+          :options="notesList"
+          use-chips
+          stack-label
+          label="Attach notes"
+        />
+        <q-editor
+          v-model="form.notes.text"
+          dense
+          class="full-width"
+          :toolbar="[
+            [
+              {
+                label: $q.lang.editor.align,
+                icon: $q.iconSet.editor.align,
+                fixedLabel: true,
+                list: 'only-icons',
+                options: ['left', 'center', 'right', 'justify']
+              },
+              {
+                label: $q.lang.editor.align,
+                icon: $q.iconSet.editor.align,
+                fixedLabel: true,
+                options: ['left', 'center', 'right', 'justify']
+              }
+            ],
+            [
+              'bold',
+              'italic',
+              'strike',
+              'underline',
+              'subscript',
+              'superscript'
+            ],
+            ['token', 'hr', 'link', 'custom_btn'],
+            ['print', 'fullscreen'],
+            [
+              {
+                label: $q.lang.editor.formatting,
+                icon: $q.iconSet.editor.formatting,
+                list: 'no-icons',
+                options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code']
+              },
+              {
+                label: $q.lang.editor.fontSize,
+                icon: $q.iconSet.editor.fontSize,
+                fixedLabel: true,
+                fixedIcon: true,
+                list: 'no-icons',
+                options: [
+                  'size-1',
+                  'size-2',
+                  'size-3',
+                  'size-4',
+                  'size-5',
+                  'size-6',
+                  'size-7'
+                ]
+              },
+              {
+                label: $q.lang.editor.defaultFont,
+                icon: $q.iconSet.editor.font,
+                fixedIcon: true,
+                list: 'no-icons',
+                options: [
+                  'default_font',
+                  'arial',
+                  'arial_black',
+                  'comic_sans',
+                  'courier_new',
+                  'impact',
+                  'lucida_grande',
+                  'times_new_roman',
+                  'verdana'
+                ]
+              },
+              'removeFormat'
+            ],
+            ['quote', 'unordered', 'ordered', 'outdent', 'indent'],
+
+            ['undo', 'redo']
+          ]"
+          :fonts="{
+            arial: 'Arial',
+            arial_black: 'Arial Black',
+            comic_sans: 'Comic Sans MS',
+            courier_new: 'Courier New',
+            impact: 'Impact',
+            lucida_grande: 'Lucida Grande',
+            times_new_roman: 'Times New Roman',
+            verdana: 'Verdana'
+          }"
+        />
+      </q-card-section>
+    </q-card-section>
+
+    <q-card-section>
+      <q-checkbox
         v-if="!form.toggleLocation"
         v-model="form.toggleLocation"
         label="Add event location"
@@ -462,6 +580,12 @@ export default {
           'DD-MM-YYYY HH:mm'
         ),
 
+        toggleNotes: false,
+        notes: {
+          text: '',
+          attachedNotes: []
+        },
+
         toggleLocation: false,
         eventLocation: '',
 
@@ -556,6 +680,16 @@ export default {
         return false
       }
     },
+    notesList() {
+      const notes = this.$store.getters['users/notes']
+      let notesArray = []
+      if (Object.keys(notes).length) {
+        for (const note in notes) {
+          notesArray.push(notes[note]['title'])
+        }
+      }
+      return notesArray
+    },
     processesList() {
       const processes = this.$store.getters['users/processes']
       let processesArray = []
@@ -595,6 +729,7 @@ export default {
         this.form.todoTitle = this.editTask.title
         this.form.progress = this.editTask.progress
         this.form.eventDate = this.editTask.time
+        this.form.continuousState = this.editTask.continuous
 
         this.form.toggleEventEnd = this.editTask.endingTime ? true : false
         this.form.eventEndingDate = this.editTask.endingTime
@@ -606,7 +741,15 @@ export default {
           ? this.editTask.location
           : ''
 
-        this.form.continuousState = this.editTask.continuous
+        this.form.toggleNotes = this.editTask.notes ? true : false
+        this.form.notes.attachedNotes =
+          this.editTask.notes && this.editTask.notes.attachedNotes
+            ? this.editTask.notes.attachedNotes
+            : []
+        this.form.notes.text =
+          this.editTask.notes && this.editTask.notes.text
+            ? this.editTask.notes.text
+            : ''
 
         this.form.toggleProcesses = this.editTask.processes ? true : false
         this.form.processesModel = this.editTask.processes

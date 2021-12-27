@@ -84,6 +84,31 @@
         <q-separator vertical spaced="md" />
         {{ timeSpent }} minutes
       </q-item>
+      <q-item v-if="task.notes.text || task.notes.attachedNotes.length">
+        <q-item-section avatar class="taskInfo">Notes</q-item-section>
+        <q-separator vertical spaced="md" />
+        <q-item-section>
+          <q-item-section v-if="task.notes.attachedNotes.length">
+            <p class="text-center">Attached notes:</p>
+            <q-list separator bordered>
+              <q-item
+                v-for="note of task.notes.attachedNotes"
+                :key="note"
+                :to="`/notes/${findNoteId(note)}`"
+              >
+                {{ note }}
+              </q-item>
+            </q-list>
+            <q-separator spaced="sm" />
+          </q-item-section>
+          <q-item-section v-if="task.notes.text" class="no-margin">
+            <p class="text-center">Note:</p>
+            <q-card class="q-pa-sm">
+              <p v-html="task.notes.text"></p>
+            </q-card>
+          </q-item-section>
+        </q-item-section>
+      </q-item>
 
       <q-item v-if="task.location">
         <q-item-section avatar class="taskInfo">Location</q-item-section>
@@ -231,6 +256,10 @@ export default {
         progress: false,
         time: '',
         endingTime: '',
+        notes: {
+          text: '',
+          attachedNotes: []
+        },
         location: '',
         notifications: [
           {
@@ -275,6 +304,15 @@ export default {
     this.updateTaskData()
   },
   methods: {
+    findNoteId(title) {
+      const notes = this.$store.getters['users/notes']
+
+      for (const note in notes) {
+        if (notes[note]['title'] == title) {
+          return notes[note]['id']
+        }
+      }
+    },
     date(ms) {
       return date.formatDate(ms, 'DD-MM-YYYY HH:mm')
     },
@@ -357,6 +395,7 @@ export default {
           progress: form.progress,
           time: eventDate,
           endingTime: form.toggleEventEnd ? eventEndingDate : null,
+          notes: form.toggleNotes ? form.notes : null,
           location: form.toggleLocation ? form.eventLocation : null,
           toggleDefaultNotif: form.toggleDefaultNotif,
           notifications: form.toggleNotifications

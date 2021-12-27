@@ -72,6 +72,7 @@ export default {
           progress: form.progress,
           time: eventDate,
           endingTime: form.toggleEventEnd ? eventEndingDate : null,
+          notes: form.toggleNotes ? form.notes : null,
           location: form.toggleLocation ? form.eventLocation : null,
           toggleDefaultNotif: form.toggleDefaultNotif,
           notifications: form.toggleNotifications
@@ -97,6 +98,7 @@ export default {
               }
             : null
         }
+        console.log(newTodo)
 
         set(
           ref(
