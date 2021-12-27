@@ -180,6 +180,7 @@
       <q-card-section v-if="form.toggleProcesses" class="row no-padding">
         <q-card-section class="no-padding col">
           <q-select
+            v-if="processesList.length"
             v-model="form.processesModel"
             outlined
             multiple
@@ -188,6 +189,7 @@
             stack-label
             label="Processes"
           />
+          <p v-else>Processes list is empty</p>
           <q-btn outline color="success" class="q-ma-xs">
             Add process
             <q-popup-proxy
@@ -589,8 +591,10 @@ export default {
     processesList() {
       const processes = this.$store.getters['users/processes']
       let processesArray = []
-      for (const process of processes) {
-        processesArray.push(process['title'])
+      if (Object.keys(processes).length) {
+        for (const process of processes) {
+          processesArray.push(process['title'])
+        }
       }
       return processesArray
     },
@@ -840,7 +844,11 @@ export default {
       this.$refs.processPopup.hide()
     },
     addProcess() {
-      const newProcess = { title: this.processTitle, time: this.processTime }
+      const newProcess = {
+        id: this.processTitle.replaceAll(' ', '-'),
+        title: this.processTitle,
+        time: this.processTime
+      }
       const db = getDatabase()
       set(
         ref(

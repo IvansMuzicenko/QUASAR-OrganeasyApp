@@ -118,8 +118,8 @@ export default {
       })
     },
     editProcess(process) {
-      this.show()
       this.selectedProcess = JSON.parse(JSON.stringify(process))
+      this.show()
     },
     show() {
       this.$refs.dialog.show()
