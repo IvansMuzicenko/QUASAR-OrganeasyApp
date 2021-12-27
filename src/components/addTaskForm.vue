@@ -9,6 +9,8 @@ import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
 import TaskForm from 'components/TaskForm.vue'
 
+const db = getDatabase()
+
 export default {
   components: {
     TaskForm
@@ -30,40 +32,38 @@ export default {
     },
 
     onOKClick(form) {
-      const db = getDatabase()
+      let eventDate = form.eventDate
+      let eventEndingDate = form.eventEndingDate
 
       for (
         let i = 0;
-        i <= form.toggleRepeat ? form.repeat.repeatNumber : 0;
+        i <= (form.toggleRepeat ? form.repeat.repeatNumber : 0);
         i++
       ) {
-        let eventDate = form.eventDate
-        let eventEndingDate = form.eventEndingDate
-
         if (i != 0) {
           eventDate = date.formatDate(
             date.addToDate(date.extractDate(eventDate, 'DD-MM-YYYY HH:mm'), {
-              months: form.repeat.monthsModel * i,
-              days: form.repeat.daysModel * i + form.repeat.weeksModel * 7 * i,
-              hours: form.repeat.hoursModel * i,
-              minutes: form.repeat.minutesModel * i
+              months: form.repeat.monthsModel,
+              days: form.repeat.daysModel + form.repeat.weeksModel * 7,
+              hours: form.repeat.hoursModel,
+              minutes: form.repeat.minutesModel
             }),
             'DD-MM-YYYY HH:mm'
           )
-
-          eventEndingDate = date.formatDate(
-            date.addToDate(
-              date.extractDate(eventEndingDate, 'DD-MM-YYYY HH:mm'),
-              {
-                months: form.repeat.monthsModel * i,
-                days:
-                  form.repeat.daysModel * i + form.repeat.weeksModel * 7 * i,
-                hours: form.repeat.hoursModel * i,
-                minutes: form.repeat.minutesModel * i
-              }
-            ),
-            'DD-MM-YYYY HH:mm'
-          )
+          if (eventEndingDate) {
+            eventEndingDate = date.formatDate(
+              date.addToDate(
+                date.extractDate(eventEndingDate, 'DD-MM-YYYY HH:mm'),
+                {
+                  months: form.repeat.monthsModel,
+                  days: form.repeat.daysModel + form.repeat.weeksModel * 7,
+                  hours: form.repeat.hoursModel,
+                  minutes: form.repeat.minutesModel
+                }
+              ),
+              'DD-MM-YYYY HH:mm'
+            )
+          }
         }
 
         const newTodo = {
