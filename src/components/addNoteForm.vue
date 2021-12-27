@@ -147,15 +147,20 @@ export default {
     },
 
     onOKClick() {
+      let noteId
       if (!this.noteTitle) {
-        const titleText =
-          this.noteText.length > 25 ? this.noteText.slice(0, 25) : this.noteText
-        this.noteTitle = titleText.includes(' ')
-          ? titleText.slice(0, titleText.lastIndexOf(' ') + 1)
-          : titleText.replace('<br>', '')
+        let titleText = this.noteText
+          .replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '')
+          .slice(0, 31)
+
+        noteId = titleText.trim()
+        if (this.noteText.length > 30) titleText += '...'
+
+        this.noteTitle = titleText
       }
+
       const newNote = {
-        id: this.noteTitle.replaceAll(' ', '-'),
+        id: noteId.replaceAll(' ', '-'),
         title: this.noteTitle,
         text: this.noteText
       }

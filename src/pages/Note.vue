@@ -198,13 +198,13 @@ export default {
 
     saveEdit() {
       if (!this.note.title) {
-        const titleText =
-          this.note.text.length > 25
-            ? this.note.text.slice(0, 25)
-            : this.note.text
-        this.note.title = titleText.includes(' ')
-          ? titleText.slice(0, titleText.lastIndexOf(' ') + 1)
-          : titleText.replace('<br>', '')
+        let titleText = this.note.text
+          .replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '')
+          .slice(0, 31)
+
+        if (this.note.text.length > 30) titleText += '...'
+
+        this.note.title = titleText
       }
       update(
         ref(
