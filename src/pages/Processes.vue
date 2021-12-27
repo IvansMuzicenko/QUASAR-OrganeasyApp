@@ -57,7 +57,7 @@
             color="positive"
             icon="save"
             :disable="error"
-            label="Edit"
+            label="Save"
             @click="onOKClick"
           />
           <q-btn color="primary" label="Cancel" @click="onCancelClick" />

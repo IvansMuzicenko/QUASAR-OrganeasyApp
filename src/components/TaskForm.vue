@@ -221,7 +221,7 @@
                   <q-btn flat text-color="green" @click="addProcess()"
                     >Add</q-btn
                   >
-                  <q-btn flat @click="hideProcess()">Cancel</q-btn>
+                  <q-btn flat @click="hideProcess()">Close</q-btn>
                 </q-card-actions>
               </q-card>
             </q-popup-proxy>
@@ -449,7 +449,7 @@
         v-if="editTask"
         icon="save"
         color="positive"
-        label="Edit"
+        label="Save"
         :disable="error"
         @click="onEditClick"
       />
@@ -849,6 +849,14 @@ export default {
         ),
         newProcess
       )
+      this.$q.notify({
+        position: 'top',
+        message: 'Process added',
+        color: 'green',
+        timeout: 1000
+      })
+      this.processTitle = ''
+      this.processTime = 0
     },
     deleteNotification(index) {
       this.form.notificationForm.splice(index, 1)
