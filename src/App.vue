@@ -39,11 +39,13 @@ export default {
     }
   },
   beforeMount() {
-    CapacitorApp.addListener('backButton', () => {
-      if (this.$route.path == '/auth') {
-        CapacitorApp.exitApp()
-      }
-    })
+    if (this.$q.platform.is.capacitor) {
+      CapacitorApp.addListener('backButton', () => {
+        if (this.$route.path == '/auth') {
+          CapacitorApp.exitApp()
+        }
+      })
+    }
 
     const user = this.$q.localStorage.getItem('user')
 
