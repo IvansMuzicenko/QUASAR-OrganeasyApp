@@ -3,7 +3,7 @@
     <q-markup-table wrap-cells separator="cell">
       <thead>
         <tr>
-          <th style="width: 64px"></th>
+          <th style="width: 70px"></th>
           <th class="text-left text-weight-bolder no-padding">
             <span><q-btn flat @click="previousDay()">&lt;</q-btn></span>
             <span class="cursor-pointer wrap">
