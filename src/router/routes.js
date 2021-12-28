@@ -5,7 +5,10 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Index.vue') },
       { path: '/auth', component: () => import('pages/Auth.vue') },
-      { path: '/help', component: () => import('src/pages/Help.vue') },
+
+      { path: '/free-tasks', component: () => import('pages/FreeTasks.vue') },
+
+      { path: '/:date/:title', component: () => import('pages/Task.vue') },
       {
         path: '/notes',
         component: () => import('src/pages/Notes.vue')
@@ -14,7 +17,6 @@ const routes = [
         path: '/notes/:title',
         component: () => import('pages/Note.vue')
       },
-      { path: '/:date/:title', component: () => import('pages/Task.vue') },
       {
         path: '/processes',
         component: () => import('src/pages/Processes.vue')
@@ -22,7 +24,8 @@ const routes = [
       {
         path: '/settings',
         component: () => import('src/pages/Settings.vue')
-      }
+      },
+      { path: '/help', component: () => import('src/pages/Help.vue') }
     ]
   },
 

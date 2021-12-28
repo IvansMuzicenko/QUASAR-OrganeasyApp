@@ -40,22 +40,24 @@
                 </q-item-section>
               </q-item-section>
             </q-item>
+
             <q-item
               class="col justify-center no-padding"
               clickable
               exact
-              to="/notes"
+              to="/free-tasks"
             >
               <q-item-section class="text-center" style="line-height: 0">
                 <q-item-section class="row no-padding">
-                  <q-icon size="sm" name="note" class="col"></q-icon>
+                  <q-icon size="sm" name="alarm_off" class="col"></q-icon>
                 </q-item-section>
                 <q-item-section class="no-margin text-weight-light">
-                  Notes
+                  Free tasks
                 </q-item-section>
               </q-item-section>
             </q-item>
-            <q-item class="col justify-center no-padding" clickable>
+
+            <q-item class="col-2 justify-center no-padding" clickable>
               <q-avatar
                 round
                 color="orange"
@@ -93,33 +95,85 @@
                 </q-list>
               </q-menu>
             </q-item>
+
             <q-item
               class="col justify-center no-padding"
               clickable
               exact
-              to="/processes"
+              to="/notes"
             >
               <q-item-section class="text-center" style="line-height: 0">
                 <q-item-section class="row no-padding">
-                  <q-icon size="sm" name="update" class="col"></q-icon>
+                  <q-icon size="sm" name="note" class="col"></q-icon>
                 </q-item-section>
                 <q-item-section class="no-margin text-weight-light">
-                  Processes
+                  Notes
                 </q-item-section>
               </q-item-section>
             </q-item>
-            <q-item
-              class="col justify-center no-padding"
-              clickable
-              exact
-              to="/settings"
-            >
+
+            <q-item class="col justify-center no-padding" clickable exact>
+              <q-menu
+                class="text-center"
+                auto-close
+                self="top middle"
+                anchor="bottom middle"
+              >
+                <q-list style="min-width: 100px" separator>
+                  <q-item
+                    class="col justify-center no-padding"
+                    clickable
+                    exact
+                    to="/processes"
+                  >
+                    <q-item-section class="text-center" style="line-height: 0">
+                      <q-item-section class="row no-padding">
+                        <q-icon size="sm" name="update" class="col"></q-icon>
+                      </q-item-section>
+                      <q-item-section class="no-margin text-weight-light">
+                        Processes
+                      </q-item-section>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item
+                    class="col justify-center no-padding"
+                    clickable
+                    exact
+                    to="/help"
+                  >
+                    <q-item-section class="text-center" style="line-height: 0">
+                      <q-item-section class="row no-padding">
+                        <q-icon size="sm" name="help" class="col"></q-icon>
+                      </q-item-section>
+                      <q-item-section class="no-margin text-weight-light">
+                        Help
+                      </q-item-section>
+                    </q-item-section>
+                  </q-item>
+                  <q-item
+                    class="col justify-center no-padding"
+                    clickable
+                    exact
+                    to="/settings"
+                  >
+                    <q-item-section class="text-center" style="line-height: 0">
+                      <q-item-section class="row no-padding">
+                        <q-icon size="sm" name="settings" class="col"></q-icon>
+                      </q-item-section>
+                      <q-item-section class="no-margin text-weight-light">
+                        Settings
+                      </q-item-section>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
               <q-item-section class="text-center" style="line-height: 0">
                 <q-item-section class="row no-padding">
-                  <q-icon size="sm" name="settings" class="col"></q-icon>
+                  <q-icon size="sm" name="more_vert" class="col"></q-icon>
                 </q-item-section>
                 <q-item-section class="no-margin text-weight-light">
-                  Settings
+                  More
                 </q-item-section>
               </q-item-section>
             </q-item>
@@ -217,6 +271,12 @@ export default {
           caption: '',
           icon: 'view_list',
           link: '/'
+        },
+        {
+          title: 'Free tasks',
+          caption: '',
+          icon: 'alarm_off',
+          link: '/free-tasks'
         },
         {
           title: 'Notes',
