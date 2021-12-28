@@ -63,6 +63,7 @@ const getters = {
   userId: (state) => state.user.userId,
   userData: (state) => state.user.userData,
   tasks: (state) => state.user?.userData?.tasks || {},
+  freeTasks: (state) => state.user?.userData?.freeTasks || {},
   notes: (state) => state.user?.userData?.notes || {},
   processes: (state) => state.user?.userData?.processes || {}
 }

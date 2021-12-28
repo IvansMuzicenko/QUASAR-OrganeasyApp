@@ -79,6 +79,13 @@
                     <q-item-section> Task</q-item-section>
                   </q-item>
                   <q-separator />
+                  <q-item clickable @click="addFreeTask">
+                    <q-item-section avatar>
+                      <q-avatar icon="alarm_off"></q-avatar>
+                    </q-item-section>
+                    <q-item-section> Free task</q-item-section>
+                  </q-item>
+                  <q-separator />
                   <q-item clickable @click="addNote">
                     <q-item-section avatar>
                       <q-avatar icon="note"></q-avatar>
@@ -221,6 +228,13 @@
                   <q-item-section> Task</q-item-section>
                 </q-item>
                 <q-separator />
+                <q-item clickable @click="addFreeTask">
+                  <q-item-section avatar>
+                    <q-avatar icon="alarm_off"></q-avatar>
+                  </q-item-section>
+                  <q-item-section> Free task</q-item-section>
+                </q-item>
+                <q-separator />
                 <q-item clickable @click="addNote">
                   <q-item-section avatar>
                     <q-avatar icon="note"></q-avatar>
@@ -250,8 +264,9 @@
 <script>
 import { date } from 'quasar'
 import EssentialLink from 'src/components/EssentialLink.vue'
-import AddProcessForm from 'src/components/AddProcessForm.vue'
 import AddTaskForm from 'src/components/AddTaskForm.vue'
+import AddFreeTaskForm from 'src/components/AddFreeTaskForm.vue'
+import AddProcessForm from 'src/components/AddProcessForm.vue'
 import AddNoteForm from 'src/components/AddNoteForm.vue'
 
 export default {
@@ -323,6 +338,11 @@ export default {
     addTask() {
       this.$q.dialog({
         component: AddTaskForm
+      })
+    },
+    addFreeTask() {
+      this.$q.dialog({
+        component: AddFreeTaskForm
       })
     },
     addProcess() {

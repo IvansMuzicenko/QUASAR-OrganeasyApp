@@ -6,9 +6,14 @@ const routes = [
       { path: '', component: () => import('pages/Index.vue') },
       { path: '/auth', component: () => import('pages/Auth.vue') },
 
-      { path: '/free-tasks', component: () => import('pages/FreeTasks.vue') },
-
       { path: '/:date/:title', component: () => import('pages/Task.vue') },
+
+      { path: '/free-tasks', component: () => import('pages/FreeTasks.vue') },
+      {
+        path: '/free-tasks/:id',
+        component: () => import('pages/FreeTask.vue')
+      },
+
       {
         path: '/notes',
         component: () => import('src/pages/Notes.vue')
