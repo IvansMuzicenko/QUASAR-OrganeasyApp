@@ -84,7 +84,11 @@
         <q-separator vertical spaced="md" />
         {{ timeSpent }} minutes
       </q-item>
-      <q-item v-if="task.notes.text || task.notes.attachedNotes.length">
+      <q-item
+        v-if="
+          task.notes && (task.notes.text || task.notes.attachedNotes.length)
+        "
+      >
         <q-item-section avatar class="taskInfo">Notes</q-item-section>
         <q-separator vertical spaced="md" />
         <q-item-section>
