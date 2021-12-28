@@ -3,7 +3,7 @@
     <q-markup-table wrap-cells separator="cell">
       <thead>
         <tr>
-          <th style="width: 70px"></th>
+          <th style="width: 60px" class="no-padding"></th>
           <th class="text-left text-weight-bolder no-padding">
             <span><q-btn flat @click="previousDay()">&lt;</q-btn></span>
             <span class="cursor-pointer wrap">
@@ -40,13 +40,14 @@
           :style="task['progress'] ? ' background: lightgrey' : ''"
           @click="openTask(task)"
         >
-          <td class="text-center text-weight-bolder">
+          <td class="text-center text-weight-bolder no-padding">
             <span v-if="task['processesTime']"
               >({{ calcPrepTime(task['time'], task['processesTime']) }})</span
             >
             {{ task['time'].slice(task['time'].indexOf(' ')) }}
             <span v-if="task['endingTime']">
-              - {{ task['endingTime'].slice(task['endingTime'].indexOf(' ')) }}
+              <div>-</div>
+              {{ task['endingTime'].slice(task['endingTime'].indexOf(' ')) }}
             </span>
           </td>
 
