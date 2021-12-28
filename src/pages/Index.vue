@@ -78,9 +78,7 @@
                 @touchstart.stop
                 @mousedown.stop
               >
-                <q-item-label>*</q-item-label>
-
-                {{ subtask['title'] }}
+                <q-item-label> ~ {{ subtask['title'] }}</q-item-label>
               </q-item>
             </q-list>
           </td>
@@ -92,12 +90,12 @@
             transition-hide="scale"
           >
             <q-card>
-              <q-card-section>
+              <q-card-section class="text-center">
                 <q-btn color="primary" icon="visibility" @click="openTask(task)"
                   >View</q-btn
                 >
               </q-card-section>
-              <q-card-section>
+              <q-card-section class="text-center">
                 <q-btn
                   color="secondary"
                   icon="edit"
@@ -105,7 +103,7 @@
                   >Edit</q-btn
                 >
               </q-card-section>
-              <q-card-section>
+              <q-card-section class="text-center">
                 <q-btn
                   :icon="task['progress'] ? 'close' : 'check'"
                   :color="task['progress'] ? 'red' : 'positive'"
