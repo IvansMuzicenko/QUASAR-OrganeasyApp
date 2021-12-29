@@ -1,46 +1,79 @@
 <template>
   <q-page v-touch-swipe:3e-2:10:100.mouse.horizontal="handleSwipe">
-    <q-markup-table wrap-cells separator="cell">
-      <thead>
-        <tr>
-          <th style="width: 60px" class="no-padding"></th>
-          <th class="text-left text-weight-bolder no-padding">
-            <span><q-btn flat @click="previousDay()">&lt;</q-btn></span>
-            <span class="cursor-pointer wrap">
-              {{ formattedDate }}
+    <q-card class="flex justify-between q-py-sm">
+      <q-card-section class="no-padding">
+        <span>
+          <q-btn flat @click="previousDay()">&lt;</q-btn>
+        </span>
+        <span class="cursor-pointer wrap">
+          {{ formattedDate }}
 
-              <q-popup-proxy
-                ref="datePicked"
-                cover
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-date
-                  v-model="formattedDate"
-                  :events="calendarEvents"
-                  event-color="teal"
-                  mask="dddd, DD-MM-YYYY"
-                  today-btn
-                >
-                  <div class="items-center justify-end row">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </span>
-            <span><q-btn flat @click="nextDay()">&gt;</q-btn></span>
-          </th>
-        </tr>
-      </thead>
+          <q-popup-proxy
+            ref="datePicked"
+            cover
+            transition-show="scale"
+            transition-hide="scale"
+          >
+            <q-date
+              v-model="formattedDate"
+              :events="calendarEvents"
+              event-color="teal"
+              mask="dddd, DD-MM-YYYY"
+              today-btn
+            >
+              <div class="items-center justify-end row">
+                <q-btn v-close-popup label="Close" color="primary" flat />
+              </div>
+            </q-date>
+          </q-popup-proxy>
+        </span>
+        <span>
+          <q-btn flat @click="nextDay()">&gt;</q-btn>
+        </span>
+      </q-card-section>
+
+      <q-card-section class="no-padding">
+        <q-btn icon="sort" flat
+          >Sort
+          <q-popup-proxy>
+            <q-card>
+              <q-btn class="full-width"> Time </q-btn>
+              <q-separator></q-separator>
+              <q-btn class="full-width"> Title </q-btn>
+            </q-card>
+          </q-popup-proxy>
+        </q-btn>
+        <q-btn icon="filter_alt" flat
+          >Filter
+          <q-popup-proxy>
+            <q-card>
+              <q-card-section>
+                Progress:
+                <q-checkbox class="full-width"> All </q-checkbox>
+                <q-checkbox class="full-width"> Done </q-checkbox>
+                <q-checkbox class="full-width"> Undone </q-checkbox>
+              </q-card-section>
+              <q-separator></q-separator>
+              <q-btn class="full-width"> Title </q-btn>
+            </q-card>
+          </q-popup-proxy>
+        </q-btn>
+      </q-card-section>
+    </q-card>
+    <q-markup-table wrap-cells separator="cell">
       <tbody>
         <tr
           v-for="(task, index) in dayTasks"
           :key="index"
           v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
+          style="width: 60px"
           :style="task['progress'] ? ' background: lightgrey' : ''"
           @click="openTask(task)"
         >
-          <td class="text-center text-weight-bolder no-padding">
+          <td
+            style="width: 60px"
+            class="text-center text-weight-bolder no-padding"
+          >
             <span v-if="task['processesTime']"
               >({{ calcPrepTime(task['time'], task['processesTime']) }})</span
             >
@@ -51,7 +84,7 @@
             </span>
           </td>
 
-          <td>
+          <td class="text-left text-weight-bolder">
             <q-item-section avatar class="text-weight-bolder">
               {{ task['title'] }}
             </q-item-section>
