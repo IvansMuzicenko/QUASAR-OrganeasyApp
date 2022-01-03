@@ -12,6 +12,29 @@
         {{ task['progress'] ? 'Undone' : 'Done' }}
       </q-btn>
       <q-btn
+        v-if="!editState && task['continuous'] && !task['taskStarted'].length"
+        icon="play_arrow"
+        color="green"
+        flat
+        @click="continuousStart"
+      >
+        Start
+      </q-btn>
+      <q-btn
+        v-if="
+          !editState &&
+          task['continuous'] &&
+          task['taskStarted'].length &&
+          !task['taskEnded'].length
+        "
+        icon="stop"
+        color="red"
+        flat
+        @click="continuousStop"
+      >
+        Stop
+      </q-btn>
+      <q-btn
         v-if="!editState"
         icon="edit"
         color="secondary"
@@ -261,6 +284,28 @@ export default {
         color: 'blue',
         timeout: 1000
       })
+    },
+    continuousStart() {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/freeTasks/id-${this.task.id}`
+        ),
+        {
+          taskStarted: Date.now()
+        }
+      )
+    },
+    continuousStop() {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/freeTasks/id-${this.task.id}`
+        ),
+        {
+          taskEnded: Date.now()
+        }
+      )
     },
     changeProgress() {
       update(
