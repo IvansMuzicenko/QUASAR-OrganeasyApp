@@ -2,17 +2,9 @@
   <q-page>
     <q-card class="flex justify-between no-padding">
       <q-btn icon="arrow_back" flat @click="routerBack()"></q-btn>
+
       <q-btn
-        v-if="!editState"
-        :icon="task['progress'] ? 'close' : 'check'"
-        :color="task['progress'] ? 'red' : 'positive'"
-        flat
-        @click="changeProgress"
-      >
-        {{ task['progress'] ? 'Undone' : 'Done' }}
-      </q-btn>
-      <q-btn
-        v-if="!editState && task['continuous'] && !task['taskStarted'].length"
+        v-if="!editState && task['continuous'] && !task['taskStarted']"
         icon="play_arrow"
         color="green"
         flat
@@ -24,8 +16,8 @@
         v-if="
           !editState &&
           task['continuous'] &&
-          task['taskStarted'].length &&
-          !task['taskEnded'].length
+          task['taskStarted'] &&
+          !task['taskEnded']
         "
         icon="stop"
         color="red"
@@ -33,6 +25,15 @@
         @click="continuousStop"
       >
         Stop
+      </q-btn>
+      <q-btn
+        v-if="!editState"
+        :icon="task['progress'] ? 'close' : 'check'"
+        :color="task['progress'] ? 'red' : 'positive'"
+        flat
+        @click="changeProgress"
+      >
+        {{ task['progress'] ? 'Undone' : 'Done' }}
       </q-btn>
       <q-btn
         v-if="!editState"
@@ -295,6 +296,7 @@ export default {
           taskStarted: Date.now()
         }
       )
+      this.updateTaskData()
     },
     continuousStop() {
       update(
@@ -306,6 +308,7 @@ export default {
           taskEnded: Date.now()
         }
       )
+      this.updateTaskData()
     },
     changeProgress() {
       update(

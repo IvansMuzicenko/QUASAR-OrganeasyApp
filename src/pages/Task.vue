@@ -3,6 +3,29 @@
     <q-card class="flex justify-between no-padding">
       <q-btn icon="arrow_back" flat @click="routerBack()"></q-btn>
       <q-btn
+        v-if="!editState && task['continuous'] && !task['taskStarted']"
+        icon="play_arrow"
+        color="green"
+        flat
+        @click="continuousStart"
+      >
+        Start
+      </q-btn>
+      <q-btn
+        v-if="
+          !editState &&
+          task['continuous'] &&
+          task['taskStarted'] &&
+          !task['taskEnded']
+        "
+        icon="stop"
+        color="red"
+        flat
+        @click="continuousStop"
+      >
+        Stop
+      </q-btn>
+      <q-btn
         v-if="!editState"
         :icon="task['progress'] ? 'close' : 'check'"
         :color="task['progress'] ? 'red' : 'positive'"
@@ -446,6 +469,40 @@ export default {
         color: 'blue',
         timeout: 1000
       })
+    },
+    continuousStart() {
+      update(
+        ref(
+          db,
+          `${
+            this.$store.getters['users/userId']
+          }/tasks/date-${this.task.time.slice(
+            0,
+            this.task.time.indexOf(' ')
+          )}/id-${this.task.id}`
+        ),
+        {
+          taskStarted: Date.now()
+        }
+      )
+      this.updateTaskData()
+    },
+    continuousStop() {
+      update(
+        ref(
+          db,
+          `${
+            this.$store.getters['users/userId']
+          }/tasks/date-${this.task.time.slice(
+            0,
+            this.task.time.indexOf(' ')
+          )}/id-${this.task.id}`
+        ),
+        {
+          taskEnded: Date.now()
+        }
+      )
+      this.updateTaskData()
     },
     changeProgress() {
       update(
