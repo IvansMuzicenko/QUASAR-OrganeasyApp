@@ -43,6 +43,33 @@ const mutations = {
   },
   ADD_PROCESS(state, newProcess) {
     state.user.userData.tasks[state.user.userData.tasks.length] = newProcess
+  },
+  SORT_TASKS_BY_TIME(state, order) {
+    for (const [key, value] of Object.entries(state.user.userData.tasks)) {
+      state.user.userData.tasks[key] = Object.values(value).sort((a, b) => {
+        const first = a.time.slice(a.time.indexOf(' ')).replace(':', '.')
+        const second = b.time.slice(b.time.indexOf(' ')).replace(':', '.')
+        if (order == 'asc') {
+          return first - second
+        } else {
+          return second - first
+        }
+      })
+    }
+  },
+  SORT_TASKS_BY_TITLE(state, order) {
+    for (const [key, value] of Object.entries(state.user.userData.tasks)) {
+      state.user.userData.tasks[key] = Object.values(value).sort((a, b) => {
+        console.log(a.title, b.title)
+        const first = a.title
+        const second = b.title
+        if (order == 'asc') {
+          return first - second
+        } else {
+          return second - first
+        }
+      })
+    }
   }
 }
 
@@ -55,6 +82,12 @@ const actions = {
   },
   logout({ commit }) {
     commit('LOGOUT')
+  },
+  sortTasksByTime({ commit }, order) {
+    commit('SORT_TASKS_BY_TIME', order)
+  },
+  sortTasksByTitle({ commit }, order) {
+    commit('SORT_TASKS_BY_TITLE', order)
   }
 }
 

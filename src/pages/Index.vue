@@ -37,9 +37,9 @@
           >Sort
           <q-popup-proxy>
             <q-card>
-              <q-btn class="full-width"> Time </q-btn>
+              <q-btn class="full-width" @click="sortByTime"> Time </q-btn>
               <q-separator></q-separator>
-              <q-btn class="full-width"> Title </q-btn>
+              <q-btn class="full-width" @click="sortByTitle"> Title </q-btn>
             </q-card>
           </q-popup-proxy>
         </q-btn>
@@ -49,9 +49,27 @@
             <q-card>
               <q-card-section>
                 Progress:
-                <q-checkbox class="full-width"> All </q-checkbox>
-                <q-checkbox class="full-width"> Done </q-checkbox>
-                <q-checkbox class="full-width"> Undone </q-checkbox>
+                <q-radio
+                  v-model="filtering.progress"
+                  val="all"
+                  label="All"
+                  class="full-width"
+                >
+                </q-radio>
+                <q-radio
+                  v-model="filtering.progress"
+                  val="done"
+                  label="Done"
+                  class="full-width"
+                >
+                </q-radio>
+                <q-radio
+                  v-model="filtering.progress"
+                  val="undone"
+                  label="Undone"
+                  class="full-width"
+                >
+                </q-radio>
               </q-card-section>
               <q-separator></q-separator>
               <q-btn class="full-width"> Title </q-btn>
@@ -64,6 +82,11 @@
       <tbody>
         <tr
           v-for="(task, index) in dayTasks"
+          v-show="
+            filtering.progress == 'all' ||
+            (filtering.progress == 'done' && task['progress'] == true) ||
+            (filtering.progress == 'undone' && task['progress'] == false)
+          "
           :key="index"
           v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
           style="width: 60px"
@@ -161,7 +184,14 @@ export default {
   data() {
     return {
       timeStamp: Date.now(),
-      formattedDate: date.formatDate(Date.now(), 'dddd, DD-MM-YYYY')
+      formattedDate: date.formatDate(Date.now(), 'dddd, DD-MM-YYYY'),
+      sorting: {
+        title: 'none',
+        time: 'asc'
+      },
+      filtering: {
+        progress: 'all'
+      }
     }
   },
   computed: {
@@ -232,6 +262,16 @@ export default {
       this.$router.push(
         '?date=' + this.formattedDate.slice(this.formattedDate.indexOf(' ') + 1)
       )
+    },
+    sortByTime() {
+      this.sorting.title = 'none'
+      this.sorting.time = this.sorting.time == 'asc' ? 'desc' : 'asc'
+      this.$store.dispatch('users/sortTasksByTime', this.sorting.time)
+    },
+    sortByTitle() {
+      this.sorting.time = 'none'
+      this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
+      this.$store.dispatch('users/sortTasksByTitle', this.sorting.title)
     },
     openTask(task, edit) {
       const taskDate = task.time.slice(0, task.time.indexOf(' '))
