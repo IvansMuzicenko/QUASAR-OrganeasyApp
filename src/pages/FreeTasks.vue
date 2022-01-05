@@ -1,17 +1,72 @@
 <template>
   <q-page>
-    <q-card class="flex">
-      <q-btn
-        icon="arrow_back"
-        flat
-        class="absolute"
-        @click="$router.push('/')"
-      />
+    <q-card class="flex justify-between q-py-sm">
+      <q-card-section class="no-padding">
+        <q-btn
+          icon="arrow_back"
+          flat
+          class="absolute"
+          @click="$router.push('/')"
+        />
+      </q-card-section>
+
+      <q-card-section class="no-padding">
+        <q-btn icon="sort" flat
+          >Sort
+          <q-popup-proxy>
+            <q-card>
+              <q-btn class="full-width" @click="sortByTitle"> Title </q-btn>
+            </q-card>
+          </q-popup-proxy>
+        </q-btn>
+        <q-btn icon="filter_alt" flat
+          >Filter
+          <q-popup-proxy>
+            <q-card>
+              <q-card-section>
+                Progress:
+                <q-radio
+                  v-model="filtering.progress"
+                  val="all"
+                  label="All"
+                  class="full-width"
+                >
+                </q-radio>
+                <q-radio
+                  v-model="filtering.progress"
+                  val="done"
+                  label="Done"
+                  class="full-width"
+                >
+                </q-radio>
+                <q-radio
+                  v-model="filtering.progress"
+                  val="undone"
+                  label="Undone"
+                  class="full-width"
+                >
+                </q-radio>
+              </q-card-section>
+              <q-separator></q-separator>
+              <q-btn class="full-width"> Title </q-btn>
+            </q-card>
+          </q-popup-proxy>
+        </q-btn>
+      </q-card-section>
 
       <p class="text-center text-h6 full-width">Free Tasks</p>
     </q-card>
-    <p class="text-center text-body1">Uncompleted tasks</p>
-    <q-list separator bordered>
+    <p
+      v-if="filtering.progress == 'all' || filtering.progress == 'undone'"
+      class="text-center text-body1"
+    >
+      Uncompleted tasks
+    </p>
+    <q-list
+      v-if="filtering.progress == 'all' || filtering.progress == 'undone'"
+      separator
+      bordered
+    >
       <q-item
         v-for="(task, index) in freeTasks"
         v-show="!task['progress']"
@@ -92,10 +147,21 @@
         </q-item-section>
       </q-item>
     </q-list>
-    <q-separator></q-separator>
-    <p class="text-center text-body1">Completed tasks</p>
-    <q-separator></q-separator>
-    <q-list separator bordered>
+    <q-separator v-if="filtering.progress == 'all'"></q-separator>
+    <p
+      v-if="filtering.progress == 'all' || filtering.progress == 'done'"
+      class="text-center text-body1"
+    >
+      Completed tasks
+    </p>
+    <q-separator
+      v-if="filtering.progress == 'all' || filtering.progress == 'done'"
+    ></q-separator>
+    <q-list
+      v-if="filtering.progress == 'all' || filtering.progress == 'done'"
+      separator
+      bordered
+    >
       <q-item
         v-for="(task, index) in freeTasks"
         v-show="task['progress']"
@@ -153,6 +219,16 @@ import { getDatabase, ref, update } from 'firebase/database'
 const db = getDatabase()
 
 export default {
+  data() {
+    return {
+      sorting: {
+        title: 'none'
+      },
+      filtering: {
+        progress: 'all'
+      }
+    }
+  },
   computed: {
     freeTasks() {
       return this.$store.getters['users/freeTasks']
@@ -194,6 +270,10 @@ export default {
 
     holdSuccess(event, index) {
       this.$refs[`taskHold-${index}`].show()
+    },
+    sortByTitle() {
+      this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
+      this.$store.dispatch('users/sortFreeTasksByTitle', this.sorting.title)
     }
   }
 }

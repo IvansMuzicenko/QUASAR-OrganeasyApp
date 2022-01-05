@@ -60,16 +60,48 @@ const mutations = {
   SORT_TASKS_BY_TITLE(state, order) {
     for (const [key, value] of Object.entries(state.user.userData.tasks)) {
       state.user.userData.tasks[key] = Object.values(value).sort((a, b) => {
-        console.log(a.title, b.title)
-        const first = a.title
-        const second = b.title
         if (order == 'asc') {
-          return first - second
+          if (a.title > b.title) {
+            return 1
+          }
+          if (a.title < b.title) {
+            return -1
+          }
+          return 0
         } else {
-          return second - first
+          if (a.title < b.title) {
+            return 1
+          }
+          if (a.title > b.title) {
+            return -1
+          }
+          return 0
         }
       })
     }
+  },
+  SORT_FREE_TASKS_BY_TITLE(state, order) {
+    state.user.userData.freeTasks = Object.values(
+      state.user.userData.freeTasks
+    ).sort((a, b) => {
+      if (order == 'asc') {
+        if (a.title > b.title) {
+          return 1
+        }
+        if (a.title < b.title) {
+          return -1
+        }
+        return 0
+      } else {
+        if (a.title < b.title) {
+          return 1
+        }
+        if (a.title > b.title) {
+          return -1
+        }
+        return 0
+      }
+    })
   }
 }
 
@@ -88,6 +120,9 @@ const actions = {
   },
   sortTasksByTitle({ commit }, order) {
     commit('SORT_TASKS_BY_TITLE', order)
+  },
+  sortFreeTasksByTitle({ commit }, order) {
+    commit('SORT_FREE_TASKS_BY_TITLE', order)
   }
 }
 
