@@ -37,9 +37,33 @@
           >Sort
           <q-popup-proxy>
             <q-card>
-              <q-btn class="full-width" @click="sortByTime"> Time </q-btn>
+              <q-btn
+                :icon="
+                  sorting.time == 'none'
+                    ? 'last_page'
+                    : sorting.time == 'asc'
+                    ? 'vertical_align_bottom'
+                    : 'vertical_align_top'
+                "
+                class="full-width"
+                @click="sortByTime"
+              >
+                Time
+              </q-btn>
               <q-separator></q-separator>
-              <q-btn class="full-width" @click="sortByTitle"> Title </q-btn>
+              <q-btn
+                :icon="
+                  sorting.title == 'none'
+                    ? 'last_page'
+                    : sorting.title == 'asc'
+                    ? 'vertical_align_bottom'
+                    : 'vertical_align_top'
+                "
+                class="full-width"
+                @click="sortByTitle"
+              >
+                Title
+              </q-btn>
             </q-card>
           </q-popup-proxy>
         </q-btn>
@@ -71,8 +95,6 @@
                 >
                 </q-radio>
               </q-card-section>
-              <q-separator></q-separator>
-              <q-btn class="full-width"> Title </q-btn>
             </q-card>
           </q-popup-proxy>
         </q-btn>
@@ -90,7 +112,7 @@
           :key="index"
           v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
           style="width: 60px"
-          :style="task['progress'] ? ' background: lightgrey' : ''"
+          :class="task['progress'] ? 'bg-green-11' : ''"
           @click="openTask(task)"
         >
           <td
