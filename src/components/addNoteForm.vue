@@ -147,7 +147,7 @@ export default {
     },
 
     onOKClick() {
-      let noteId
+      let noteId = this.noteTitle
       if (!this.noteTitle) {
         let titleText = this.noteText
           .replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '')
