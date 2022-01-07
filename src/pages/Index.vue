@@ -33,44 +33,10 @@
       </q-card-section>
 
       <q-card-section class="no-padding">
-        <q-btn icon="sort" flat
-          >Sort
+        <q-btn icon="tune" flat>
           <q-popup-proxy>
             <q-card>
-              <q-btn
-                :icon="
-                  sorting.time == 'none'
-                    ? 'last_page'
-                    : sorting.time == 'asc'
-                    ? 'vertical_align_bottom'
-                    : 'vertical_align_top'
-                "
-                class="full-width"
-                @click="sortByTime"
-              >
-                Time
-              </q-btn>
-              <q-separator></q-separator>
-              <q-btn
-                :icon="
-                  sorting.title == 'none'
-                    ? 'last_page'
-                    : sorting.title == 'asc'
-                    ? 'vertical_align_bottom'
-                    : 'vertical_align_top'
-                "
-                class="full-width"
-                @click="sortByTitle"
-              >
-                Title
-              </q-btn>
-            </q-card>
-          </q-popup-proxy>
-        </q-btn>
-        <q-btn icon="filter_alt" flat
-          >Filter
-          <q-popup-proxy>
-            <q-card>
+              <q-card-section class="text-subtitle1"> Filter </q-card-section>
               <q-card-section>
                 Progress:
                 <q-radio
@@ -96,10 +62,43 @@
                 </q-radio>
               </q-card-section>
             </q-card>
+            <q-card>
+              <q-card-section class="text-subtitle1"> Sort </q-card-section>
+              <q-card-section>
+                <q-btn
+                  :icon="
+                    sorting.time == 'none'
+                      ? 'last_page'
+                      : sorting.time == 'asc'
+                      ? 'vertical_align_bottom'
+                      : 'vertical_align_top'
+                  "
+                  class="full-width"
+                  @click="sortByTime"
+                >
+                  Time
+                </q-btn>
+                <q-separator></q-separator>
+                <q-btn
+                  :icon="
+                    sorting.title == 'none'
+                      ? 'last_page'
+                      : sorting.title == 'asc'
+                      ? 'vertical_align_bottom'
+                      : 'vertical_align_top'
+                  "
+                  class="full-width"
+                  @click="sortByTitle"
+                >
+                  Title
+                </q-btn>
+              </q-card-section>
+            </q-card>
           </q-popup-proxy>
         </q-btn>
       </q-card-section>
     </q-card>
+
     <q-markup-table wrap-cells separator="cell">
       <tbody>
         <tr
