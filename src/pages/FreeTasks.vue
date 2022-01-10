@@ -69,7 +69,10 @@
       <p class="text-center text-h6 full-width">Free Tasks</p>
     </q-card>
     <p
-      v-if="filtering.progress == 'all' || filtering.progress == 'undone'"
+      v-if="
+        Object.keys(freeTasks).length &&
+        (filtering.progress == 'all' || filtering.progress == 'undone')
+      "
       class="text-center text-body1"
     >
       Uncompleted tasks
@@ -161,7 +164,10 @@
     </q-list>
     <q-separator v-if="filtering.progress == 'all'"></q-separator>
     <p
-      v-if="filtering.progress == 'all' || filtering.progress == 'done'"
+      v-if="
+        Object.keys(freeTasks).length &&
+        (filtering.progress == 'all' || filtering.progress == 'done')
+      "
       class="text-center text-body1"
     >
       Completed tasks
@@ -222,12 +228,17 @@
         </q-item-section>
       </q-item>
     </q-list>
+    <div class="text-center q-my-md">
+      <p v-if="!Object.keys(freeTasks).length">You have not free-tasks</p>
+      <q-btn color="secondary" @click="addFreeTask()">Add free-task</q-btn>
+    </div>
   </q-page>
 </template>
 
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, update } from 'firebase/database'
+import AddFreeTaskForm from 'src/components/AddFreeTaskForm.vue'
 const db = getDatabase()
 
 export default {
@@ -247,6 +258,11 @@ export default {
     }
   },
   methods: {
+    addFreeTask() {
+      this.$q.dialog({
+        component: AddFreeTaskForm
+      })
+    },
     openTask(task, edit) {
       if (!edit) {
         this.$router.push(`/free-tasks/id-${task.id}`)
