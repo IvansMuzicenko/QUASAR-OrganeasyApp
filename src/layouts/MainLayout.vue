@@ -1,5 +1,11 @@
 <template>
   <q-layout view="LHh Lpr lFf">
+    <q-pull-to-refresh
+      style="height: 2.5rem; z-index: 1000"
+      class="absolute full-width"
+      @refresh="reload"
+    >
+    </q-pull-to-refresh>
     <q-header elevated class="gt-xs bg-orange-4">
       <q-toolbar>
         <q-btn
@@ -335,6 +341,10 @@ export default {
     }
   },
   methods: {
+    reload(done) {
+      location.reload()
+      done()
+    },
     addTask() {
       this.$q.dialog({
         component: AddTaskForm
