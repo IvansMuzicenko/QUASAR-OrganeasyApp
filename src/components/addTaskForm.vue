@@ -1,6 +1,10 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <task-form @OKEvent="onOKClick" @cancelEvent="onCancelClick" />
+    <task-form
+      :exact-date="exactDate"
+      @OKEvent="onOKClick"
+      @cancelEvent="onCancelClick"
+    />
   </q-dialog>
 </template>
 
@@ -14,6 +18,13 @@ const db = getDatabase()
 export default {
   components: {
     TaskForm
+  },
+  props: {
+    exactDate: {
+      type: String,
+      required: false,
+      default: ''
+    }
   },
 
   emits: ['ok', 'hide'],

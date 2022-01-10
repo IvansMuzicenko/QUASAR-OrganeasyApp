@@ -562,6 +562,11 @@ export default {
       type: Object,
       required: false,
       default: null
+    },
+    exactDate: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
   emits: ['OKEvent', 'cancelEvent', 'editEvent', 'subtaskEvent'],
@@ -724,6 +729,9 @@ export default {
   },
   methods: {
     updateData() {
+      if (this.exactDate) {
+        this.form.eventDate = `${this.exactDate} 00:00`
+      }
       if (this.editTask) {
         this.form.id = this.editTask.id
         this.form.todoTitle = this.editTask.title

@@ -197,12 +197,18 @@
         </tr>
       </tbody>
     </q-markup-table>
+    <div class="text-center q-my-md">
+      <p v-if="!dayTasks">You have not tasks for this day</p>
+      <q-btn color="secondary" @click="addTask()">Add task</q-btn>
+    </div>
   </q-page>
 </template>
 
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, update } from 'firebase/database'
+import AddTaskForm from 'src/components/AddTaskForm.vue'
+
 const db = getDatabase()
 
 export default {
@@ -259,6 +265,16 @@ export default {
     }
   },
   methods: {
+    addTask() {
+      this.$q.dialog({
+        component: AddTaskForm,
+        componentProps: {
+          exactDate: this.formattedDate.slice(
+            this.formattedDate.indexOf(' ') + 1
+          )
+        }
+      })
+    },
     calcPrepTime(taskTime, taskPrep) {
       return date.formatDate(
         date.subtractFromDate(date.extractDate(taskTime, 'DD-MM-YYYY HH:mm'), {
