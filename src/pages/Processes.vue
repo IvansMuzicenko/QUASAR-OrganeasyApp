@@ -9,11 +9,8 @@
       />
       <p class="text-center text-h6 full-width">Processes</p>
     </q-card>
-    <div v-if="!Object.keys(processes).length">
-      <p>You have not processes!</p>
-      <q-btn color="secondary" @click="addProcess()">Add process</q-btn>
-    </div>
-    <q-list v-else separator bordered>
+
+    <q-list separator bordered>
       <q-item
         v-for="(process, index) in processes"
         :key="index"
@@ -25,6 +22,11 @@
         <q-item-section side>{{ process['time'] }} minutes</q-item-section>
       </q-item>
     </q-list>
+
+    <div class="text-center q-my-md">
+      <p v-if="!Object.keys(processes).length">You have not processes!</p>
+      <q-btn color="secondary" @click="addProcess()">Add process</q-btn>
+    </div>
 
     <q-dialog ref="dialog" @hide="onDialogHide">
       <q-card class="q-dialog-plugin">
