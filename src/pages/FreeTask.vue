@@ -77,24 +77,25 @@
       </q-item>
 
       <q-item v-if="task.continuous">
-        <q-item-section avatar class="taskInfo">Continuous</q-item-section>
+        <q-item-section avatar class="taskInfo">Action</q-item-section>
         <q-separator vertical spaced="md" />
-        {{ task.continuous }}
-      </q-item>
-      <q-item v-if="task.taskStarted">
-        <q-item-section avatar class="taskInfo">Started</q-item-section>
-        <q-separator vertical spaced="md" />
-        {{ date(task.taskStarted) }}
-      </q-item>
-      <q-item v-if="task.taskEnded">
-        <q-item-section avatar class="taskInfo">Ended</q-item-section>
-        <q-separator vertical spaced="md" />
-        {{ date(task.taskEnded) }}
-      </q-item>
-      <q-item v-if="task.taskStarted && task.taskEnded">
-        <q-item-section avatar class="taskInfo">Spent time</q-item-section>
-        <q-separator vertical spaced="md" />
-        {{ timeSpent }} minutes
+        <q-item-section>
+          <q-item-section>
+            {{ task.continuous ? 'Continuous' : 'Common' }}
+          </q-item-section>
+          <q-separator></q-separator>
+          <q-item-section v-if="task.taskStarted && task.taskEnded"
+            >Spent time : {{ timeSpent }} minutes</q-item-section
+          >
+          <q-separator></q-separator>
+          <q-item-section v-if="task.taskStarted"
+            >Started : {{ date(task.taskStarted) }}</q-item-section
+          >
+          <q-separator></q-separator>
+          <q-item-section v-if="task.taskEnded"
+            >Ended : {{ date(task.taskEnded) }}</q-item-section
+          >
+        </q-item-section>
       </q-item>
 
       <q-item
@@ -207,12 +208,15 @@ export default {
       return this.$route.query.edit ? true : false
     },
     timeSpent() {
-      const timeSpent = date.getDateDiff(
-        this.task.taskEnded,
-        this.task.taskStarted,
-        'minutes'
-      )
-      return timeSpent
+      if (this.task.taskEnded && this.task.taskStarted) {
+        const timeSpent = date.getDateDiff(
+          this.task.taskEnded,
+          this.task.taskStarted,
+          'minutes'
+        )
+        return timeSpent
+      }
+      return 0
     }
   },
   beforeMount() {
