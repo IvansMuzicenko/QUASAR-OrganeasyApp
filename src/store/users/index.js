@@ -38,12 +38,6 @@ const mutations = {
 
     this.$router.push('/auth')
   },
-  ADD_TASK(state, newTask) {
-    state.user.userData.tasks[state.user.userData.tasks.length] = newTask
-  },
-  ADD_PROCESS(state, newProcess) {
-    state.user.userData.tasks[state.user.userData.tasks.length] = newProcess
-  },
   SORT_TASKS_BY_TIME(state, order) {
     for (const [key, value] of Object.entries(state.user.userData.tasks)) {
       state.user.userData.tasks[key] = Object.values(value).sort((a, b) => {
