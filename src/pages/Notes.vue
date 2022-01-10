@@ -10,11 +10,8 @@
 
       <p class="text-center text-h6 full-width">Notes</p>
     </q-card>
-    <div v-if="!Object.keys(notes).length">
-      <p>You have not notes!</p>
-      <q-btn color="secondary" @click="addNote()">Add note</q-btn>
-    </div>
-    <q-list v-else separator bordered>
+
+    <q-list separator bordered>
       <q-item
         v-for="(note, index) in notes"
         :key="index"
@@ -24,6 +21,10 @@
         {{ note['title'] }}
       </q-item>
     </q-list>
+    <div class="text-center q-my-md">
+      <p v-if="!Object.keys(notes).length">You have not notes!</p>
+      <q-btn color="secondary" @click="addNote()">Add note</q-btn>
+    </div>
   </q-page>
 </template>
 
