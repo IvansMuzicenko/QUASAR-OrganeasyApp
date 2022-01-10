@@ -14,7 +14,9 @@
         <q-btn icon="tune" flat>
           <q-popup-proxy>
             <q-card>
-              <q-card-section class="text-subtitle1"> Filter </q-card-section>
+              <q-card-section class="text-subtitle1">
+                <q-icon name="filter_alt"></q-icon> Filter
+              </q-card-section>
               <q-card-section>
                 Progress:
                 <q-radio
@@ -41,7 +43,9 @@
               </q-card-section>
             </q-card>
             <q-card>
-              <q-card-section class="text-subtitle1"> Sort </q-card-section>
+              <q-card-section class="text-subtitle1"
+                ><q-icon name="sort"></q-icon> Sort
+              </q-card-section>
               <q-card-section>
                 <q-btn
                   :icon="
