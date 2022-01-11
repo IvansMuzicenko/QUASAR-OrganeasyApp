@@ -28,15 +28,15 @@
                 </q-radio>
                 <q-radio
                   v-model="filtering.priority"
-                  val="done"
-                  label="Done"
+                  val="favorites"
+                  label="Favorites"
                   class="full-width"
                 >
                 </q-radio>
                 <q-radio
                   v-model="filtering.priority"
-                  val="undone"
-                  label="Undone"
+                  val="common"
+                  label="Common"
                   class="full-width"
                 >
                 </q-radio>
@@ -72,6 +72,11 @@
     <q-list separator bordered>
       <q-item
         v-for="(note, index) in notes"
+        v-show="
+          filtering.priority == 'all' ||
+          (filtering.priority == 'favorites' && note['favorite'] == true) ||
+          (filtering.priority == 'common' && note['favorite'] == false)
+        "
         :key="index"
         clickable
         :to="`/notes/${note['id']}`"
