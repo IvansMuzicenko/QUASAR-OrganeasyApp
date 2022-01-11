@@ -72,11 +72,29 @@
     <q-list separator bordered>
       <q-item
         v-for="(note, index) in notes"
-        v-show="
-          filtering.priority == 'all' ||
-          (filtering.priority == 'favorites' && note['favorite'] == true) ||
-          (filtering.priority == 'common' && note['favorite'] == false)
-        "
+        v-show="note['favorite']"
+        :key="index"
+        clickable
+        :to="`/notes/${note['id']}`"
+      >
+        <q-item-section>
+          {{ note['title'] }}
+        </q-item-section>
+        <q-item-section side>
+          <q-btn
+            flat
+            round
+            :icon="note['favorite'] ? 'star' : 'star_outline'"
+            :text-color="note['favorite'] ? 'yellow' : ''"
+            @click.prevent="favoriteNote(note['favorite'], note['id'])"
+          />
+        </q-item-section>
+      </q-item>
+    </q-list>
+    <q-list separator bordered>
+      <q-item
+        v-for="(note, index) in notes"
+        v-show="!note['favorite']"
         :key="index"
         clickable
         :to="`/notes/${note['id']}`"
