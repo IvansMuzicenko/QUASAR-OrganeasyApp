@@ -217,6 +217,7 @@
           :key="link.title"
           v-bind="link"
         />
+        <q-btn icon="search" @click="openSearch"></q-btn>
         <div v-if="email" class="text-center">
           <q-btn color="primary" rounded icon="add">
             Add...
@@ -274,6 +275,7 @@ import AddTaskForm from 'src/components/AddTaskForm.vue'
 import AddFreeTaskForm from 'src/components/AddFreeTaskForm.vue'
 import AddProcessForm from 'src/components/AddProcessForm.vue'
 import AddNoteForm from 'src/components/AddNoteForm.vue'
+import Search from 'src/components/Search.vue'
 
 export default {
   components: {
@@ -363,6 +365,11 @@ export default {
     addNote() {
       this.$q.dialog({
         component: AddNoteForm
+      })
+    },
+    openSearch() {
+      this.$q.dialog({
+        component: Search
       })
     },
     toggleLeftDrawer() {
