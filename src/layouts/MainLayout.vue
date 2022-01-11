@@ -1,7 +1,7 @@
 <template>
   <q-layout view="LHh Lpr lFf">
     <q-pull-to-refresh
-      style="height: 2.5rem; z-index: 1000"
+      style="height: 1rem; z-index: 1000"
       class="absolute full-width"
       @refresh="reload"
     >
