@@ -1,12 +1,70 @@
 <template>
   <q-page>
-    <q-card class="flex">
-      <q-btn
-        icon="arrow_back"
-        flat
-        class="absolute"
-        @click="$router.push('/')"
-      />
+    <q-card class="flex justify-between q-py-sm">
+      <q-card-section class="no-padding">
+        <q-btn
+          icon="arrow_back"
+          flat
+          class="absolute"
+          @click="$router.push('/')"
+        />
+      </q-card-section>
+
+      <q-card-section class="no-padding">
+        <q-btn icon="tune" flat>
+          <q-popup-proxy>
+            <q-card>
+              <q-card-section class="text-subtitle1">
+                <q-icon name="filter_alt"></q-icon> Filter
+              </q-card-section>
+              <q-card-section>
+                Priority:
+                <q-radio
+                  v-model="filtering.priority"
+                  val="all"
+                  label="All"
+                  class="full-width"
+                >
+                </q-radio>
+                <q-radio
+                  v-model="filtering.priority"
+                  val="done"
+                  label="Done"
+                  class="full-width"
+                >
+                </q-radio>
+                <q-radio
+                  v-model="filtering.priority"
+                  val="undone"
+                  label="Undone"
+                  class="full-width"
+                >
+                </q-radio>
+              </q-card-section>
+            </q-card>
+            <q-card>
+              <q-card-section class="text-subtitle1"
+                ><q-icon name="sort"></q-icon> Sort
+              </q-card-section>
+              <q-card-section>
+                <q-btn
+                  :icon="
+                    sorting.title == 'none'
+                      ? 'last_page'
+                      : sorting.title == 'asc'
+                      ? 'vertical_align_bottom'
+                      : 'vertical_align_top'
+                  "
+                  class="full-width"
+                  @click="sortByTitle"
+                >
+                  Title
+                </q-btn>
+              </q-card-section>
+            </q-card>
+          </q-popup-proxy>
+        </q-btn>
+      </q-card-section>
 
       <p class="text-center text-h6 full-width">Notes</p>
     </q-card>
@@ -31,6 +89,18 @@
 <script>
 import addNoteForm from 'src/components/AddNoteForm.vue'
 export default {
+  data() {
+    return {
+      sorting: {
+        title: 'none',
+        creationDate: 'desc'
+      },
+      filtering: {
+        priority: 'all',
+        group: ''
+      }
+    }
+  },
   computed: {
     notes() {
       return this.$store.getters['users/notes']
@@ -41,6 +111,10 @@ export default {
       this.$q.dialog({
         component: addNoteForm
       })
+    },
+    sortByTitle() {
+      this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
+      this.$store.dispatch('users/sortNotesByTitle', this.sorting.title)
     }
   }
 }

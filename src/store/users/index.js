@@ -80,6 +80,21 @@ const mutations = {
         return 0
       }
     })
+  },
+  SORT_NOTES_BY_TITLE(state, order) {
+    state.user.userData.notes = Object.values(state.user.userData.notes).sort(
+      (a, b) => {
+        if (order == 'asc') {
+          if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+          if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+          return 0
+        } else {
+          if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
+          if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
+          return 0
+        }
+      }
+    )
   }
 }
 
@@ -101,6 +116,9 @@ const actions = {
   },
   sortFreeTasksByTitle({ commit }, order) {
     commit('SORT_FREE_TASKS_BY_TITLE', order)
+  },
+  sortNotesByTitle({ commit }, order) {
+    commit('SORT_NOTES_BY_TITLE', order)
   }
 }
 
