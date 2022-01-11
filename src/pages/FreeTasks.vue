@@ -89,7 +89,7 @@
         v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
         :style="task['progress'] ? ' background: lightgrey' : ''"
         clickable
-        :to="`/free-tasks/id-${task['id']}`"
+        :to="`/free-tasks/${task['id']}`"
         class="q-pa-none"
       >
         <q-item-section>
@@ -187,7 +187,7 @@
         v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
         :class="task['progress'] ? 'bg-green-11' : ''"
         clickable
-        :to="`/free-tasks/id-${task['id']}`"
+        :to="`/free-tasks/${task['id']}`"
       >
         <q-item-section>
           <q-item-section class="text-weight-bolder">{{
@@ -265,9 +265,9 @@ export default {
     },
     openTask(task, edit) {
       if (!edit) {
-        this.$router.push(`/free-tasks/id-${task.id}`)
+        this.$router.push(`/free-tasks/${task.id}`)
       } else {
-        this.$router.push(`/free-tasks/id-${task.id}?edit=true`)
+        this.$router.push(`/free-tasks/${task.id}?edit=true`)
       }
     },
 
