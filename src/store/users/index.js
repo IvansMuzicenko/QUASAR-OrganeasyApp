@@ -55,12 +55,12 @@ const mutations = {
     for (const [key, value] of Object.entries(state.user.userData.tasks)) {
       state.user.userData.tasks[key] = Object.values(value).sort((a, b) => {
         if (order == 'asc') {
-          if (a.title > b.title) return 1
-          if (a.title < b.title) return -1
+          if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+          if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
           return 0
         } else {
-          if (a.title < b.title) return 1
-          if (a.title > b.title) return -1
+          if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
+          if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
           return 0
         }
       })
@@ -71,12 +71,12 @@ const mutations = {
       state.user.userData.freeTasks
     ).sort((a, b) => {
       if (order == 'asc') {
-        if (a.title > b.title) return 1
-        if (a.title < b.title) return -1
+        if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+        if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
         return 0
       } else {
-        if (a.title < b.title) return 1
-        if (a.title > b.title) return -1
+        if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
+        if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
         return 0
       }
     })
