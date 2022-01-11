@@ -10,6 +10,7 @@
           :dense="false"
         >
         </q-input>
+        <q-checkbox v-model="favorite" label="Favorite"></q-checkbox>
         <q-editor
           v-model="noteText"
           dense
@@ -122,7 +123,8 @@ export default {
   data() {
     return {
       noteTitle: '',
-      noteText: ''
+      noteText: '',
+      favorite: false
     }
   },
   computed: {
@@ -162,7 +164,8 @@ export default {
       const newNote = {
         id: noteId.replaceAll(' ', '-'),
         title: this.noteTitle,
-        text: this.noteText
+        text: this.noteText,
+        favorite: this.favorite
       }
 
       const db = getDatabase()

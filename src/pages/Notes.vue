@@ -76,7 +76,18 @@
         clickable
         :to="`/notes/${note['id']}`"
       >
-        {{ note['title'] }}
+        <q-item-section>
+          {{ note['title'] }}
+        </q-item-section>
+        <q-item-section side>
+          <q-btn
+            flat
+            round
+            :icon="note['favorite'] ? 'star' : 'star_outline'"
+            :text-color="note['favorite'] ? 'yellow' : ''"
+            @click.prevent="favoriteNote(note['favorite'], note['id'])"
+          />
+        </q-item-section>
       </q-item>
     </q-list>
     <div class="text-center q-my-md">
@@ -87,7 +98,11 @@
 </template>
 
 <script>
+import { getDatabase, ref, update } from 'firebase/database'
 import addNoteForm from 'src/components/AddNoteForm.vue'
+
+const db = getDatabase()
+
 export default {
   data() {
     return {
@@ -115,6 +130,11 @@ export default {
     sortByTitle() {
       this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
       this.$store.dispatch('users/sortNotesByTitle', this.sorting.title)
+    },
+    favoriteNote(favorite, id) {
+      update(ref(db, `${this.$store.getters['users/userId']}/notes/id-${id}`), {
+        favorite: !favorite
+      })
     }
   }
 }

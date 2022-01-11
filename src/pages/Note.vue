@@ -34,7 +34,18 @@
         <p v-if="!editState">
           {{ note.title }}
         </p>
-        <q-input v-if="editState" v-model="note.title" class="text-h6" />
+        <q-checkbox
+          v-if="editState"
+          v-model="note.favorite"
+          label="Favorite"
+        ></q-checkbox>
+
+        <q-input
+          v-if="editState"
+          v-model="note.title"
+          outlined
+          class="text-h6"
+        />
 
         <q-separator v-if="!editState" color="black" inset />
 
@@ -163,7 +174,8 @@ export default {
       note: {
         id: '',
         title: '',
-        text: ''
+        text: '',
+        favorite: false
       },
       editState: false
     }
