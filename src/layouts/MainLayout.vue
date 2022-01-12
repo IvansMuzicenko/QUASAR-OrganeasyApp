@@ -382,7 +382,10 @@ export default {
     },
     openSearch() {
       this.$q.dialog({
-        component: Search
+        component: Search,
+        componentProps: {
+          searchType: 'all'
+        }
       })
     },
     toggleLeftDrawer() {
