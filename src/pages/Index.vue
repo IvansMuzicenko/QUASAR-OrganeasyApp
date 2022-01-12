@@ -33,6 +33,7 @@
       </q-card-section>
 
       <q-card-section class="no-padding">
+        <q-btn icon="search" flat rounded @click="openSearch"></q-btn>
         <q-btn icon="tune" flat>
           <q-popup-proxy>
             <q-card>
@@ -208,6 +209,7 @@
 import { date } from 'quasar'
 import { getDatabase, ref, update } from 'firebase/database'
 import AddTaskForm from 'src/components/AddTaskForm.vue'
+import Search from 'src/components/Search.vue'
 
 const db = getDatabase()
 
@@ -303,6 +305,14 @@ export default {
       this.$router.push(
         '?date=' + this.formattedDate.slice(this.formattedDate.indexOf(' ') + 1)
       )
+    },
+    openSearch() {
+      this.$q.dialog({
+        component: Search,
+        componentProps: {
+          searchType: 'tasks'
+        }
+      })
     },
     sortByTime() {
       this.sorting.title = 'none'

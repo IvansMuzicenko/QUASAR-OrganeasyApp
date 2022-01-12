@@ -11,6 +11,7 @@
       </q-card-section>
 
       <q-card-section class="no-padding">
+        <q-btn icon="search" flat rounded @click="openSearch"></q-btn>
         <q-btn icon="tune" flat>
           <q-popup-proxy>
             <q-card>
@@ -123,6 +124,7 @@
 <script>
 import { getDatabase, ref, update } from 'firebase/database'
 import addNoteForm from 'src/components/AddNoteForm.vue'
+import Search from 'src/components/Search.vue'
 
 const db = getDatabase()
 
@@ -148,6 +150,14 @@ export default {
     addNote() {
       this.$q.dialog({
         component: addNoteForm
+      })
+    },
+    openSearch() {
+      this.$q.dialog({
+        component: Search,
+        componentProps: {
+          searchType: 'notes'
+        }
       })
     },
     sortByTitle() {

@@ -11,6 +11,7 @@
       </q-card-section>
 
       <q-card-section class="no-padding">
+        <q-btn icon="search" flat rounded @click="openSearch"></q-btn>
         <q-btn icon="tune" flat>
           <q-popup-proxy>
             <q-card>
@@ -239,6 +240,7 @@
 import { date } from 'quasar'
 import { getDatabase, ref, update } from 'firebase/database'
 import AddFreeTaskForm from 'src/components/AddFreeTaskForm.vue'
+import Search from 'src/components/Search.vue'
 const db = getDatabase()
 
 export default {
@@ -302,6 +304,14 @@ export default {
     sortByTitle() {
       this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
       this.$store.dispatch('users/sortFreeTasksByTitle', this.sorting.title)
+    },
+    openSearch() {
+      this.$q.dialog({
+        component: Search,
+        componentProps: {
+          searchType: 'free-tasks'
+        }
+      })
     }
   }
 }
