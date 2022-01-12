@@ -212,12 +212,25 @@
         />
         <q-item-label header> {{ formattedDate }}</q-item-label>
 
+        <q-item>
+          <q-btn
+            icon="search"
+            flat
+            rounded
+            outline
+            class="full-width"
+            @click="openSearch"
+          >
+            Search
+          </q-btn>
+        </q-item>
+
         <essential-link
           v-for="link in email ? essentialLinks : unauthLinks"
           :key="link.title"
           v-bind="link"
         />
-        <q-btn icon="search" @click="openSearch"></q-btn>
+
         <div v-if="email" class="text-center">
           <q-btn color="primary" rounded icon="add">
             Add...

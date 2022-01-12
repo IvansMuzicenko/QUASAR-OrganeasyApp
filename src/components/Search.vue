@@ -1,12 +1,11 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      <q-input
-        v-model="searchQuery"
-        outlined
-        type="search"
-        label="Search"
-      ></q-input>
+      <q-input v-model="searchQuery" outlined type="search" label="Search">
+        <template #prepend>
+          <q-icon name="search"></q-icon>
+        </template>
+      </q-input>
       <q-card-section v-if="searchQuery" class="no-padding">
         <q-list bordered separator>
           <p class="text-body1 text-center">Tasks:</p>
