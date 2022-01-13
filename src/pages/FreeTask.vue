@@ -215,6 +215,9 @@ export default {
     }
   },
   computed: {
+    path() {
+      return this.$route.path
+    },
     editState() {
       return this.$route.query.edit ? true : false
     },
@@ -230,8 +233,13 @@ export default {
       return 0
     }
   },
-  beforeMount() {
-    this.updateTaskData()
+  watch: {
+    path: {
+      handler: function () {
+        this.updateTaskData()
+      },
+      immediate: true
+    }
   },
   methods: {
     findNoteId(title) {
@@ -248,8 +256,7 @@ export default {
     },
 
     updateTaskData() {
-      const path = this.$route.path
-      const taskId = path.slice(path.lastIndexOf('/') + 1)
+      const taskId = this.path.slice(this.path.lastIndexOf('/') + 1)
       const freeTask = this.$store.getters['users/freeTasks'][`id-${taskId}`]
       if (!freeTask) {
         return this.$router.push('/free-tasks')
@@ -260,7 +267,7 @@ export default {
       return this.$router.push('/free-tasks')
     },
     toggleEdit() {
-      this.$router.push(this.$route.path + '?edit=true')
+      this.$router.push(this.path + '?edit=true')
     },
     callEditClick() {
       this.$refs.freeTaskForm.onEditClick()
@@ -292,7 +299,7 @@ export default {
         updateTodo
       )
       this.updateTaskData()
-      this.$router.push(this.$route.path)
+      this.$router.push(this.path)
 
       this.$q.notify({
         position: 'top',
@@ -339,7 +346,7 @@ export default {
       this.$refs.confirmDialog.show()
     },
     onCancelClick() {
-      this.$router.push(this.$route.path)
+      this.$router.push(this.path)
     },
     onConfirmDeleteClick() {
       remove(
