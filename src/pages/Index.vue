@@ -1,7 +1,7 @@
 <template>
   <q-page v-touch-swipe:3e-2:10:100.mouse.horizontal="handleSwipe">
     <q-card class="flex justify-between q-py-sm">
-      <q-card-section class="no-padding">
+      <q-card-section class="no-padding zindex-high">
         <span>
           <q-btn flat @click="previousDay()">&lt;</q-btn>
         </span>
@@ -33,8 +33,14 @@
       </q-card-section>
 
       <q-card-section class="no-padding">
-        <q-btn icon="search" flat rounded @click="openSearch"></q-btn>
-        <q-btn icon="tune" flat>
+        <q-btn
+          icon="search"
+          flat
+          rounded
+          class="zindex-high"
+          @click="openSearch"
+        ></q-btn>
+        <q-btn icon="tune" class="zindex-high" flat>
           <q-popup-proxy>
             <q-card>
               <q-card-section class="text-subtitle1"

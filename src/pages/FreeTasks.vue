@@ -5,14 +5,20 @@
         <q-btn
           icon="arrow_back"
           flat
-          class="absolute"
+          class="absolute zindex-high"
           @click="$router.push('/')"
         />
       </q-card-section>
 
       <q-card-section class="no-padding">
-        <q-btn icon="search" flat rounded @click="openSearch"></q-btn>
-        <q-btn icon="tune" flat>
+        <q-btn
+          icon="search"
+          class="zindex-high"
+          flat
+          rounded
+          @click="openSearch"
+        ></q-btn>
+        <q-btn icon="tune" class="zindex-high" flat>
           <q-popup-proxy>
             <q-card>
               <q-card-section class="text-subtitle1">

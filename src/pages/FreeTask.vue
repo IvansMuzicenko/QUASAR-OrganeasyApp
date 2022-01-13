@@ -1,13 +1,19 @@
 <template>
   <q-page>
     <q-card class="flex justify-between no-padding">
-      <q-btn icon="arrow_back" flat @click="routerBack()"></q-btn>
+      <q-btn
+        icon="arrow_back"
+        flat
+        class="zindex-high"
+        @click="routerBack()"
+      ></q-btn>
 
       <q-btn
         v-if="!editState && task['continuous'] && !task['taskStarted']"
         icon="play_arrow"
         color="green"
         flat
+        class="zindex-high"
         @click="continuousStart"
       >
         Start
@@ -19,6 +25,7 @@
           task['taskStarted'] &&
           !task['taskEnded']
         "
+        class="zindex-high"
         icon="stop"
         color="red"
         flat
@@ -28,6 +35,7 @@
       </q-btn>
       <q-btn
         v-if="!editState"
+        class="zindex-high"
         :icon="task['progress'] ? 'close' : 'check'"
         :color="task['progress'] ? 'red' : 'positive'"
         flat
@@ -37,6 +45,7 @@
       </q-btn>
       <q-btn
         v-if="!editState"
+        class="zindex-high"
         icon="edit"
         color="secondary"
         flat
@@ -47,6 +56,7 @@
 
       <q-btn
         v-if="editState"
+        class="zindex-high"
         icon="save"
         color="positive"
         flat
@@ -56,6 +66,7 @@
       </q-btn>
       <q-btn
         v-if="editState"
+        class="zindex-high"
         icon="delete"
         color="negative"
         flat

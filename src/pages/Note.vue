@@ -1,19 +1,32 @@
 <template>
   <q-page>
     <q-card class="flex justify-between no-padding">
-      <q-btn icon="arrow_back" flat @click="routerBack()"></q-btn>
+      <q-btn
+        icon="arrow_back"
+        class="zindex-high"
+        flat
+        @click="routerBack()"
+      ></q-btn>
       <q-btn
         v-if="editState"
         icon="save"
         dense
         flat
+        class="zindex-high"
         :disable="error"
         color="positive"
         @click="saveEdit()"
       >
         Save
       </q-btn>
-      <q-btn v-if="!editState" icon="edit" dense flat @click="toggleEdit()">
+      <q-btn
+        v-if="!editState"
+        icon="edit"
+        class="zindex-high"
+        dense
+        flat
+        @click="toggleEdit()"
+      >
         Edit
       </q-btn>
       <q-btn
@@ -21,6 +34,7 @@
         icon="delete"
         dense
         flat
+        class="zindex-high"
         color="negative"
         @click="deleteNote()"
       >

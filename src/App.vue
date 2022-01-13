@@ -77,4 +77,7 @@ export default {
 * {
   overflow-wrap: anywhere;
 }
+.zindex-high {
+  z-index: 1001;
+}
 </style>

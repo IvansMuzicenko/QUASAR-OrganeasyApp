@@ -4,7 +4,7 @@
       <q-btn
         icon="arrow_back"
         flat
-        class="absolute"
+        class="absolute zindex-high"
         @click="$router.push('/')"
       />
       <p class="text-center text-h6 full-width">Processes</p>
