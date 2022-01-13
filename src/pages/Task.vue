@@ -316,6 +316,9 @@ export default {
     }
   },
   computed: {
+    path() {
+      return this.$route.path
+    },
     editState() {
       return this.$route.query.edit ? true : false
     },
@@ -331,8 +334,13 @@ export default {
       return 0
     }
   },
-  beforeMount() {
-    this.updateTaskData()
+  watch: {
+    path: {
+      handler: function () {
+        this.updateTaskData()
+      },
+      immediate: true
+    }
   },
   methods: {
     findNoteId(title) {
@@ -348,9 +356,11 @@ export default {
       return date.formatDate(ms, 'DD-MM-YYYY HH:mm')
     },
     updateTaskData() {
-      const path = this.$route.path
-      const taskDate = path.slice(path.indexOf('/') + 1, path.lastIndexOf('/'))
-      const taskId = path.slice(path.lastIndexOf('/') + 1)
+      const taskDate = this.path.slice(
+        this.path.indexOf('/') + 1,
+        this.path.lastIndexOf('/')
+      )
+      const taskId = this.path.slice(this.path.lastIndexOf('/') + 1)
       const dayTasks = this.$store.getters['users/tasks'][`date-${taskDate}`]
       if (!dayTasks) {
         return this.$router.push('/')
@@ -369,7 +379,7 @@ export default {
       )
     },
     toggleEdit() {
-      this.$router.push(this.$route.path + '?edit=true')
+      this.$router.push(this.path + '?edit=true')
     },
     callEditClick() {
       this.$refs.taskForm.onEditClick()
@@ -465,7 +475,7 @@ export default {
         )
       }
       this.updateTaskData()
-      this.$router.push(this.$route.path)
+      this.$router.push(this.path)
 
       this.$q.notify({
         position: 'top',
@@ -527,7 +537,7 @@ export default {
       this.$refs.confirmDialog.show()
     },
     onCancelClick() {
-      this.$router.push(this.$route.path)
+      this.$router.push(this.path)
     },
     onConfirmDeleteClick() {
       const notifsToRemove = []
