@@ -181,6 +181,9 @@ export default {
     }
   },
   computed: {
+    id() {
+      return this.$route.path.slice(this.$route.path.lastIndexOf('/') + 1)
+    },
     error() {
       return (
         !this.note.text.replace('<br>', '') &&
@@ -188,16 +191,23 @@ export default {
       )
     }
   },
-  mounted() {
-    const id = this.$route.path.slice(this.$route.path.lastIndexOf('/') + 1)
-    const note = this.$store.getters['users/notes'][`id-${id}`]
-    if (!note) {
-      return this.$router.push('/notes')
+  watch: {
+    id: {
+      handler: function () {
+        this.updateNoteData()
+      },
+      immediate: true
     }
-    this.note = JSON.parse(JSON.stringify(note))
   },
 
   methods: {
+    updateNoteData() {
+      const note = this.$store.getters['users/notes'][`id-${this.id}`]
+      if (!note) {
+        return this.$router.push('/notes')
+      }
+      this.note = JSON.parse(JSON.stringify(note))
+    },
     routerBack() {
       return this.$router.push('/notes')
     },
