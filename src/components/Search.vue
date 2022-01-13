@@ -25,7 +25,35 @@
           >
             <q-item-section class="col-3">{{ task['time'] }}</q-item-section>
             <q-item-section class="col">
-              <p v-html="highlightSearch(task['title'])"></p>
+              <q-item-section v-if="highlightSearch(task['title']).length">
+                <p v-html="highlightSearch(task['title'])"></p>
+              </q-item-section>
+              <q-item-section
+                v-if="
+                  highlightSearch(task['title']).length == 0 &&
+                  task['notes'] &&
+                  highlightSearch(task['notes']['text']).length
+                "
+              >
+                <p>
+                  {{
+                    task['title'].slice(0, 20) +
+                    (task['title'].length > 20 ? '...' : '')
+                  }}
+                </p>
+              </q-item-section>
+              <q-item-section
+                v-if="
+                  task['notes'] && highlightSearch(task['notes']['text']).length
+                "
+              >
+                <q-separator></q-separator>
+                <p
+                  v-html="
+                    task['notes'] && highlightSearch(task['notes']['text'])
+                  "
+                ></p>
+              </q-item-section>
             </q-item-section>
           </q-item>
         </q-list>
@@ -43,7 +71,39 @@
             clickable
             :to="`/free-tasks/${freeTask['id']}`"
           >
-            <p v-html="highlightSearch(freeTask['title'])"></p>
+            <q-item-section>
+              <q-item-section v-if="highlightSearch(freeTask['title']).length">
+                <p v-html="highlightSearch(freeTask['title'])"></p>
+              </q-item-section>
+              <q-item-section
+                v-if="
+                  highlightSearch(freeTask['title']).length == 0 &&
+                  freeTask['notes'] &&
+                  highlightSearch(freeTask['notes']['text']).length
+                "
+              >
+                <p>
+                  {{
+                    freeTask['title'].slice(0, 20) +
+                    (freeTask['title'].length > 20 ? '...' : '')
+                  }}
+                </p>
+              </q-item-section>
+              <q-item-section
+                v-if="
+                  freeTask['notes'] &&
+                  highlightSearch(freeTask['notes']['text']).length
+                "
+              >
+                <q-separator></q-separator>
+                <p
+                  v-html="
+                    freeTask['notes'] &&
+                    highlightSearch(freeTask['notes']['text'])
+                  "
+                ></p>
+              </q-item-section>
+            </q-item-section>
           </q-item>
         </q-list>
 
@@ -60,7 +120,28 @@
             clickable
             :to="`/notes/${note['id']}`"
           >
-            <p v-html="highlightSearch(note['title'])"></p>
+            <q-item-section>
+              <q-item-section v-if="highlightSearch(note['title']).length">
+                <p v-html="highlightSearch(note['title'])"></p>
+              </q-item-section>
+              <q-item-section
+                v-if="
+                  highlightSearch(note['title']).length == 0 &&
+                  highlightSearch(note['text']).length
+                "
+              >
+                <p>
+                  {{
+                    note['title'].slice(0, 20) +
+                    (note['title'].length > 20 ? '...' : '')
+                  }}
+                </p>
+              </q-item-section>
+              <q-item-section v-if="highlightSearch(note['text']).length">
+                <q-separator></q-separator>
+                <p v-html="highlightSearch(note['text'])"></p>
+              </q-item-section>
+            </q-item-section>
           </q-item>
         </q-list>
       </q-card-section>
@@ -98,7 +179,11 @@ export default {
           return this.searchQuery
             .toLowerCase()
             .split(' ')
-            .every((v) => item.title.toLowerCase().includes(v))
+            .every(
+              (v) =>
+                item.title.toLowerCase().includes(v) ||
+                (item.notes && item.notes.text.toLowerCase().includes(v))
+            )
         })
       } else {
         return tasks
@@ -116,7 +201,11 @@ export default {
           return this.searchQuery
             .toLowerCase()
             .split(' ')
-            .every((v) => item.title.toLowerCase().includes(v))
+            .every(
+              (v) =>
+                item.title.toLowerCase().includes(v) ||
+                item.notes?.text.toLowerCase().includes(v)
+            )
         })
       } else {
         return freeTasks
@@ -134,7 +223,11 @@ export default {
           return this.searchQuery
             .toLowerCase()
             .split(' ')
-            .every((v) => item.title.toLowerCase().includes(v))
+            .every(
+              (v) =>
+                item.title.toLowerCase().includes(v) ||
+                item.text.toLowerCase().includes(v)
+            )
         })
       } else {
         return notes
@@ -192,6 +285,7 @@ export default {
           )
         }
       }
+      console.log(modifiedText.length)
       return modifiedText
     }
   }
