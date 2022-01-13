@@ -169,7 +169,10 @@ export default {
       const vuexTasks = this.$store.getters['users/tasks']
       const tasks = []
 
-      if (this.searchQuery.trim().length) {
+      if (
+        (this.searchType == 'all' || this.searchType == 'tasks') &&
+        this.searchQuery.trim().length
+      ) {
         for (const dateTasks of Object.values(vuexTasks)) {
           for (const task of dateTasks) {
             tasks.push(task)
@@ -193,7 +196,10 @@ export default {
       const vuexFreeTasks = this.$store.getters['users/freeTasks']
       const freeTasks = []
 
-      if (this.searchQuery.trim().length) {
+      if (
+        (this.searchType == 'all' || this.searchType == 'free-tasks') &&
+        this.searchQuery.trim().length
+      ) {
         for (const task in vuexFreeTasks) {
           freeTasks.push(vuexFreeTasks[task])
         }
@@ -215,7 +221,10 @@ export default {
       const vuexNotes = this.$store.getters['users/notes']
       const notes = []
 
-      if (this.searchQuery.trim().length) {
+      if (
+        (this.searchType == 'all' || this.searchType == 'notes') &&
+        this.searchQuery.trim().length
+      ) {
         for (const note in vuexNotes) {
           notes.push(vuexNotes[note])
         }
@@ -285,7 +294,6 @@ export default {
           )
         }
       }
-      console.log(modifiedText.length)
       return modifiedText
     }
   }
