@@ -165,7 +165,8 @@ export default {
         id: noteId.replaceAll(' ', '-'),
         title: this.noteTitle,
         text: this.noteText,
-        favorite: this.favorite
+        favorite: this.favorite,
+        dateModified: Date.now()
       }
 
       const db = getDatabase()

@@ -189,7 +189,8 @@ export default {
         id: '',
         title: '',
         text: '',
-        favorite: false
+        favorite: false,
+        dateModified: Date.now()
       },
       editState: false
     }
@@ -242,6 +243,7 @@ export default {
 
         this.note.title = titleText
       }
+      this.note.dateModified = Date.now()
       update(
         ref(
           db,

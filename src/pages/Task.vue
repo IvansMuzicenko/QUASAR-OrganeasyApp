@@ -471,7 +471,8 @@ export default {
                   ? form.repeat.minutesModel
                   : null
               }
-            : null
+            : null,
+          dateModified: Date.now()
         }
         update(
           ref(
