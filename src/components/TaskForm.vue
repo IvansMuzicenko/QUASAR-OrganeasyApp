@@ -709,10 +709,12 @@ export default {
       const processes = this.$store.getters['users/processes']
       const selectedProcesses = this.form.processesModel
       let time = 0
-      for (const select of selectedProcesses) {
-        for (const process of processes) {
-          if (select == process['title']) {
-            time += process['time']
+      if (Object.keys(processes).length) {
+        for (const select of selectedProcesses) {
+          for (const process of processes) {
+            if (select == process['title']) {
+              time += process['time']
+            }
           }
         }
       }
@@ -763,9 +765,7 @@ export default {
         this.form.processesModel = this.editTask.processes
           ? this.editTask.processes
           : []
-        this.form.processesTime = this.editTask.processes
-          ? this.editTask.processesTime
-          : 0
+        this.form.processesTime = this.processesTimeCalc
 
         this.form.toggleSubtasks = this.editTask.subtasks ? true : false
         this.form.subtasks = this.editTask.subtasks
