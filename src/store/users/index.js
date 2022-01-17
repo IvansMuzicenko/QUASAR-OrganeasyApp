@@ -28,6 +28,17 @@ const mutations = {
         (a, b) => a.time - b.time
       )
     }
+    if (userData && userData.notes) {
+      userData.notes = Object.values(userData.notes).sort(
+        (a, b) => a.dateModified - b.dateModified
+      )
+    }
+    if (userData && userData.freeTasks) {
+      userData.freeTasks = Object.values(userData.freeTasks).sort(
+        (a, b) => a.priority - b.priority
+      )
+      console.log(userData.freeTasks)
+    }
 
     state.user.userData = userData
   },
