@@ -21,6 +21,86 @@
       </q-toolbar>
     </q-header>
 
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+      <q-toolbar-title>
+        <div class="text-center">Organeasy</div>
+      </q-toolbar-title>
+      <q-list>
+        <q-item-label v-if="email" header>
+          {{ email.slice(0, email.indexOf('@')) }}</q-item-label
+        >
+        <q-btn
+          v-else
+          class="full-width q-ma-lg no-margin"
+          color="secondary"
+          label="Sign In"
+          to="/auth"
+        />
+        <q-item-label header> {{ formattedDate }}</q-item-label>
+
+        <q-item>
+          <q-btn
+            icon="search"
+            flat
+            rounded
+            outline
+            class="full-width"
+            @click="openSearch"
+          >
+            Search
+          </q-btn>
+        </q-item>
+
+        <essential-link
+          v-for="link in email ? essentialLinks : unauthLinks"
+          :key="link.title"
+          v-bind="link"
+        />
+
+        <div v-if="email" class="text-center">
+          <q-btn color="primary" rounded icon="add">
+            Add...
+            <q-menu
+              class="text-center"
+              auto-close
+              self="top middle"
+              anchor="bottom middle"
+            >
+              <q-list style="min-width: 100px">
+                <q-item clickable @click="addTask">
+                  <q-item-section avatar>
+                    <q-avatar icon="view_list"></q-avatar>
+                  </q-item-section>
+                  <q-item-section> Task</q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item clickable @click="addFreeTask">
+                  <q-item-section avatar>
+                    <q-avatar icon="alarm_off"></q-avatar>
+                  </q-item-section>
+                  <q-item-section> Free task</q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item clickable @click="addNote">
+                  <q-item-section avatar>
+                    <q-avatar icon="note"></q-avatar>
+                  </q-item-section>
+                  <q-item-section> Note</q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item clickable @click="addProcess">
+                  <q-item-section avatar>
+                    <q-icon name="update"></q-icon>
+                  </q-item-section>
+                  <q-item-section> Process</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
+      </q-list>
+    </q-drawer>
+
     <q-footer
       v-if="email"
       elevated
@@ -194,86 +274,6 @@
         </div>
       </q-toolbar>
     </q-footer>
-
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-toolbar-title>
-        <div class="text-center">Organeasy</div>
-      </q-toolbar-title>
-      <q-list>
-        <q-item-label v-if="email" header>
-          {{ email.slice(0, email.indexOf('@')) }}</q-item-label
-        >
-        <q-btn
-          v-else
-          class="full-width q-ma-lg no-margin"
-          color="secondary"
-          label="Sign In"
-          to="/auth"
-        />
-        <q-item-label header> {{ formattedDate }}</q-item-label>
-
-        <q-item>
-          <q-btn
-            icon="search"
-            flat
-            rounded
-            outline
-            class="full-width"
-            @click="openSearch"
-          >
-            Search
-          </q-btn>
-        </q-item>
-
-        <essential-link
-          v-for="link in email ? essentialLinks : unauthLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-
-        <div v-if="email" class="text-center">
-          <q-btn color="primary" rounded icon="add">
-            Add...
-            <q-menu
-              class="text-center"
-              auto-close
-              self="top middle"
-              anchor="bottom middle"
-            >
-              <q-list style="min-width: 100px">
-                <q-item clickable @click="addTask">
-                  <q-item-section avatar>
-                    <q-avatar icon="view_list"></q-avatar>
-                  </q-item-section>
-                  <q-item-section> Task</q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item clickable @click="addFreeTask">
-                  <q-item-section avatar>
-                    <q-avatar icon="alarm_off"></q-avatar>
-                  </q-item-section>
-                  <q-item-section> Free task</q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item clickable @click="addNote">
-                  <q-item-section avatar>
-                    <q-avatar icon="note"></q-avatar>
-                  </q-item-section>
-                  <q-item-section> Note</q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item clickable @click="addProcess">
-                  <q-item-section avatar>
-                    <q-icon name="update"></q-icon>
-                  </q-item-section>
-                  <q-item-section> Process</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
-        </div>
-      </q-list>
-    </q-drawer>
 
     <q-page-container>
       <router-view />
