@@ -27,6 +27,20 @@
     </q-card-section>
 
     <q-card-section>
+      <q-select
+        v-model="form.priority"
+        label="Priority"
+        :options="priorityOptions"
+        :option-value="
+          (opt) => (Object(opt) === opt && 'id' in opt ? opt.id : '3')
+        "
+        :option-label="
+          (opt) => (Object(opt) === opt && 'desc' in opt ? opt.desc : 'Low')
+        "
+      ></q-select>
+    </q-card-section>
+
+    <q-card-section>
       <q-toggle v-model="form.continuousState" label="Continuous action" />
     </q-card-section>
 
@@ -261,6 +275,7 @@ export default {
         id: '',
         todoTitle: '',
         progress: false,
+        priority: '3',
         continuousState: false,
 
         toggleNotes: false,
@@ -274,7 +289,21 @@ export default {
         subtaskInput: ''
       },
 
-      errorMessages: []
+      errorMessages: [],
+      priorityOptions: [
+        {
+          id: '1',
+          desc: 'High'
+        },
+        {
+          id: '2',
+          desc: 'Medium'
+        },
+        {
+          id: '3',
+          desc: 'Low'
+        }
+      ]
     }
   },
   computed: {
@@ -307,6 +336,9 @@ export default {
         this.form.id = this.editTask.id
         this.form.todoTitle = this.editTask.title
         this.form.progress = this.editTask.progress
+        this.form.priority = this.editTask.priority
+          ? this.editTask.priority
+          : '3'
         this.form.continuousState = this.editTask.continuous
 
         this.form.toggleNotes = this.editTask.notes ? true : false

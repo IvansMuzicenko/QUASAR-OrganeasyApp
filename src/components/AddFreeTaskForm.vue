@@ -35,6 +35,7 @@ export default {
       const newTodo = {
         id: form.todoTitle.replaceAll(' ', '-'),
         title: form.todoTitle,
+        priority: form.priority,
         progress: form.progress,
         continuous: form.continuousState,
         notes: form.toggleNotes ? form.notes : null,

@@ -286,6 +286,7 @@ export default {
       const updateTodo = {
         id: form.id,
         title: form.todoTitle,
+        priority: form.priority,
         progress: form.progress,
         notes: form.toggleNotes ? form.notes : null,
         continuous: form.continuousState,
