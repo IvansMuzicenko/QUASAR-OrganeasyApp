@@ -21,38 +21,72 @@
         <q-btn icon="tune" class="zindex-high" flat>
           <q-popup-proxy>
             <q-card>
-              <q-card-section class="text-subtitle1">
-                <q-icon name="filter_alt"></q-icon> Filter
+              <q-card-section class="text-subtitle1 text-center">
+                <q-icon name="filter_alt" /> Filter
               </q-card-section>
-              <q-card-section>
-                Progress:
-                <q-radio
-                  v-model="filtering.progress"
-                  val="all"
-                  label="All"
-                  class="full-width"
-                >
-                </q-radio>
-                <q-radio
-                  v-model="filtering.progress"
-                  val="done"
-                  label="Done"
-                  class="full-width"
-                >
-                </q-radio>
-                <q-radio
-                  v-model="filtering.progress"
-                  val="undone"
-                  label="Undone"
-                  class="full-width"
-                >
-                </q-radio>
+              <q-card-section class="no-padding">
+                <q-card-section>
+                  Progress:
+                  <q-radio
+                    v-model="filtering.progress"
+                    val="all"
+                    label="All"
+                    class="full-width"
+                  >
+                  </q-radio>
+                  <q-radio
+                    v-model="filtering.progress"
+                    val="done"
+                    label="Done"
+                    class="full-width"
+                  >
+                  </q-radio>
+                  <q-radio
+                    v-model="filtering.progress"
+                    val="undone"
+                    label="Undone"
+                    class="full-width"
+                  >
+                  </q-radio>
+                </q-card-section>
+                <q-separator></q-separator>
+                <q-card-section>
+                  Priority:
+                  <q-radio
+                    v-model="filtering.priority"
+                    val="all"
+                    label="All"
+                    class="full-width"
+                  >
+                  </q-radio>
+                  <q-radio
+                    v-model="filtering.priority"
+                    val="1"
+                    label="High"
+                    class="full-width"
+                  >
+                  </q-radio>
+                  <q-radio
+                    v-model="filtering.priority"
+                    val="2"
+                    label="Medium"
+                    class="full-width"
+                  >
+                  </q-radio>
+                  <q-radio
+                    v-model="filtering.priority"
+                    val="3"
+                    label="Low"
+                    class="full-width"
+                  >
+                  </q-radio>
+                </q-card-section>
               </q-card-section>
 
               <q-separator></q-separator>
 
-              <q-card-section class="text-subtitle1"
-                ><q-icon name="sort"></q-icon> Sort
+              <q-card-section class="text-subtitle1 text-center">
+                <q-icon name="sort" /> Sort
               </q-card-section>
               <q-card-section>
                 <q-btn
@@ -87,7 +121,7 @@
         </q-btn>
       </q-card-section>
 
-      <p class="text-center text-h6 full-width">Free Tasks</p>
+      <p class="text-center text-h6 full-width no-margin">Free Tasks</p>
     </q-card>
     <p
       v-if="
@@ -105,7 +139,11 @@
     >
       <q-item
         v-for="(task, index) in freeTasks"
-        v-show="!task['progress']"
+        v-show="
+          !task['progress'] &&
+          (filtering.priority == 'all' ||
+            filtering.priority == task['priority'])
+        "
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
         :style="task['progress'] ? ' background: lightgrey' : ''"
@@ -284,7 +322,8 @@ export default {
         priority: 'asc'
       },
       filtering: {
-        progress: 'all'
+        progress: 'all',
+        priority: 'all'
       }
     }
   },
