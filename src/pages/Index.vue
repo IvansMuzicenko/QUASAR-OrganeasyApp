@@ -70,8 +70,9 @@
                 >
                 </q-radio>
               </q-card-section>
-            </q-card>
-            <q-card>
+
+              <q-separator></q-separator>
+
               <q-card-section class="text-subtitle1"
                 ><q-icon name="sort"></q-icon> Sort
               </q-card-section>
