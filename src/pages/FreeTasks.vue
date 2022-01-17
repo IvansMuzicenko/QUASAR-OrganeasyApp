@@ -100,6 +100,19 @@
         :to="`/free-tasks/${task['id']}`"
         class="q-pa-none"
       >
+        <q-item-section
+          thumbnail
+          class="no-margin no-padding"
+          :class="
+            task['priority'] == '1'
+              ? 'bg-green'
+              : task['priority'] == '2'
+              ? 'bg-yellow'
+              : 'bg-red-11'
+          "
+          style="width: 1rem"
+        >
+        </q-item-section>
         <q-item-section>
           <q-item-section class="q-px-md">
             <q-item-section class="text-weight-bolder">{{

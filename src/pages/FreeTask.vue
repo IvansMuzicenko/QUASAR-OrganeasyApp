@@ -86,6 +86,27 @@
         <q-separator vertical spaced="md" />
         {{ task.progress ? 'Done' : 'Undone' }}
       </q-item>
+      <q-item>
+        <q-item-section avatar class="taskInfo">Priority</q-item-section>
+        <q-separator vertical spaced="md" />
+        <q-icon
+          name="fiber_manual_record"
+          :color="
+            task.priority == '1'
+              ? 'green'
+              : task.priority == '2'
+              ? 'yellow'
+              : 'red-11'
+          "
+        ></q-icon>
+        {{
+          task.priority == '1'
+            ? 'High'
+            : task.priority == '2'
+            ? 'Medium'
+            : 'Low'
+        }}
+      </q-item>
 
       <q-item v-if="task.continuous">
         <q-item-section avatar class="taskInfo">Action</q-item-section>
@@ -201,6 +222,7 @@ export default {
         id: '',
         title: '',
         progress: false,
+        priority: '',
         continuous: false,
         taskStarted: '',
         taskEnded: '',
@@ -257,7 +279,9 @@ export default {
 
     updateTaskData() {
       const taskId = this.path.slice(this.path.lastIndexOf('/') + 1)
-      const freeTask = this.$store.getters['users/freeTasks'][`id-${taskId}`]
+      const freeTask = this.$store.getters['users/freeTasks'].find(
+        (el) => el.id == taskId
+      )
       if (!freeTask) {
         return this.$router.push('/free-tasks')
       }
