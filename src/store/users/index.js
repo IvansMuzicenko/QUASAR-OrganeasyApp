@@ -95,6 +95,32 @@ const mutations = {
         }
       }
     )
+  },
+  SORT_PROCESSES_BY_TITLE(state, order) {
+    state.user.userData.processes = Object.values(
+      state.user.userData.processes
+    ).sort((a, b) => {
+      if (order == 'asc') {
+        if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+        if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+        return 0
+      } else {
+        if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
+        if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
+        return 0
+      }
+    })
+  },
+  SORT_PROCESSES_BY_TIME(state, order) {
+    state.user.userData.processes = Object.values(
+      state.user.userData.processes
+    ).sort((a, b) => {
+      if (order == 'asc') {
+        return a.time - b.time
+      } else {
+        return b.time - a.time
+      }
+    })
   }
 }
 
@@ -119,6 +145,12 @@ const actions = {
   },
   sortNotesByTitle({ commit }, order) {
     commit('SORT_NOTES_BY_TITLE', order)
+  },
+  sortProcessesByTime({ commit }, order) {
+    commit('SORT_PROCESSES_BY_TIME', order)
+  },
+  sortProcessesByTitle({ commit }, order) {
+    commit('SORT_PROCESSES_BY_TITLE', order)
   }
 }
 
