@@ -127,7 +127,7 @@
         <q-item-section avatar class="taskInfo">Notes</q-item-section>
         <q-separator vertical spaced="md" />
         <q-item-section>
-          <q-item-section v-if="task.notes.attachedNotes.length">
+          <q-item-section v-if="task.notes.attachedNotes">
             <p class="text-center">Attached notes:</p>
             <q-list separator bordered>
               <q-item
