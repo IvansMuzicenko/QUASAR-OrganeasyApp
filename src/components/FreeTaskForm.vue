@@ -31,12 +31,10 @@
         v-model="form.priority"
         label="Priority"
         :options="priorityOptions"
-        :option-value="
-          (opt) => (Object(opt) === opt && 'id' in opt ? opt.id : '3')
-        "
-        :option-label="
-          (opt) => (Object(opt) === opt && 'desc' in opt ? opt.desc : 'Low')
-        "
+        option-value="id"
+        option-label="desc"
+        emit-value
+        map-options
       ></q-select>
     </q-card-section>
 
