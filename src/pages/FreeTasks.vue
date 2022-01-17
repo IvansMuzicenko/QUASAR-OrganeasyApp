@@ -68,6 +68,19 @@
                 >
                   Title
                 </q-btn>
+                <q-btn
+                  :icon="
+                    sorting.priority == 'none'
+                      ? 'last_page'
+                      : sorting.priority == 'asc'
+                      ? 'vertical_align_bottom'
+                      : 'vertical_align_top'
+                  "
+                  class="full-width"
+                  @click="sortByPriority"
+                >
+                  Priority
+                </q-btn>
               </q-card-section>
             </q-card>
           </q-popup-proxy>
@@ -267,7 +280,8 @@ export default {
   data() {
     return {
       sorting: {
-        title: 'none'
+        title: 'none',
+        priority: 'asc'
       },
       filtering: {
         progress: 'all'
@@ -322,8 +336,17 @@ export default {
       this.$refs[`taskHold-${index}`].show()
     },
     sortByTitle() {
+      this.sorting.priority = 'none'
       this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
       this.$store.dispatch('users/sortFreeTasksByTitle', this.sorting.title)
+    },
+    sortByPriority() {
+      this.sorting.title = 'none'
+      this.sorting.priority = this.sorting.priority == 'asc' ? 'desc' : 'asc'
+      this.$store.dispatch(
+        'users/sortFreeTasksByPriority',
+        this.sorting.priority
+      )
     },
     openSearch() {
       this.$q.dialog({

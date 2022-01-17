@@ -92,6 +92,17 @@ const mutations = {
       }
     })
   },
+  SORT_FREE_TASKS_BY_PRIORITY(state, order) {
+    state.user.userData.freeTasks = Object.values(
+      state.user.userData.freeTasks
+    ).sort((a, b) => {
+      if (order == 'asc') {
+        return a.priority - b.priority
+      } else {
+        return b.priority - a.priority
+      }
+    })
+  },
   SORT_NOTES_BY_TITLE(state, order) {
     state.user.userData.notes = Object.values(state.user.userData.notes).sort(
       (a, b) => {
@@ -153,6 +164,9 @@ const actions = {
   },
   sortFreeTasksByTitle({ commit }, order) {
     commit('SORT_FREE_TASKS_BY_TITLE', order)
+  },
+  sortFreeTasksByPriority({ commit }, order) {
+    commit('SORT_FREE_TASKS_BY_PRIORITY', order)
   },
   sortNotesByTitle({ commit }, order) {
     commit('SORT_NOTES_BY_TITLE', order)
