@@ -37,7 +37,6 @@ const mutations = {
       userData.freeTasks = Object.values(userData.freeTasks).sort(
         (a, b) => a.priority - b.priority
       )
-      console.log(userData.freeTasks)
     }
 
     state.user.userData = userData
