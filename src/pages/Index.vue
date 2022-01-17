@@ -43,8 +43,8 @@
         <q-btn icon="tune" class="zindex-high" flat>
           <q-popup-proxy>
             <q-card>
-              <q-card-section class="text-subtitle1"
-                ><q-icon name="filter_alt"></q-icon> Filter
+              <q-card-section class="text-subtitle1 text-center"
+                ><q-icon name="filter_alt" />Filter
               </q-card-section>
               <q-card-section>
                 Progress:
@@ -73,8 +73,8 @@
 
               <q-separator></q-separator>
 
-              <q-card-section class="text-subtitle1"
-                ><q-icon name="sort"></q-icon> Sort
+              <q-card-section class="text-subtitle1 text-center"
+                ><q-icon name="sort" /> Sort
               </q-card-section>
               <q-card-section>
                 <q-btn
