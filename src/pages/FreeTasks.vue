@@ -138,14 +138,14 @@
       bordered
     >
       <q-item
-        v-for="(task, index) of freeTasks"
-        v-show="
-          !task['progress'] &&
-          (filtering.priority == 'all' ||
-            filtering.priority == task['priority'])
-        "
+        v-for="(task, index) of freeTasks.filter(
+          (el) =>
+            !el['progress'] &&
+            (filtering.priority == 'all' ||
+              filtering.priority == el['priority'])
+        )"
         :key="index"
-        v-touch-hold:400:12:15.mouse="(event) => holdUncompleted(event, index)"
+        v-touch-hold:400:12:15.mouse="(event) => taskHold(event, task['id'])"
         :style="task['progress'] ? ' background: lightgrey' : ''"
         clickable
         :to="`/free-tasks/${task['id']}`"
@@ -197,59 +197,11 @@
           </q-item-section>
           <q-separator size="5px"></q-separator>
         </q-item-section>
-        <q-popup-proxy
-          :ref="`taskHoldUncompleted-${index}`"
-          cover
-          :breakpoint="10000"
-          transition-show="scale"
-          transition-hide="scale"
-        >
-          <q-card>
-            {{ index }}
-            <q-card-section class="text-center">
-              <q-btn color="primary" icon="visibility" @click="openTask(task)"
-                >View</q-btn
-              >
-            </q-card-section>
-            <q-card-section class="text-center">
-              <q-btn color="secondary" icon="edit" @click="openTask(task, true)"
-                >Edit</q-btn
-              >
-            </q-card-section>
-            <q-card-section class="text-center">
-              <q-btn
-                :icon="task['progress'] ? 'close' : 'check'"
-                :color="task['progress'] ? 'red' : 'positive'"
-                @click="changeProgress(task)"
-                >{{ task['progress'] ? 'Undone' : 'Done' }}</q-btn
-              >
-            </q-card-section>
-            <q-card-section class="text-center border">
-              <q-separator></q-separator>
-              <q-btn
-                v-if="task['priority'] != 1"
-                flat
-                dense
-                class="full-width"
-                icon="expand_less"
-                @click="changePriority(task, -1)"
-              ></q-btn>
-              Priority
-              <q-btn
-                v-if="task['priority'] != 3"
-                flat
-                dense
-                class="full-width"
-                icon="expand_more"
-                @click="changePriority(task, 1)"
-              ></q-btn>
-              <q-separator></q-separator>
-            </q-card-section>
-          </q-card>
-        </q-popup-proxy>
       </q-item>
     </q-list>
+
     <q-separator v-if="filtering.progress == 'all'"></q-separator>
+
     <p
       v-if="
         Object.keys(freeTasks).length &&
@@ -268,10 +220,9 @@
       bordered
     >
       <q-item
-        v-for="(task, index) of freeTasks"
-        v-show="task['progress']"
+        v-for="(task, index) of freeTasks.filter((el) => el['progress'])"
         :key="index"
-        v-touch-hold:400:12:15.mouse="(event) => holdCompleted(event, index)"
+        v-touch-hold:400:12:15.mouse="(event) => taskHold(event, task['id'])"
         :class="task['progress'] ? 'bg-green-11' : ''"
         clickable
         :to="`/free-tasks/${task['id']}`"
@@ -281,62 +232,64 @@
             task['title']
           }}</q-item-section>
         </q-item-section>
-        <q-popup-proxy
-          :ref="`taskHoldCompleted-${index}`"
-          cover
-          :breakpoint="10000"
-          transition-show="scale"
-          transition-hide="scale"
-        >
-          <q-card>
-            {{ index }}
-            <q-card-section class="text-center">
-              <q-btn color="primary" icon="visibility" @click="openTask(task)"
-                >View</q-btn
-              >
-            </q-card-section>
-            <q-card-section class="text-center">
-              <q-btn color="secondary" icon="edit" @click="openTask(task, true)"
-                >Edit</q-btn
-              >
-            </q-card-section>
-            <q-card-section class="text-center">
-              <q-btn
-                :icon="task['progress'] ? 'close' : 'check'"
-                :color="task['progress'] ? 'red' : 'positive'"
-                @click="changeProgress(task)"
-                >{{ task['progress'] ? 'Undone' : 'Done' }}</q-btn
-              >
-            </q-card-section>
-            <q-card-section class="text-center border">
-              <q-separator></q-separator>
-              <q-btn
-                v-if="task['priority'] != 1"
-                flat
-                dense
-                class="full-width"
-                icon="expand_less"
-                @click="changePriority(task, -1)"
-              ></q-btn>
-              Priority
-              <q-btn
-                v-if="task['priority'] != 3"
-                flat
-                dense
-                class="full-width"
-                icon="expand_more"
-                @click="changePriority(task, 1)"
-              ></q-btn>
-              <q-separator></q-separator>
-            </q-card-section>
-          </q-card>
-        </q-popup-proxy>
       </q-item>
     </q-list>
     <div class="text-center q-my-md">
       <p v-if="!Object.keys(freeTasks).length">You have not free-tasks</p>
       <q-btn color="secondary" @click="addFreeTask()">Add free-task</q-btn>
     </div>
+    <q-popup-proxy
+      :ref="`taskHold`"
+      cover
+      :breakpoint="10000"
+      transition-show="scale"
+      transition-hide="scale"
+    >
+      <q-card>
+        <q-card-section class="text-center">
+          <q-btn color="primary" icon="visibility" @click="openTask(holdedTask)"
+            >View</q-btn
+          >
+        </q-card-section>
+        <q-card-section class="text-center">
+          <q-btn
+            color="secondary"
+            icon="edit"
+            @click="openTask(holdedTask, true)"
+            >Edit</q-btn
+          >
+        </q-card-section>
+        <q-card-section class="text-center">
+          <q-btn
+            :icon="holdedTask['progress'] ? 'close' : 'check'"
+            :color="holdedTask['progress'] ? 'red' : 'positive'"
+            @click="changeProgress(holdedTask)"
+            >{{ holdedTask['progress'] ? 'Undone' : 'Done' }}</q-btn
+          >
+        </q-card-section>
+        <q-card-section class="text-center border">
+          <q-separator></q-separator>
+          <q-btn
+            v-if="holdedTask['priority'] != 1"
+            flat
+            dense
+            class="full-width"
+            icon="expand_less"
+            @click="changePriority(holdedTask, -1)"
+          ></q-btn>
+          Priority
+          <q-btn
+            v-if="holdedTask['priority'] != 3"
+            flat
+            dense
+            class="full-width"
+            icon="expand_more"
+            @click="changePriority(holdedTask, 1)"
+          ></q-btn>
+          <q-separator></q-separator>
+        </q-card-section>
+      </q-card>
+    </q-popup-proxy>
   </q-page>
 </template>
 
@@ -350,6 +303,7 @@ const db = getDatabase()
 export default {
   data() {
     return {
+      holdedTaskId: '',
       sorting: {
         title: 'none',
         priority: 'asc'
@@ -362,7 +316,17 @@ export default {
   },
   computed: {
     freeTasks() {
-      return this.$store.getters['users/freeTasks']
+      const vuexFreeTasks = this.$store.getters['users/freeTasks']
+      let freeTasks = []
+      for (const vuexFreeTask of vuexFreeTasks) {
+        freeTasks.push(vuexFreeTask)
+      }
+      return freeTasks
+    },
+    holdedTask() {
+      return this.$store.getters['users/freeTasks'].find(
+        (el) => el.id == this.holdedTaskId
+      )
     }
   },
   methods: {
@@ -403,12 +367,9 @@ export default {
         { progress: true }
       )
     },
-
-    holdUncompleted(event, index) {
-      this.$refs[`taskHoldUncompleted-${index}`].show()
-    },
-    holdCompleted(event, index) {
-      this.$refs[`taskHoldCompleted-${index}`].show()
+    taskHold(event, id) {
+      this.holdedTaskId = id
+      this.$refs[`taskHold`].show()
     },
     changePriority(task, modifier) {
       const modifiedPriority =
