@@ -257,8 +257,8 @@ export default {
         ]
       let dayTasks = []
       if (vuexDayTasks) {
-        for (const vuexDayTask of vuexDayTasks) {
-          dayTasks.push(vuexDayTask)
+        for (const vuexDayTask in vuexDayTasks) {
+          dayTasks.push(vuexDayTasks[vuexDayTask])
         }
 
         dayTasks.sort((a, b) => {

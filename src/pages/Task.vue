@@ -376,13 +376,12 @@ export default {
       if (!dayTasks) {
         return this.$router.push('/')
       }
-      const task = dayTasks.find(
-        (element) => Object.values(element).indexOf(`${taskId}`) >= 0
-      )
+      const task = dayTasks[`id-${taskId}`]
+
       if (!task) {
         return this.$router.push('/')
       }
-      this.task = JSON.parse(JSON.stringify(task))
+      this.task = task
     },
     routerBack() {
       return this.$router.push(

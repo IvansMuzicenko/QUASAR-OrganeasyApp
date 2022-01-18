@@ -14,31 +14,6 @@ const mutations = {
     state.user.email = user.email
   },
   SET_USER_DATA(state, userData) {
-    if (userData && userData.tasks) {
-      for (const [key, value] of Object.entries(userData.tasks)) {
-        userData.tasks[key] = Object.values(value).sort(
-          (a, b) =>
-            a.time.slice(a.time.indexOf(' ')).replace(':', '.') -
-            b.time.slice(b.time.indexOf(' ')).replace(':', '.')
-        )
-      }
-    }
-    if (userData && userData.processes) {
-      userData.processes = Object.values(userData.processes).sort(
-        (a, b) => a.time - b.time
-      )
-    }
-    if (userData && userData.notes) {
-      userData.notes = Object.values(userData.notes).sort(
-        (a, b) => a.dateModified - b.dateModified
-      )
-    }
-    if (userData && userData.freeTasks) {
-      userData.freeTasks = Object.values(userData.freeTasks).sort(
-        (a, b) => (a.priority ? a.priority : 3) - (b.priority ? b.priority : 3)
-      )
-    }
-
     state.user.userData = userData
   },
   LOGOUT(state) {
