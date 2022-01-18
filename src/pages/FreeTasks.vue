@@ -239,6 +239,7 @@
       <q-btn color="secondary" @click="addFreeTask()">Add free-task</q-btn>
     </div>
     <q-popup-proxy
+      v-if="holdedTask"
       :ref="`taskHold`"
       cover
       :breakpoint="10000"
@@ -318,14 +319,39 @@ export default {
     freeTasks() {
       const vuexFreeTasks = this.$store.getters['users/freeTasks']
       let freeTasks = []
-      for (const vuexFreeTask of vuexFreeTasks) {
-        freeTasks.push(vuexFreeTask)
+      if (vuexFreeTasks) {
+        for (const vuexFreeTask in vuexFreeTasks) {
+          freeTasks.push(vuexFreeTasks[vuexFreeTask])
+        }
+        freeTasks.sort((a, b) => {
+          if (this.sorting.title != 'none') {
+            if (this.sorting.title == 'asc') {
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+              return 0
+            } else {
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
+              return 0
+            }
+          } else if (this.sorting.priority != 'none') {
+            if (this.sorting.priority == 'asc') {
+              return (
+                (a.priority ? a.priority : 3) - (b.priority ? b.priority : 3)
+              )
+            } else {
+              return (
+                (b.priority ? b.priority : 3) - (a.priority ? a.priority : 3)
+              )
+            }
+          }
+        })
       }
       return freeTasks
     },
     holdedTask() {
-      return this.$store.getters['users/freeTasks'].find(
-        (el) => el.id == this.holdedTaskId
+      return (
+        this.$store.getters['users/freeTasks'][`id-${this.holdedTaskId}`] || {}
       )
     }
   },
@@ -387,15 +413,10 @@ export default {
     sortByTitle() {
       this.sorting.priority = 'none'
       this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
-      this.$store.dispatch('users/sortFreeTasksByTitle', this.sorting.title)
     },
     sortByPriority() {
       this.sorting.title = 'none'
       this.sorting.priority = this.sorting.priority == 'asc' ? 'desc' : 'asc'
-      this.$store.dispatch(
-        'users/sortFreeTasksByPriority',
-        this.sorting.priority
-      )
     },
     openSearch() {
       this.$q.dialog({

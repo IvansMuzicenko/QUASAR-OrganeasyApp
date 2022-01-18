@@ -275,13 +275,11 @@ export default {
 
     updateTaskData() {
       const taskId = this.path.slice(this.path.lastIndexOf('/') + 1)
-      const freeTask = this.$store.getters['users/freeTasks'].find(
-        (el) => el.id == taskId
-      )
+      const freeTask = this.$store.getters['users/freeTasks'][`id-${taskId}`]
       if (!freeTask) {
         return this.$router.push('/free-tasks')
       }
-      this.task = JSON.parse(JSON.stringify(freeTask))
+      this.task = freeTask
     },
     routerBack() {
       return this.$router.push('/free-tasks')
