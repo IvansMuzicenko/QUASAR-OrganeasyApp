@@ -279,7 +279,7 @@ export default {
       if (!freeTask) {
         return this.$router.push('/free-tasks')
       }
-      this.task = freeTask
+      this.task = JSON.parse(JSON.stringify(freeTask))
     },
     routerBack() {
       return this.$router.push('/free-tasks')

@@ -372,6 +372,7 @@ export default {
         this.path.lastIndexOf('/')
       )
       const taskId = this.path.slice(this.path.lastIndexOf('/') + 1)
+
       const dayTasks = this.$store.getters['users/tasks'][`date-${taskDate}`]
       if (!dayTasks) {
         return this.$router.push('/')
@@ -381,7 +382,7 @@ export default {
       if (!task) {
         return this.$router.push('/')
       }
-      this.task = task
+      this.task = JSON.parse(JSON.stringify(task))
     },
     routerBack() {
       return this.$router.push(
