@@ -114,12 +114,12 @@
     <q-markup-table wrap-cells separator="cell">
       <tbody>
         <tr
-          v-for="(task, index) of dayTasks"
-          v-show="
-            filtering.progress == 'all' ||
-            (filtering.progress == 'done' && task['progress']) ||
-            (filtering.progress == 'undone' && !task['progress'])
-          "
+          v-for="(task, index) of dayTasks.filter(
+            (el) =>
+              filtering.progress == 'all' ||
+              (filtering.progress == 'done' && el['progress']) ||
+              (filtering.progress == 'undone' && !el['progress'])
+          )"
           :key="index"
           v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
           style="width: 60px"
