@@ -114,11 +114,11 @@
     <q-markup-table wrap-cells separator="cell">
       <tbody>
         <tr
-          v-for="(task, index) in dayTasks"
+          v-for="(task, index) of dayTasks"
           v-show="
             filtering.progress == 'all' ||
-            (filtering.progress == 'done' && task['progress'] == true) ||
-            (filtering.progress == 'undone' && task['progress'] == false)
+            (filtering.progress == 'done' && task['progress']) ||
+            (filtering.progress == 'undone' && !task['progress'])
           "
           :key="index"
           v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
@@ -250,10 +250,40 @@ export default {
     },
     dayTasks() {
       if (!this.tasks) return []
+      const vuexDayTasks =
+        this.tasks[
+          'date-' +
+            this.formattedDate.slice(this.formattedDate.indexOf(' ') + 1)
+        ]
+      let dayTasks = []
+      if (vuexDayTasks) {
+        for (const vuexDayTask of vuexDayTasks) {
+          dayTasks.push(vuexDayTask)
+        }
 
-      return this.tasks[
-        'date-' + this.formattedDate.slice(this.formattedDate.indexOf(' ') + 1)
-      ]
+        dayTasks.sort((a, b) => {
+          if (this.sorting.time != 'none') {
+            const first = a.time.slice(a.time.indexOf(' ')).replace(':', '.')
+            const second = b.time.slice(b.time.indexOf(' ')).replace(':', '.')
+            if (this.sorting.time == 'asc') {
+              return first - second
+            } else {
+              return second - first
+            }
+          } else if (this.sorting.title != 'none') {
+            if (this.sorting.title == 'asc') {
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+              return 0
+            } else {
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
+              return 0
+            }
+          }
+        })
+      }
+      return dayTasks
     }
   },
   watch: {
@@ -324,12 +354,10 @@ export default {
     sortByTime() {
       this.sorting.title = 'none'
       this.sorting.time = this.sorting.time == 'asc' ? 'desc' : 'asc'
-      this.$store.dispatch('users/sortTasksByTime', this.sorting.time)
     },
     sortByTitle() {
       this.sorting.time = 'none'
       this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
-      this.$store.dispatch('users/sortTasksByTitle', this.sorting.title)
     },
     openTask(task, edit) {
       const taskDate = task.time.slice(0, task.time.indexOf(' '))

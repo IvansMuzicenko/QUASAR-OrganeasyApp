@@ -48,34 +48,6 @@ const mutations = {
 
     this.$router.push('/auth')
   },
-  SORT_TASKS_BY_TIME(state, order) {
-    for (const [key, value] of Object.entries(state.user.userData.tasks)) {
-      state.user.userData.tasks[key] = Object.values(value).sort((a, b) => {
-        const first = a.time.slice(a.time.indexOf(' ')).replace(':', '.')
-        const second = b.time.slice(b.time.indexOf(' ')).replace(':', '.')
-        if (order == 'asc') {
-          return first - second
-        } else {
-          return second - first
-        }
-      })
-    }
-  },
-  SORT_TASKS_BY_TITLE(state, order) {
-    for (const [key, value] of Object.entries(state.user.userData.tasks)) {
-      state.user.userData.tasks[key] = Object.values(value).sort((a, b) => {
-        if (order == 'asc') {
-          if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
-          if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
-          return 0
-        } else {
-          if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
-          if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
-          return 0
-        }
-      })
-    }
-  },
   SORT_FREE_TASKS_BY_TITLE(state, order) {
     state.user.userData.freeTasks = Object.values(
       state.user.userData.freeTasks
@@ -154,12 +126,6 @@ const actions = {
   },
   logout({ commit }) {
     commit('LOGOUT')
-  },
-  sortTasksByTime({ commit }, order) {
-    commit('SORT_TASKS_BY_TIME', order)
-  },
-  sortTasksByTitle({ commit }, order) {
-    commit('SORT_TASKS_BY_TITLE', order)
   },
   sortFreeTasksByTitle({ commit }, order) {
     commit('SORT_FREE_TASKS_BY_TITLE', order)
