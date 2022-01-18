@@ -69,6 +69,14 @@ module.exports = {
     'no-console': 'off',
     'comma-dangle': ['error', 'never'],
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'vue/html-self-closing': [
+      'error',
+      {
+        html: {
+          void: 'any'
+        }
+      }
+    ]
   }
 }
