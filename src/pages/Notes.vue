@@ -79,8 +79,12 @@
 
     <q-list separator bordered>
       <q-item
-        v-for="(note, index) of notes"
-        v-show="note['favorite']"
+        v-for="(note, index) of notes.filter(
+          (el) =>
+            el['favorite'] &&
+            (filtering.priority == 'all' ||
+              (filtering.priority == 'favorites' && el['favorite']))
+        )"
         :key="index"
         clickable
         :to="`/notes/${note['id']}`"
@@ -98,11 +102,14 @@
           />
         </q-item-section>
       </q-item>
-    </q-list>
-    <q-list separator bordered>
+
       <q-item
-        v-for="(note, index) in notes"
-        v-show="!note['favorite']"
+        v-for="(note, index) in notes.filter(
+          (el) =>
+            !el['favorite'] &&
+            (filtering.priority == 'all' ||
+              (filtering.priority == 'common' && !el['favorite']))
+        )"
         :key="index"
         clickable
         :to="`/notes/${note['id']}`"
