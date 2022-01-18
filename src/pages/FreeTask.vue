@@ -92,19 +92,15 @@
         <q-icon
           name="fiber_manual_record"
           :color="
-            task.priority == '1'
+            task.priority === 1
               ? 'green'
-              : task.priority == '2'
+              : task.priority === 2
               ? 'yellow'
               : 'red-11'
           "
         ></q-icon>
         {{
-          task.priority == '1'
-            ? 'High'
-            : task.priority == '2'
-            ? 'Medium'
-            : 'Low'
+          task.priority == 1 ? 'High' : task.priority == 2 ? 'Medium' : 'Low'
         }}
       </q-item>
 
@@ -222,7 +218,7 @@ export default {
         id: '',
         title: '',
         progress: false,
-        priority: '',
+        priority: 3,
         continuous: false,
         taskStarted: '',
         taskEnded: '',

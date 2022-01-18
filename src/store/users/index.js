@@ -35,7 +35,7 @@ const mutations = {
     }
     if (userData && userData.freeTasks) {
       userData.freeTasks = Object.values(userData.freeTasks).sort(
-        (a, b) => a.priority - b.priority
+        (a, b) => (a.priority ? a.priority : 3) - (b.priority ? b.priority : 3)
       )
     }
 
@@ -96,9 +96,9 @@ const mutations = {
       state.user.userData.freeTasks
     ).sort((a, b) => {
       if (order == 'asc') {
-        return a.priority - b.priority
+        return (a.priority ? a.priority : 3) - (b.priority ? b.priority : 3)
       } else {
-        return b.priority - a.priority
+        return (b.priority ? b.priority : 3) - (a.priority ? a.priority : 3)
       }
     })
   },

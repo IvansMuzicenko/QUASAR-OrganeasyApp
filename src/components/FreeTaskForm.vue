@@ -273,7 +273,7 @@ export default {
         id: '',
         todoTitle: '',
         progress: false,
-        priority: '3',
+        priority: 3,
         continuousState: false,
 
         toggleNotes: false,
@@ -290,15 +290,15 @@ export default {
       errorMessages: [],
       priorityOptions: [
         {
-          id: '1',
+          id: 1,
           desc: 'High'
         },
         {
-          id: '2',
+          id: 2,
           desc: 'Medium'
         },
         {
-          id: '3',
+          id: 3,
           desc: 'Low'
         }
       ]
@@ -334,9 +334,7 @@ export default {
         this.form.id = this.editTask.id
         this.form.todoTitle = this.editTask.title
         this.form.progress = this.editTask.progress
-        this.form.priority = this.editTask.priority
-          ? this.editTask.priority
-          : '3'
+        this.form.priority = this.editTask.priority ? this.editTask.priority : 3
         this.form.continuousState = this.editTask.continuous
 
         this.form.toggleNotes = this.editTask.notes ? true : false
