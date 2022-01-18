@@ -79,7 +79,7 @@
 
     <q-list separator bordered>
       <q-item
-        v-for="(note, index) in notes"
+        v-for="(note, index) of notes"
         v-show="note['favorite']"
         :key="index"
         clickable
@@ -150,7 +150,28 @@ export default {
   },
   computed: {
     notes() {
-      return this.$store.getters['users/notes']
+      const vuexNotes = this.$store.getters['users/notes']
+      let notes = []
+
+      if (vuexNotes) {
+        for (const vuexNote in vuexNotes) {
+          notes.push(vuexNotes[vuexNote])
+        }
+        notes.sort((a, b) => {
+          if (this.sorting.title != 'none') {
+            if (this.sorting.title == 'asc') {
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+              return 0
+            } else {
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
+              return 0
+            }
+          }
+        })
+      }
+      return notes
     }
   },
   methods: {
@@ -169,7 +190,6 @@ export default {
     },
     sortByTitle() {
       this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
-      this.$store.dispatch('users/sortNotesByTitle', this.sorting.title)
     },
     favoriteNote(favorite, id) {
       update(ref(db, `${this.$store.getters['users/userId']}/notes/id-${id}`), {

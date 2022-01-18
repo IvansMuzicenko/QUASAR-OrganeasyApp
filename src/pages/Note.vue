@@ -217,9 +217,7 @@ export default {
 
   methods: {
     updateNoteData() {
-      const note = this.$store.getters['users/notes'].find(
-        (el) => el.id == this.id
-      )
+      const note = this.$store.getters['users/notes'][`id-${this.id}`]
       if (!note) {
         return this.$router.push('/notes')
       }

@@ -23,21 +23,7 @@ const mutations = {
 
     this.$router.push('/auth')
   },
-  SORT_NOTES_BY_TITLE(state, order) {
-    state.user.userData.notes = Object.values(state.user.userData.notes).sort(
-      (a, b) => {
-        if (order == 'asc') {
-          if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
-          if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
-          return 0
-        } else {
-          if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
-          if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
-          return 0
-        }
-      }
-    )
-  },
+
   SORT_PROCESSES_BY_TITLE(state, order) {
     state.user.userData.processes = Object.values(
       state.user.userData.processes
@@ -75,9 +61,6 @@ const actions = {
   },
   logout({ commit }) {
     commit('LOGOUT')
-  },
-  sortNotesByTitle({ commit }, order) {
-    commit('SORT_NOTES_BY_TITLE', order)
   },
   sortProcessesByTime({ commit }, order) {
     commit('SORT_PROCESSES_BY_TIME', order)
