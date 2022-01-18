@@ -17,12 +17,13 @@
           flat
           rounded
           @click="openSearch"
-        ></q-btn>
+        />
         <q-btn icon="tune" class="zindex-high" flat>
           <q-popup-proxy>
             <q-card>
               <q-card-section class="text-subtitle1 text-center">
-                <q-icon name="filter_alt" /> Filter
+                <q-icon name="filter_alt" />
+                Filter
               </q-card-section>
               <q-card-section class="no-padding">
                 <q-card-section>
@@ -32,24 +33,21 @@
                     val="all"
                     label="All"
                     class="full-width"
-                  >
-                  </q-radio>
+                  />
                   <q-radio
                     v-model="filtering.progress"
                     val="done"
                     label="Done"
                     class="full-width"
-                  >
-                  </q-radio>
+                  />
                   <q-radio
                     v-model="filtering.progress"
                     val="undone"
                     label="Undone"
                     class="full-width"
-                  >
-                  </q-radio>
+                  />
                 </q-card-section>
-                <q-separator></q-separator>
+                <q-separator />
                 <q-card-section>
                   Priority:
                   <q-radio
@@ -57,36 +55,33 @@
                     val="all"
                     label="All"
                     class="full-width"
-                  >
-                  </q-radio>
+                  />
                   <q-radio
                     v-model="filtering.priority"
                     val="1"
                     label="High"
                     class="full-width"
-                  >
-                  </q-radio>
+                  />
                   <q-radio
                     v-model="filtering.priority"
                     val="2"
                     label="Medium"
                     class="full-width"
-                  >
-                  </q-radio>
+                  />
                   <q-radio
                     v-model="filtering.priority"
                     val="3"
                     label="Low"
                     class="full-width"
-                  >
-                  </q-radio>
+                  />
                 </q-card-section>
               </q-card-section>
 
-              <q-separator></q-separator>
+              <q-separator />
 
               <q-card-section class="text-subtitle1 text-center">
-                <q-icon name="sort" /> Sort
+                <q-icon name="sort" />
+                Sort
               </q-card-section>
               <q-card-section>
                 <q-btn
@@ -162,13 +157,12 @@
               : 'bg-red-11'
           "
           style="width: 1rem"
-        >
-        </q-item-section>
+        />
         <q-item-section>
           <q-item-section class="q-px-md">
-            <q-item-section class="text-weight-bolder">{{
-              task['title']
-            }}</q-item-section>
+            <q-item-section class="text-weight-bolder">
+              {{ task['title'] }}
+            </q-item-section>
             <q-separator
               v-if="task['subtasks'] && subtasksState(task['subtasks'])"
               spaced="sm"
@@ -191,16 +185,16 @@
                 @touchstart.stop
                 @mousedown.stop
               >
-                <q-item-label> ~ {{ subtask['title'] }}</q-item-label>
+                <q-item-label>~ {{ subtask['title'] }}</q-item-label>
               </q-item>
             </q-list>
           </q-item-section>
-          <q-separator size="5px"></q-separator>
+          <q-separator size="5px" />
         </q-item-section>
       </q-item>
     </q-list>
 
-    <q-separator v-if="filtering.progress == 'all'"></q-separator>
+    <q-separator v-if="filtering.progress == 'all'" />
 
     <p
       v-if="
@@ -213,7 +207,7 @@
     </p>
     <q-separator
       v-if="filtering.progress == 'all' || filtering.progress == 'done'"
-    ></q-separator>
+    />
     <q-list
       v-if="filtering.progress == 'all' || filtering.progress == 'done'"
       separator
@@ -228,9 +222,9 @@
         :to="`/free-tasks/${task['id']}`"
       >
         <q-item-section>
-          <q-item-section class="text-weight-bolder">{{
-            task['title']
-          }}</q-item-section>
+          <q-item-section class="text-weight-bolder">
+            {{ task['title'] }}
+          </q-item-section>
         </q-item-section>
       </q-item>
     </q-list>
@@ -248,28 +242,34 @@
     >
       <q-card>
         <q-card-section class="text-center">
-          <q-btn color="primary" icon="visibility" @click="openTask(holdedTask)"
-            >View</q-btn
+          <q-btn
+            color="primary"
+            icon="visibility"
+            @click="openTask(holdedTask)"
           >
+            View
+          </q-btn>
         </q-card-section>
         <q-card-section class="text-center">
           <q-btn
             color="secondary"
             icon="edit"
             @click="openTask(holdedTask, true)"
-            >Edit</q-btn
           >
+            Edit
+          </q-btn>
         </q-card-section>
         <q-card-section class="text-center">
           <q-btn
             :icon="holdedTask['progress'] ? 'close' : 'check'"
             :color="holdedTask['progress'] ? 'red' : 'positive'"
             @click="changeProgress(holdedTask)"
-            >{{ holdedTask['progress'] ? 'Undone' : 'Done' }}</q-btn
           >
+            {{ holdedTask['progress'] ? 'Undone' : 'Done' }}
+          </q-btn>
         </q-card-section>
         <q-card-section class="text-center border">
-          <q-separator></q-separator>
+          <q-separator />
           <q-btn
             v-if="holdedTask['priority'] != 1"
             flat
@@ -277,7 +277,7 @@
             class="full-width"
             icon="expand_less"
             @click="changePriority(holdedTask, -1)"
-          ></q-btn>
+          />
           Priority
           <q-btn
             v-if="holdedTask['priority'] != 3"
@@ -286,8 +286,8 @@
             class="full-width"
             icon="expand_more"
             @click="changePriority(holdedTask, 1)"
-          ></q-btn>
-          <q-separator></q-separator>
+          />
+          <q-separator />
         </q-card-section>
       </q-card>
     </q-popup-proxy>

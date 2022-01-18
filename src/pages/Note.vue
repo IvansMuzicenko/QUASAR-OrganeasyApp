@@ -1,12 +1,7 @@
 <template>
   <q-page>
     <q-card class="flex justify-between no-padding">
-      <q-btn
-        icon="arrow_back"
-        class="zindex-high"
-        flat
-        @click="routerBack()"
-      ></q-btn>
+      <q-btn icon="arrow_back" class="zindex-high" flat @click="routerBack()" />
       <q-btn
         v-if="editState"
         icon="save"
@@ -48,11 +43,7 @@
         <p v-if="!editState">
           {{ note.title }}
         </p>
-        <q-checkbox
-          v-if="editState"
-          v-model="note.favorite"
-          label="Favorite"
-        ></q-checkbox>
+        <q-checkbox v-if="editState" v-model="note.favorite" label="Favorite" />
 
         <q-input
           v-if="editState"
@@ -63,7 +54,7 @@
 
         <q-separator v-if="!editState" color="black" inset />
 
-        <p v-if="!editState" v-html="note.text"></p>
+        <p v-if="!editState" v-html="note.text" />
         <q-editor
           v-if="editState"
           v-model="note.text"

@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin">
       <q-input v-model="searchQuery" outlined type="search" label="Search">
         <template #prepend>
-          <q-icon name="search"></q-icon>
+          <q-icon name="search" />
         </template>
       </q-input>
       <q-card-section v-if="searchQuery.trim()" class="no-padding">
@@ -13,7 +13,7 @@
           separator
         >
           <p class="text-body1 text-center">Tasks:</p>
-          <q-separator></q-separator>
+          <q-separator />
           <q-item
             v-for="(task, index) in tasks"
             :key="index"
@@ -26,7 +26,7 @@
             <q-item-section class="col-3">{{ task['time'] }}</q-item-section>
             <q-item-section class="col">
               <q-item-section v-if="highlightSearch(task['title']).length">
-                <p v-html="highlightSearch(task['title'])"></p>
+                <p v-html="highlightSearch(task['title'])" />
               </q-item-section>
               <q-item-section
                 v-if="
@@ -47,12 +47,12 @@
                   task['notes'] && highlightSearch(task['notes']['text']).length
                 "
               >
-                <q-separator></q-separator>
+                <q-separator />
                 <p
                   v-html="
                     task['notes'] && highlightSearch(task['notes']['text'])
                   "
-                ></p>
+                />
               </q-item-section>
             </q-item-section>
           </q-item>
@@ -64,7 +64,7 @@
           separator
         >
           <p class="text-body1 text-center">Free-tasks:</p>
-          <q-separator></q-separator>
+          <q-separator />
           <q-item
             v-for="(freeTask, index) in freeTasks"
             :key="index"
@@ -73,7 +73,7 @@
           >
             <q-item-section>
               <q-item-section v-if="highlightSearch(freeTask['title']).length">
-                <p v-html="highlightSearch(freeTask['title'])"></p>
+                <p v-html="highlightSearch(freeTask['title'])" />
               </q-item-section>
               <q-item-section
                 v-if="
@@ -95,13 +95,13 @@
                   highlightSearch(freeTask['notes']['text']).length
                 "
               >
-                <q-separator></q-separator>
+                <q-separator />
                 <p
                   v-html="
                     freeTask['notes'] &&
                     highlightSearch(freeTask['notes']['text'])
                   "
-                ></p>
+                />
               </q-item-section>
             </q-item-section>
           </q-item>
@@ -113,7 +113,7 @@
           separator
         >
           <p class="text-body1 text-center">Notes:</p>
-          <q-separator></q-separator>
+          <q-separator />
           <q-item
             v-for="(note, index) of notes"
             :key="index"
@@ -122,7 +122,7 @@
           >
             <q-item-section>
               <q-item-section v-if="highlightSearch(note['title']).length">
-                <p v-html="highlightSearch(note['title'])"></p>
+                <p v-html="highlightSearch(note['title'])" />
               </q-item-section>
               <q-item-section
                 v-if="
@@ -138,8 +138,8 @@
                 </p>
               </q-item-section>
               <q-item-section v-if="highlightSearch(note['text']).length">
-                <q-separator></q-separator>
-                <p v-html="highlightSearch(note['text'])"></p>
+                <q-separator />
+                <p v-html="highlightSearch(note['text'])" />
               </q-item-section>
             </q-item-section>
           </q-item>

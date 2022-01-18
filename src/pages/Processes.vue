@@ -13,8 +13,9 @@
         <q-btn icon="tune" class="zindex-high" flat>
           <q-popup-proxy>
             <q-card>
-              <q-card-section class="text-subtitle1"
-                ><q-icon name="sort"></q-icon> Sort
+              <q-card-section class="text-subtitle1">
+                <q-icon name="sort" />
+                Sort
               </q-card-section>
               <q-card-section>
                 <q-btn
@@ -30,7 +31,7 @@
                 >
                   Title
                 </q-btn>
-                <q-separator></q-separator>
+                <q-separator />
                 <q-btn
                   :icon="
                     sorting.time == 'none'
@@ -78,8 +79,7 @@
             bottom-slots
             label="Title"
             :dense="false"
-          >
-          </q-input>
+          />
           <q-input
             v-model.number="selectedProcess.time"
             bottom-slots
@@ -88,8 +88,7 @@
             suffix="Minutes"
             min="1"
             :dense="false"
-          >
-          </q-input>
+          />
         </q-card-section>
         <q-card-section v-if="error">
           <p class="text-negative">

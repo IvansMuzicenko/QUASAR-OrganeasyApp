@@ -27,7 +27,8 @@
             (val !== null && val !== '' && val.length > 5) ||
             'Password must contain at least 6 symbols'
         ]"
-        ><template #append>
+      >
+        <template #append>
           <q-icon
             :name="isPwd ? 'visibility_off' : 'visibility'"
             class="cursor-pointer"
@@ -45,7 +46,8 @@
           (val) =>
             (val !== null && val === password) || 'Passwords do not match'
         ]"
-        ><template #append>
+      >
+        <template #append>
           <q-icon
             :name="isPwd ? 'visibility_off' : 'visibility'"
             class="cursor-pointer"
@@ -65,7 +67,7 @@
         />
       </div>
     </q-form>
-    <slot></slot>
+    <slot />
   </div>
 </template>
 <script>

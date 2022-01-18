@@ -44,7 +44,7 @@
         />
       </div>
     </q-form>
-    <slot></slot>
+    <slot />
   </div>
 </template>
 <script>

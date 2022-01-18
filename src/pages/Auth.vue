@@ -3,17 +3,17 @@
     <register-form v-if="authMode === 'signUp'">
       <p class="q-ma-lg">
         Already have an account?
-        <span class="text-blue cursor-pointer" @click="changeAuthMode()"
-          >Sign In!</span
-        >
+        <span class="text-blue cursor-pointer" @click="changeAuthMode()">
+          Sign In!
+        </span>
       </p>
     </register-form>
     <login-form v-if="authMode === 'signIn'">
       <p class="q-ma-lg">
         Don't have an account?
-        <span class="text-blue cursor-pointer" @click="changeAuthMode()"
-          >Sign Up!</span
-        >
+        <span class="text-blue cursor-pointer" @click="changeAuthMode()">
+          Sign Up!
+        </span>
       </p>
     </login-form>
   </q-page>

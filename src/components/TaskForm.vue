@@ -8,8 +8,7 @@
         :rules="[(val) => val !== '' || 'Title is required']"
         :dense="false"
         class="q-px-md"
-      >
-      </q-input>
+      />
     </q-card-section>
 
     <q-card-section>
@@ -19,9 +18,9 @@
         </q-item-section>
         <q-item-section>
           <q-item-label>Progress</q-item-label>
-          <q-item-label caption>{{
-            form.progress ? 'done' : 'undone'
-          }}</q-item-label>
+          <q-item-label caption>
+            {{ form.progress ? 'done' : 'undone' }}
+          </q-item-label>
         </q-item-section>
       </q-item>
     </q-card-section>
@@ -143,7 +142,7 @@
           name="close"
           size="md"
           @click="form.toggleEventEnd = !form.toggleEventEnd"
-        ></q-icon>
+        />
       </q-card-section>
     </q-card-section>
 
@@ -162,7 +161,7 @@
             name="close"
             size="md"
             @click="form.toggleNotes = !form.toggleNotes"
-          ></q-icon>
+          />
         </p>
 
         <q-select
@@ -280,15 +279,14 @@
           bottom-slots
           label="Location"
           class="col"
-        >
-        </q-input>
+        />
         <q-icon
           class="col-1 cursor-pointer float-right"
           color="red"
           name="close"
           size="md"
           @click="form.toggleLocation = !form.toggleLocation"
-        ></q-icon>
+        />
       </q-card-section>
     </q-card-section>
 
@@ -322,7 +320,7 @@
           name="close"
           size="md"
           @click="form.toggleProcesses = !form.toggleProcesses"
-        ></q-icon>
+        />
       </q-card-section>
     </q-card-section>
 
@@ -360,20 +358,14 @@
                   :color="subtask['progress'] ? 'negative' : 'positive'"
                   :icon="subtask['progress'] ? 'close' : 'check'"
                   @click="onSubtaskClick(index, subtask['progress'])"
-                ></q-btn>
+                />
               </q-item-section>
-              <q-item-section
-                :class="subtask['progress'] ? 'text-strike' : ''"
-                >{{ subtask['title'] }}</q-item-section
-              >
+              <q-item-section :class="subtask['progress'] ? 'text-strike' : ''">
+                {{ subtask['title'] }}
+              </q-item-section>
               <q-item-section side>
-                <q-btn
-                  icon="cancel"
-                  flat
-                  round
-                  @click="deleteSubtask(index)"
-                ></q-btn
-              ></q-item-section>
+                <q-btn icon="cancel" flat round @click="deleteSubtask(index)" />
+              </q-item-section>
             </q-item>
           </q-list>
         </q-card-section>
@@ -384,7 +376,7 @@
           name="close"
           size="md"
           @click="form.toggleSubtasks = !form.toggleSubtasks"
-        ></q-icon>
+        />
       </q-card-section>
     </q-card-section>
 
@@ -404,7 +396,7 @@
             name="close"
             size="md"
             @click="form.toggleNotifications = !form.toggleNotifications"
-          ></q-icon>
+          />
         </p>
         <q-card-section
           v-for="(notific, index) in form.notificationForm"
@@ -419,34 +411,34 @@
             class="q-ma-xs"
             dense
             style="width: 10%"
-          ></q-select>
+          />
           <q-select
             v-model="form.notificationForm[index]['notificationTimeTypeModel']"
             :options="notificationTimeType"
             class="q-ma-xs"
             dense
             style="width: 25%"
-          ></q-select>
+          />
           <q-select
             v-model="form.notificationForm[index]['notificationPeriodModel']"
             :options="notificationPeriod"
             class="q-ma-xs"
             dense
             style="width: 20%"
-          ></q-select>
+          />
           <q-select
             v-model="form.notificationForm[index]['notificationPointModel']"
             :options="notificationPoint"
             class="q-ma-xs"
             dense
             style="width: 25%"
-          ></q-select>
+          />
 
           <q-icon
             class="cursor-pointer"
             name="close"
             @click="deleteNotification(index)"
-          ></q-icon>
+          />
         </q-card-section>
       </q-card-section>
     </q-card-section>
@@ -466,7 +458,7 @@
             name="close"
             size="md"
             @click="form.toggleRepeat = !form.toggleRepeat"
-          ></q-icon>
+          />
         </p>
         <q-select
           v-model="form.repeat.repeatNumber"

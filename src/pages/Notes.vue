@@ -17,12 +17,13 @@
           rounded
           class="zindex-high"
           @click="openSearch"
-        ></q-btn>
+        />
         <q-btn icon="tune" flat class="zindex-high">
           <q-popup-proxy>
             <q-card>
               <q-card-section class="text-subtitle1 text-center">
-                <q-icon name="filter_alt" /> Filter
+                <q-icon name="filter_alt" />
+                Filter
               </q-card-section>
               <q-card-section>
                 Priority:
@@ -31,28 +32,26 @@
                   val="all"
                   label="All"
                   class="full-width"
-                >
-                </q-radio>
+                />
                 <q-radio
                   v-model="filtering.priority"
                   val="favorites"
                   label="Favorites"
                   class="full-width"
-                >
-                </q-radio>
+                />
                 <q-radio
                   v-model="filtering.priority"
                   val="common"
                   label="Common"
                   class="full-width"
-                >
-                </q-radio>
+                />
               </q-card-section>
 
-              <q-separator></q-separator>
+              <q-separator />
 
-              <q-card-section class="text-subtitle1 text-center"
-                ><q-icon name="sort" /> Sort
+              <q-card-section class="text-subtitle1 text-center">
+                <q-icon name="sort" />
+                Sort
               </q-card-section>
               <q-card-section>
                 <q-btn

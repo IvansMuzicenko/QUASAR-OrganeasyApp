@@ -8,9 +8,8 @@
           label="Title"
           lazy-rules
           :dense="false"
-        >
-        </q-input>
-        <q-checkbox v-model="favorite" label="Favorite"></q-checkbox>
+        />
+        <q-checkbox v-model="favorite" label="Favorite" />
         <q-editor
           v-model="noteText"
           dense

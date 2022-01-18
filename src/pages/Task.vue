@@ -1,12 +1,7 @@
 <template>
   <q-page>
     <q-card class="flex justify-between no-padding">
-      <q-btn
-        icon="arrow_back"
-        flat
-        class="zindex-high"
-        @click="routerBack()"
-      ></q-btn>
+      <q-btn icon="arrow_back" flat class="zindex-high" @click="routerBack()" />
       <q-btn
         v-if="!editState && task['continuous'] && !task['taskStarted']"
         icon="play_arrow"
@@ -105,18 +100,18 @@
           <q-item-section>
             {{ task.continuous ? 'Continuous' : 'Common' }}
           </q-item-section>
-          <q-separator></q-separator>
-          <q-item-section v-if="task.taskStarted && task.taskEnded"
-            >Spent time : {{ timeSpent }} minutes</q-item-section
-          >
-          <q-separator></q-separator>
-          <q-item-section v-if="task.taskStarted"
-            >Started : {{ date(task.taskStarted) }}</q-item-section
-          >
-          <q-separator></q-separator>
-          <q-item-section v-if="task.taskEnded"
-            >Ended : {{ date(task.taskEnded) }}</q-item-section
-          >
+          <q-separator />
+          <q-item-section v-if="task.taskStarted && task.taskEnded">
+            Spent time : {{ timeSpent }} minutes
+          </q-item-section>
+          <q-separator />
+          <q-item-section v-if="task.taskStarted">
+            Started : {{ date(task.taskStarted) }}
+          </q-item-section>
+          <q-separator />
+          <q-item-section v-if="task.taskEnded">
+            Ended : {{ date(task.taskEnded) }}
+          </q-item-section>
         </q-item-section>
       </q-item>
       <q-item
@@ -141,7 +136,7 @@
           <q-item-section v-if="task.notes.text" class="no-margin">
             <p class="text-center">Note:</p>
             <q-card class="q-pa-sm">
-              <p v-html="task.notes.text"></p>
+              <p v-html="task.notes.text" />
             </q-card>
           </q-item-section>
         </q-item-section>
@@ -155,12 +150,13 @@
             ' ',
             '+'
           )}`"
-          >{{ task.location }}</a
         >
+          {{ task.location }}
+        </a>
       </q-item>
 
       <q-item v-if="task.notifications">
-        <q-item-section avatar class="taskInfo"> Notifications </q-item-section>
+        <q-item-section avatar class="taskInfo">Notifications</q-item-section>
         <q-separator vertical spaced="md" />
         <q-item-section>
           <q-item-section
@@ -184,7 +180,8 @@
             v-for="(process, index) in task.processes"
             :key="process"
           >
-            <q-separator v-if="index > 0" spaced="sm" />{{ process }}
+            <q-separator v-if="index > 0" spaced="sm" />
+            {{ process }}
           </q-item-section>
         </q-item-section>
       </q-item>
@@ -225,24 +222,24 @@
         <q-separator vertical spaced="md" />
         <q-item-section>
           <q-item-section>
-            Repeat number: {{ task.repeat.repeatNumber }}</q-item-section
-          >
+            Repeat number: {{ task.repeat.repeatNumber }}
+          </q-item-section>
 
           <q-item-section v-if="task.repeat.months">
-            Months:{{ task.repeat.months }}</q-item-section
-          >
+            Months:{{ task.repeat.months }}
+          </q-item-section>
           <q-item-section v-if="task.repeat.weeks">
-            Weeks:{{ task.repeat.weeks }}</q-item-section
-          >
+            Weeks:{{ task.repeat.weeks }}
+          </q-item-section>
           <q-item-section v-if="task.repeat.days">
-            Days:{{ task.repeat.days }}</q-item-section
-          >
+            Days:{{ task.repeat.days }}
+          </q-item-section>
           <q-item-section v-if="task.repeat.hours">
-            Hours:{{ task.repeat.hours }}</q-item-section
-          >
+            Hours:{{ task.repeat.hours }}
+          </q-item-section>
           <q-item-section v-if="task.repeat.minutes">
-            Minutes:{{ task.repeat.minutes }}</q-item-section
-          >
+            Minutes:{{ task.repeat.minutes }}
+          </q-item-section>
         </q-item-section>
       </q-item>
     </q-list>

@@ -1,12 +1,7 @@
 <template>
   <q-page>
     <q-card class="flex justify-between no-padding">
-      <q-btn
-        icon="arrow_back"
-        flat
-        class="zindex-high"
-        @click="routerBack()"
-      ></q-btn>
+      <q-btn icon="arrow_back" flat class="zindex-high" @click="routerBack()" />
 
       <q-btn
         v-if="!editState && task['continuous'] && !task['taskStarted']"
@@ -98,7 +93,7 @@
               ? 'yellow'
               : 'red-11'
           "
-        ></q-icon>
+        />
         {{
           task.priority == 1 ? 'High' : task.priority == 2 ? 'Medium' : 'Low'
         }}
@@ -111,18 +106,18 @@
           <q-item-section>
             {{ task.continuous ? 'Continuous' : 'Common' }}
           </q-item-section>
-          <q-separator></q-separator>
-          <q-item-section v-if="task.taskStarted && task.taskEnded"
-            >Spent time : {{ timeSpent }} minutes</q-item-section
-          >
-          <q-separator></q-separator>
-          <q-item-section v-if="task.taskStarted"
-            >Started : {{ date(task.taskStarted) }}</q-item-section
-          >
-          <q-separator></q-separator>
-          <q-item-section v-if="task.taskEnded"
-            >Ended : {{ date(task.taskEnded) }}</q-item-section
-          >
+          <q-separator />
+          <q-item-section v-if="task.taskStarted && task.taskEnded">
+            Spent time : {{ timeSpent }} minutes
+          </q-item-section>
+          <q-separator />
+          <q-item-section v-if="task.taskStarted">
+            Started : {{ date(task.taskStarted) }}
+          </q-item-section>
+          <q-separator />
+          <q-item-section v-if="task.taskEnded">
+            Ended : {{ date(task.taskEnded) }}
+          </q-item-section>
         </q-item-section>
       </q-item>
 
@@ -148,7 +143,7 @@
           <q-item-section v-if="task.notes.text" class="no-margin">
             <p class="text-center">Note:</p>
             <q-card class="q-pa-sm">
-              <p v-html="task.notes.text"></p>
+              <p v-html="task.notes.text" />
             </q-card>
           </q-item-section>
         </q-item-section>

@@ -4,8 +4,7 @@
       style="height: 3rem; z-index: 1000"
       class="absolute full-width"
       @refresh="reload"
-    >
-    </q-pull-to-refresh>
+    />
     <q-header elevated class="gt-xs bg-orange-4">
       <q-toolbar>
         <q-btn
@@ -17,7 +16,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Organeasy </q-toolbar-title>
+        <q-toolbar-title>Organeasy</q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -27,8 +26,8 @@
       </q-toolbar-title>
       <q-list>
         <q-item-label v-if="email" header>
-          {{ email.slice(0, email.indexOf('@')) }}</q-item-label
-        >
+          {{ email.slice(0, email.indexOf('@')) }}
+        </q-item-label>
         <q-btn
           v-else
           class="full-width q-ma-lg no-margin"
@@ -36,7 +35,7 @@
           label="Sign In"
           to="/auth"
         />
-        <q-item-label header> {{ formattedDate }}</q-item-label>
+        <q-item-label header>{{ formattedDate }}</q-item-label>
 
         <q-item>
           <q-btn
@@ -69,30 +68,30 @@
               <q-list style="min-width: 100px">
                 <q-item clickable @click="addTask">
                   <q-item-section avatar>
-                    <q-avatar icon="view_list"></q-avatar>
+                    <q-avatar icon="view_list" />
                   </q-item-section>
-                  <q-item-section> Task</q-item-section>
+                  <q-item-section>Task</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable @click="addFreeTask">
                   <q-item-section avatar>
-                    <q-avatar icon="alarm_off"></q-avatar>
+                    <q-avatar icon="alarm_off" />
                   </q-item-section>
-                  <q-item-section> Free task</q-item-section>
+                  <q-item-section>Free task</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable @click="addNote">
                   <q-item-section avatar>
-                    <q-avatar icon="note"></q-avatar>
+                    <q-avatar icon="note" />
                   </q-item-section>
-                  <q-item-section> Note</q-item-section>
+                  <q-item-section>Note</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable @click="addProcess">
                   <q-item-section avatar>
-                    <q-icon name="update"></q-icon>
+                    <q-icon name="update" />
                   </q-item-section>
-                  <q-item-section> Process</q-item-section>
+                  <q-item-section>Process</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -107,7 +106,7 @@
       reveal
       class="lt-sm bg-orange-3 text-black text-caption"
     >
-      <div v-if="email" class="fixed-bottom text-center q-mb-xl q-pa-sm"></div>
+      <div v-if="email" class="fixed-bottom text-center q-mb-xl q-pa-sm" />
       <q-toolbar class="row no-padding">
         <div class="col-12">
           <q-list class="row">
@@ -119,7 +118,7 @@
             >
               <q-item-section class="text-center" style="line-height: 0">
                 <q-item-section class="row no-padding">
-                  <q-icon size="sm" name="view_list" class="col"></q-icon>
+                  <q-icon size="sm" name="view_list" class="col" />
                 </q-item-section>
                 <q-item-section class="no-margin text-weight-light">
                   Diary
@@ -135,7 +134,7 @@
             >
               <q-item-section class="text-center" style="line-height: 0">
                 <q-item-section class="row no-padding">
-                  <q-icon size="sm" name="alarm_off" class="col"></q-icon>
+                  <q-icon size="sm" name="alarm_off" class="col" />
                 </q-item-section>
                 <q-item-section class="no-margin text-weight-light">
                   Free tasks
@@ -144,12 +143,7 @@
             </q-item>
 
             <q-item class="col-2 justify-center no-padding" clickable>
-              <q-avatar
-                round
-                color="orange"
-                text-color="white"
-                icon="add"
-              ></q-avatar>
+              <q-avatar round color="orange" text-color="white" icon="add" />
 
               <q-menu
                 class="text-center"
@@ -160,30 +154,30 @@
                 <q-list style="min-width: 100px">
                   <q-item clickable @click="addTask">
                     <q-item-section avatar>
-                      <q-avatar icon="view_list"></q-avatar>
+                      <q-avatar icon="view_list" />
                     </q-item-section>
-                    <q-item-section> Task</q-item-section>
+                    <q-item-section>Task</q-item-section>
                   </q-item>
                   <q-separator />
                   <q-item clickable @click="addFreeTask">
                     <q-item-section avatar>
-                      <q-avatar icon="alarm_off"></q-avatar>
+                      <q-avatar icon="alarm_off" />
                     </q-item-section>
-                    <q-item-section> Free task</q-item-section>
+                    <q-item-section>Free task</q-item-section>
                   </q-item>
                   <q-separator />
                   <q-item clickable @click="addNote">
                     <q-item-section avatar>
-                      <q-avatar icon="note"></q-avatar>
+                      <q-avatar icon="note" />
                     </q-item-section>
-                    <q-item-section> Note</q-item-section>
+                    <q-item-section>Note</q-item-section>
                   </q-item>
                   <q-separator />
                   <q-item clickable @click="addProcess">
                     <q-item-section avatar>
-                      <q-icon name="update"></q-icon>
+                      <q-icon name="update" />
                     </q-item-section>
-                    <q-item-section> Process</q-item-section>
+                    <q-item-section>Process</q-item-section>
                   </q-item>
                 </q-list>
               </q-menu>
@@ -197,7 +191,7 @@
             >
               <q-item-section class="text-center" style="line-height: 0">
                 <q-item-section class="row no-padding">
-                  <q-icon size="sm" name="note" class="col"></q-icon>
+                  <q-icon size="sm" name="note" class="col" />
                 </q-item-section>
                 <q-item-section class="no-margin text-weight-light">
                   Notes
@@ -221,7 +215,7 @@
                   >
                     <q-item-section class="text-center" style="line-height: 0">
                       <q-item-section class="row no-padding">
-                        <q-icon size="sm" name="update" class="col"></q-icon>
+                        <q-icon size="sm" name="update" class="col" />
                       </q-item-section>
                       <q-item-section class="no-margin text-weight-light">
                         Processes
@@ -237,7 +231,7 @@
                   >
                     <q-item-section class="text-center" style="line-height: 0">
                       <q-item-section class="row no-padding">
-                        <q-icon size="sm" name="help" class="col"></q-icon>
+                        <q-icon size="sm" name="help" class="col" />
                       </q-item-section>
                       <q-item-section class="no-margin text-weight-light">
                         Help
@@ -252,7 +246,7 @@
                   >
                     <q-item-section class="text-center" style="line-height: 0">
                       <q-item-section class="row no-padding">
-                        <q-icon size="sm" name="settings" class="col"></q-icon>
+                        <q-icon size="sm" name="settings" class="col" />
                       </q-item-section>
                       <q-item-section class="no-margin text-weight-light">
                         Settings
@@ -263,7 +257,7 @@
               </q-menu>
               <q-item-section class="text-center" style="line-height: 0">
                 <q-item-section class="row no-padding">
-                  <q-icon size="sm" name="more_vert" class="col"></q-icon>
+                  <q-icon size="sm" name="more_vert" class="col" />
                 </q-item-section>
                 <q-item-section class="no-margin text-weight-light">
                   More

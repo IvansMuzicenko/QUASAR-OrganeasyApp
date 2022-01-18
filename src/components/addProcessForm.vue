@@ -7,8 +7,7 @@
           bottom-slots
           label="Title"
           :dense="false"
-        >
-        </q-input>
+        />
         <q-input
           v-model.number="processTime"
           bottom-slots
@@ -17,8 +16,7 @@
           suffix="Minutes"
           min="1"
           :dense="false"
-        >
-        </q-input>
+        />
       </q-card-section>
       <q-card-section v-if="error">
         <p class="text-negative">

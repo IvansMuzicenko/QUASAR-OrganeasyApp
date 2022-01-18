@@ -39,12 +39,13 @@
           rounded
           class="zindex-high"
           @click="openSearch"
-        ></q-btn>
+        />
         <q-btn icon="tune" class="zindex-high" flat>
           <q-popup-proxy>
             <q-card>
-              <q-card-section class="text-subtitle1 text-center"
-                ><q-icon name="filter_alt" />Filter
+              <q-card-section class="text-subtitle1 text-center">
+                <q-icon name="filter_alt" />
+                Filter
               </q-card-section>
               <q-card-section>
                 Progress:
@@ -53,28 +54,26 @@
                   val="all"
                   label="All"
                   class="full-width"
-                >
-                </q-radio>
+                />
                 <q-radio
                   v-model="filtering.progress"
                   val="done"
                   label="Done"
                   class="full-width"
-                >
-                </q-radio>
+                />
                 <q-radio
                   v-model="filtering.progress"
                   val="undone"
                   label="Undone"
                   class="full-width"
-                >
-                </q-radio>
+                />
               </q-card-section>
 
-              <q-separator></q-separator>
+              <q-separator />
 
-              <q-card-section class="text-subtitle1 text-center"
-                ><q-icon name="sort" /> Sort
+              <q-card-section class="text-subtitle1 text-center">
+                <q-icon name="sort" />
+                Sort
               </q-card-section>
               <q-card-section>
                 <q-btn
@@ -90,7 +89,7 @@
                 >
                   Time
                 </q-btn>
-                <q-separator></q-separator>
+                <q-separator />
                 <q-btn
                   :icon="
                     sorting.title == 'none'
@@ -130,9 +129,9 @@
             style="width: 60px"
             class="text-center text-weight-bolder no-padding"
           >
-            <span v-if="task['processesTime']"
-              >({{ calcPrepTime(task['time'], task['processesTime']) }})</span
-            >
+            <span v-if="task['processesTime']">
+              ({{ calcPrepTime(task['time'], task['processesTime']) }})
+            </span>
             {{ task['time'].slice(task['time'].indexOf(' ')) }}
             <span v-if="task['endingTime']">
               <div>-</div>
@@ -167,7 +166,7 @@
                 @touchstart.stop
                 @mousedown.stop
               >
-                <q-item-label> ~ {{ subtask['title'] }}</q-item-label>
+                <q-item-label>~ {{ subtask['title'] }}</q-item-label>
               </q-item>
             </q-list>
           </td>
@@ -180,25 +179,31 @@
           >
             <q-card>
               <q-card-section class="text-center">
-                <q-btn color="primary" icon="visibility" @click="openTask(task)"
-                  >View</q-btn
+                <q-btn
+                  color="primary"
+                  icon="visibility"
+                  @click="openTask(task)"
                 >
+                  View
+                </q-btn>
               </q-card-section>
               <q-card-section class="text-center">
                 <q-btn
                   color="secondary"
                   icon="edit"
                   @click="openTask(task, true)"
-                  >Edit</q-btn
                 >
+                  Edit
+                </q-btn>
               </q-card-section>
               <q-card-section class="text-center">
                 <q-btn
                   :icon="task['progress'] ? 'close' : 'check'"
                   :color="task['progress'] ? 'red' : 'positive'"
                   @click="changeProgress(task)"
-                  >{{ task['progress'] ? 'Undone' : 'Done' }}</q-btn
                 >
+                  {{ task['progress'] ? 'Undone' : 'Done' }}
+                </q-btn>
               </q-card-section>
             </q-card>
           </q-popup-proxy>

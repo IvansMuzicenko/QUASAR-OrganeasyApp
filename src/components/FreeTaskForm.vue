@@ -8,8 +8,7 @@
         :rules="[(val) => val !== '' || 'Title is required']"
         :dense="false"
         class="q-px-md"
-      >
-      </q-input>
+      />
     </q-card-section>
 
     <q-card-section>
@@ -19,9 +18,9 @@
         </q-item-section>
         <q-item-section>
           <q-item-label>Progress</q-item-label>
-          <q-item-label caption>{{
-            form.progress ? 'done' : 'undone'
-          }}</q-item-label>
+          <q-item-label caption>
+            {{ form.progress ? 'done' : 'undone' }}
+          </q-item-label>
         </q-item-section>
       </q-item>
     </q-card-section>
@@ -35,7 +34,7 @@
         option-label="desc"
         emit-value
         map-options
-      ></q-select>
+      />
     </q-card-section>
 
     <q-card-section>
@@ -57,7 +56,7 @@
             name="close"
             size="md"
             @click="form.toggleNotes = !form.toggleNotes"
-          ></q-icon>
+          />
         </p>
 
         <q-select
@@ -197,20 +196,14 @@
                   :color="subtask['progress'] ? 'negative' : 'positive'"
                   :icon="subtask['progress'] ? 'close' : 'check'"
                   @click="onSubtaskClick(index, subtask['progress'])"
-                ></q-btn>
+                />
               </q-item-section>
-              <q-item-section
-                :class="subtask['progress'] ? 'text-strike' : ''"
-                >{{ subtask['title'] }}</q-item-section
-              >
+              <q-item-section :class="subtask['progress'] ? 'text-strike' : ''">
+                {{ subtask['title'] }}
+              </q-item-section>
               <q-item-section side>
-                <q-btn
-                  icon="cancel"
-                  flat
-                  round
-                  @click="deleteSubtask(index)"
-                ></q-btn
-              ></q-item-section>
+                <q-btn icon="cancel" flat round @click="deleteSubtask(index)" />
+              </q-item-section>
             </q-item>
           </q-list>
         </q-card-section>
@@ -221,7 +214,7 @@
           name="close"
           size="md"
           @click="form.toggleSubtasks = !form.toggleSubtasks"
-        ></q-icon>
+        />
       </q-card-section>
     </q-card-section>
 
