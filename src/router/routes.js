@@ -1,26 +1,26 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('src/layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') },
-      { path: '/auth', component: () => import('pages/Auth.vue') },
-
-      { path: '/:date/:title', component: () => import('pages/Task.vue') },
-
-      { path: '/free-tasks', component: () => import('pages/FreeTasks.vue') },
+      { path: '', component: () => import('src/pages/Index.vue') },
+      { path: '/auth', component: () => import('src/pages/Auth.vue') },
+      { path: '/:date/:title', component: () => import('src/pages/Task.vue') },
+      {
+        path: '/free-tasks',
+        component: () => import('src/pages/FreeTasks.vue')
+      },
       {
         path: '/free-tasks/:id',
-        component: () => import('pages/FreeTask.vue')
+        component: () => import('src/pages/FreeTask.vue')
       },
-
       {
         path: '/notes',
         component: () => import('src/pages/Notes.vue')
       },
       {
         path: '/notes/:title',
-        component: () => import('pages/Note.vue')
+        component: () => import('src/pages/Note.vue')
       },
       {
         path: '/processes',
