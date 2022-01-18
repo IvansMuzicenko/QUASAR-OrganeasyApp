@@ -170,10 +170,13 @@
           v-model="form.notes.attachedNotes"
           outlined
           multiple
-          :options="notesList"
           use-chips
           stack-label
           label="Attach notes"
+          :options="notesList"
+          option-label="title"
+          emit-value
+          map-options
         />
         <q-editor
           v-model="form.notes.text"
@@ -690,7 +693,10 @@ export default {
       let notesArray = []
       if (Object.keys(notes).length) {
         for (const note in notes) {
-          notesArray.push(notes[note]['title'])
+          notesArray.push({
+            title: notes[note]['title'],
+            id: notes[note]['id']
+          })
         }
       }
       return notesArray

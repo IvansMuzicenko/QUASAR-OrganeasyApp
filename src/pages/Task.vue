@@ -120,9 +120,7 @@
         </q-item-section>
       </q-item>
       <q-item
-        v-if="
-          task.notes && (task.notes.text || task.notes.attachedNotes.length)
-        "
+        v-if="task.notes && (task.notes.text || task.notes.attachedNotes)"
       >
         <q-item-section avatar class="taskInfo">Notes</q-item-section>
         <q-separator vertical spaced="md" />
@@ -133,9 +131,9 @@
               <q-item
                 v-for="note of task.notes.attachedNotes"
                 :key="note"
-                :to="`/notes/${findNoteId(note)}`"
+                :to="`/notes/${note['id']}`"
               >
-                {{ note }}
+                {{ note['title'] }}
               </q-item>
             </q-list>
             <q-separator spaced="sm" />
@@ -354,15 +352,6 @@ export default {
     }
   },
   methods: {
-    findNoteId(title) {
-      const notes = this.$store.getters['users/notes']
-
-      for (const note in notes) {
-        if (notes[note]['title'] == title) {
-          return notes[note]['id']
-        }
-      }
-    },
     date(ms) {
       return date.formatDate(ms, 'DD-MM-YYYY HH:mm')
     },
@@ -447,7 +436,12 @@ export default {
           progress: form.progress,
           time: eventDate,
           endingTime: form.toggleEventEnd ? eventEndingDate : null,
-          notes: form.toggleNotes ? form.notes : null,
+          notes:
+            form.toggleNotes &&
+            form.notes &&
+            (form.notes.text || form.notes.attachedNotes.length)
+              ? form.notes
+              : null,
           location: form.toggleLocation ? form.eventLocation : null,
           toggleDefaultNotif: form.toggleDefaultNotif,
           notifications: form.toggleNotifications
