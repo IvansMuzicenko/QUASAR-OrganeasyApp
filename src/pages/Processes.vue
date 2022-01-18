@@ -54,7 +54,7 @@
 
     <q-list separator bordered>
       <q-item
-        v-for="(process, index) in processes"
+        v-for="(process, index) of processes"
         :key="index"
         clickable
         @click="editProcess(process)"
@@ -156,7 +156,34 @@ export default {
       return !this.selectedProcess.title || this.selectedProcess.time <= 0
     },
     processes() {
-      return this.$store.getters['users/processes']
+      const vuexProcesses = this.$store.getters['users/processes']
+      let processes = []
+
+      if (vuexProcesses) {
+        for (const vuexProcesse in vuexProcesses) {
+          processes.push(vuexProcesses[vuexProcesse])
+        }
+        processes.sort((a, b) => {
+          if (this.sorting.title != 'none') {
+            if (this.sorting.title == 'asc') {
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+              return 0
+            } else {
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
+              return 0
+            }
+          } else if (this.sorting.time != 'none') {
+            if (this.sorting.time == 'asc') {
+              return a.time - b.time
+            } else {
+              return b.time - a.time
+            }
+          }
+        })
+      }
+      return processes
     }
   },
   methods: {
@@ -239,12 +266,10 @@ export default {
     sortByTitle() {
       this.sorting.time = 'none'
       this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
-      this.$store.dispatch('users/sortProcessesByTitle', this.sorting.title)
     },
     sortByTime() {
       this.sorting.title = 'none'
       this.sorting.time = this.sorting.time == 'asc' ? 'desc' : 'asc'
-      this.$store.dispatch('users/sortProcessesByTime', this.sorting.time)
     }
   }
 }
