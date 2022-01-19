@@ -174,8 +174,8 @@ export default {
         this.searchQuery.trim().length
       ) {
         for (const dateTasks of Object.values(vuexTasks)) {
-          for (const task of dateTasks) {
-            tasks.push(task)
+          for (const task in dateTasks) {
+            tasks.push(dateTasks[task])
           }
         }
         return tasks.filter((item) => {
