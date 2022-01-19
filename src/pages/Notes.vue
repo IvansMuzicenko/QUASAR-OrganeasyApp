@@ -1,79 +1,80 @@
 <template>
   <q-page>
-    <q-card class="flex justify-between q-py-sm">
-      <q-card-section class="no-padding">
-        <q-btn
-          icon="arrow_back"
-          flat
-          class="absolute zindex-high"
-          @click="$router.push('/')"
-        />
-      </q-card-section>
-
-      <q-card-section class="no-padding">
-        <q-btn
-          icon="search"
-          flat
-          rounded
-          class="zindex-high"
-          @click="openSearch"
-        />
-        <q-btn icon="tune" flat class="zindex-high">
-          <q-popup-proxy>
-            <q-card>
-              <q-card-section class="text-subtitle1 text-center">
-                <q-icon name="filter_alt" />
-                Filter
-              </q-card-section>
-              <q-card-section>
-                Priority:
-                <q-radio
-                  v-model="filtering.priority"
-                  val="all"
-                  label="All"
-                  class="full-width"
-                />
-                <q-radio
-                  v-model="filtering.priority"
-                  val="favorites"
-                  label="Favorites"
-                  class="full-width"
-                />
-                <q-radio
-                  v-model="filtering.priority"
-                  val="common"
-                  label="Common"
-                  class="full-width"
-                />
-              </q-card-section>
-
-              <q-separator />
-
-              <q-card-section class="text-subtitle1 text-center">
-                <q-icon name="sort" />
-                Sort
-              </q-card-section>
-              <q-card-section>
-                <q-btn
-                  :icon="
-                    sorting.title == 'none'
-                      ? 'last_page'
-                      : sorting.title == 'asc'
-                      ? 'vertical_align_bottom'
-                      : 'vertical_align_top'
-                  "
-                  class="full-width"
-                  @click="sortByTitle"
-                >
-                  Title
-                </q-btn>
-              </q-card-section>
-            </q-card>
-          </q-popup-proxy>
-        </q-btn>
-      </q-card-section>
-
+    <q-card class="q-py-sm">
       <p class="text-center text-h6 full-width">Notes</p>
+      <q-card-section class="flex justify-between no-padding">
+        <q-card-section class="no-padding">
+          <q-btn
+            icon="arrow_back"
+            flat
+            class="absolute zindex-high"
+            @click="$router.push('/')"
+          />
+        </q-card-section>
+
+        <q-card-section class="no-padding">
+          <q-btn
+            icon="search"
+            flat
+            rounded
+            class="zindex-high"
+            @click="openSearch"
+          />
+          <q-btn icon="tune" flat class="zindex-high">
+            <q-popup-proxy>
+              <q-card>
+                <q-card-section class="text-subtitle1 text-center">
+                  <q-icon name="filter_alt" />
+                  Filter
+                </q-card-section>
+                <q-card-section>
+                  Priority:
+                  <q-radio
+                    v-model="filtering.priority"
+                    val="all"
+                    label="All"
+                    class="full-width"
+                  />
+                  <q-radio
+                    v-model="filtering.priority"
+                    val="favorites"
+                    label="Favorites"
+                    class="full-width"
+                  />
+                  <q-radio
+                    v-model="filtering.priority"
+                    val="common"
+                    label="Common"
+                    class="full-width"
+                  />
+                </q-card-section>
+
+                <q-separator />
+
+                <q-card-section class="text-subtitle1 text-center">
+                  <q-icon name="sort" />
+                  Sort
+                </q-card-section>
+                <q-card-section>
+                  <q-btn
+                    :icon="
+                      sorting.title == 'none'
+                        ? 'last_page'
+                        : sorting.title == 'asc'
+                        ? 'vertical_align_bottom'
+                        : 'vertical_align_top'
+                    "
+                    class="full-width"
+                    @click="sortByTitle"
+                  >
+                    Title
+                  </q-btn>
+                </q-card-section>
+              </q-card>
+            </q-popup-proxy>
+          </q-btn>
+        </q-card-section>
+      </q-card-section>
     </q-card>
 
     <q-list separator bordered>

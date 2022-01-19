@@ -1,122 +1,123 @@
 <template>
   <q-page>
-    <q-card class="flex justify-between q-py-sm">
-      <q-card-section class="no-padding">
-        <q-btn
-          icon="arrow_back"
-          flat
-          class="absolute zindex-high"
-          @click="$router.push('/')"
-        />
-      </q-card-section>
-
-      <q-card-section class="no-padding">
-        <q-btn
-          icon="search"
-          class="zindex-high"
-          flat
-          rounded
-          @click="openSearch"
-        />
-        <q-btn icon="tune" class="zindex-high" flat>
-          <q-popup-proxy>
-            <q-card>
-              <q-card-section class="text-subtitle1 text-center">
-                <q-icon name="filter_alt" />
-                Filter
-              </q-card-section>
-              <q-card-section class="no-padding">
-                <q-card-section>
-                  Progress:
-                  <q-radio
-                    v-model="filtering.progress"
-                    val="all"
-                    label="All"
-                    class="full-width"
-                  />
-                  <q-radio
-                    v-model="filtering.progress"
-                    val="done"
-                    label="Done"
-                    class="full-width"
-                  />
-                  <q-radio
-                    v-model="filtering.progress"
-                    val="undone"
-                    label="Undone"
-                    class="full-width"
-                  />
-                </q-card-section>
-                <q-separator />
-                <q-card-section>
-                  Priority:
-                  <q-radio
-                    v-model="filtering.priority"
-                    val="all"
-                    label="All"
-                    class="full-width"
-                  />
-                  <q-radio
-                    v-model="filtering.priority"
-                    val="1"
-                    label="High"
-                    class="full-width"
-                  />
-                  <q-radio
-                    v-model="filtering.priority"
-                    val="2"
-                    label="Medium"
-                    class="full-width"
-                  />
-                  <q-radio
-                    v-model="filtering.priority"
-                    val="3"
-                    label="Low"
-                    class="full-width"
-                  />
-                </q-card-section>
-              </q-card-section>
-
-              <q-separator />
-
-              <q-card-section class="text-subtitle1 text-center">
-                <q-icon name="sort" />
-                Sort
-              </q-card-section>
-              <q-card-section>
-                <q-btn
-                  :icon="
-                    sorting.title == 'none'
-                      ? 'last_page'
-                      : sorting.title == 'asc'
-                      ? 'vertical_align_bottom'
-                      : 'vertical_align_top'
-                  "
-                  class="full-width"
-                  @click="sortByTitle"
-                >
-                  Title
-                </q-btn>
-                <q-btn
-                  :icon="
-                    sorting.priority == 'none'
-                      ? 'last_page'
-                      : sorting.priority == 'asc'
-                      ? 'vertical_align_bottom'
-                      : 'vertical_align_top'
-                  "
-                  class="full-width"
-                  @click="sortByPriority"
-                >
-                  Priority
-                </q-btn>
-              </q-card-section>
-            </q-card>
-          </q-popup-proxy>
-        </q-btn>
-      </q-card-section>
-
+    <q-card class="q-py-sm">
       <p class="text-center text-h6 full-width no-margin">Free Tasks</p>
+      <q-card-section class="flex justify-between no-padding">
+        <q-card-section class="no-padding">
+          <q-btn
+            icon="arrow_back"
+            flat
+            class="absolute zindex-high"
+            @click="$router.push('/')"
+          />
+        </q-card-section>
+
+        <q-card-section class="no-padding">
+          <q-btn
+            icon="search"
+            class="zindex-high"
+            flat
+            rounded
+            @click="openSearch"
+          />
+          <q-btn icon="tune" class="zindex-high" flat>
+            <q-popup-proxy>
+              <q-card>
+                <q-card-section class="text-subtitle1 text-center">
+                  <q-icon name="filter_alt" />
+                  Filter
+                </q-card-section>
+                <q-card-section class="no-padding">
+                  <q-card-section>
+                    Progress:
+                    <q-radio
+                      v-model="filtering.progress"
+                      val="all"
+                      label="All"
+                      class="full-width"
+                    />
+                    <q-radio
+                      v-model="filtering.progress"
+                      val="done"
+                      label="Done"
+                      class="full-width"
+                    />
+                    <q-radio
+                      v-model="filtering.progress"
+                      val="undone"
+                      label="Undone"
+                      class="full-width"
+                    />
+                  </q-card-section>
+                  <q-separator />
+                  <q-card-section>
+                    Priority:
+                    <q-radio
+                      v-model="filtering.priority"
+                      val="all"
+                      label="All"
+                      class="full-width"
+                    />
+                    <q-radio
+                      v-model="filtering.priority"
+                      val="1"
+                      label="High"
+                      class="full-width"
+                    />
+                    <q-radio
+                      v-model="filtering.priority"
+                      val="2"
+                      label="Medium"
+                      class="full-width"
+                    />
+                    <q-radio
+                      v-model="filtering.priority"
+                      val="3"
+                      label="Low"
+                      class="full-width"
+                    />
+                  </q-card-section>
+                </q-card-section>
+
+                <q-separator />
+
+                <q-card-section class="text-subtitle1 text-center">
+                  <q-icon name="sort" />
+                  Sort
+                </q-card-section>
+                <q-card-section>
+                  <q-btn
+                    :icon="
+                      sorting.title == 'none'
+                        ? 'last_page'
+                        : sorting.title == 'asc'
+                        ? 'vertical_align_bottom'
+                        : 'vertical_align_top'
+                    "
+                    class="full-width"
+                    @click="sortByTitle"
+                  >
+                    Title
+                  </q-btn>
+                  <q-btn
+                    :icon="
+                      sorting.priority == 'none'
+                        ? 'last_page'
+                        : sorting.priority == 'asc'
+                        ? 'vertical_align_bottom'
+                        : 'vertical_align_top'
+                    "
+                    class="full-width"
+                    @click="sortByPriority"
+                  >
+                    Priority
+                  </q-btn>
+                </q-card-section>
+              </q-card>
+            </q-popup-proxy>
+          </q-btn>
+        </q-card-section>
+      </q-card-section>
     </q-card>
     <p
       v-if="

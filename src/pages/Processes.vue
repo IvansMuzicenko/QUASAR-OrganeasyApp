@@ -1,56 +1,58 @@
 <template>
   <q-page>
-    <q-card class="flex justify-between q-py-sm">
-      <q-card-section class="no-padding">
-        <q-btn
-          icon="arrow_back"
-          flat
-          class="absolute zindex-high"
-          @click="$router.push('/')"
-        />
-      </q-card-section>
-      <q-card-section class="no-padding">
-        <q-btn icon="tune" class="zindex-high" flat>
-          <q-popup-proxy>
-            <q-card>
-              <q-card-section class="text-subtitle1">
-                <q-icon name="sort" />
-                Sort
-              </q-card-section>
-              <q-card-section>
-                <q-btn
-                  :icon="
-                    sorting.title == 'none'
-                      ? 'last_page'
-                      : sorting.title == 'asc'
-                      ? 'vertical_align_bottom'
-                      : 'vertical_align_top'
-                  "
-                  class="full-width"
-                  @click="sortByTitle"
-                >
-                  Title
-                </q-btn>
-                <q-separator />
-                <q-btn
-                  :icon="
-                    sorting.time == 'none'
-                      ? 'last_page'
-                      : sorting.time == 'asc'
-                      ? 'vertical_align_bottom'
-                      : 'vertical_align_top'
-                  "
-                  class="full-width"
-                  @click="sortByTime"
-                >
-                  Time
-                </q-btn>
-              </q-card-section>
-            </q-card>
-          </q-popup-proxy>
-        </q-btn>
-      </q-card-section>
+    <q-card class="q-py-sm">
       <p class="text-center text-h6 full-width no-margin">Processes</p>
+      <q-card-section class="flex justify-between no-padding">
+        <q-card-section class="no-padding">
+          <q-btn
+            icon="arrow_back"
+            flat
+            class="absolute zindex-high"
+            @click="$router.push('/')"
+          />
+        </q-card-section>
+        <q-card-section class="no-padding">
+          <q-btn icon="tune" class="zindex-high" flat>
+            <q-popup-proxy>
+              <q-card>
+                <q-card-section class="text-subtitle1">
+                  <q-icon name="sort" />
+                  Sort
+                </q-card-section>
+                <q-card-section>
+                  <q-btn
+                    :icon="
+                      sorting.title == 'none'
+                        ? 'last_page'
+                        : sorting.title == 'asc'
+                        ? 'vertical_align_bottom'
+                        : 'vertical_align_top'
+                    "
+                    class="full-width"
+                    @click="sortByTitle"
+                  >
+                    Title
+                  </q-btn>
+                  <q-separator />
+                  <q-btn
+                    :icon="
+                      sorting.time == 'none'
+                        ? 'last_page'
+                        : sorting.time == 'asc'
+                        ? 'vertical_align_bottom'
+                        : 'vertical_align_top'
+                    "
+                    class="full-width"
+                    @click="sortByTime"
+                  >
+                    Time
+                  </q-btn>
+                </q-card-section>
+              </q-card>
+            </q-popup-proxy>
+          </q-btn>
+        </q-card-section>
+      </q-card-section>
     </q-card>
 
     <q-list separator bordered>
