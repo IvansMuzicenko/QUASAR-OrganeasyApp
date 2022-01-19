@@ -121,7 +121,7 @@ const actions = {
           })
         } else if (actionId === 'start') {
           update(ref(db, `${rootGetters['users/userId']}/tasks/${taskPath}`), {
-            taskStarted: Date.now()
+            continuousStarted: Date.now()
           })
           capacitor.Plugins.LocalNotifications.schedule({
             notifications: [
@@ -140,7 +140,7 @@ const actions = {
           })
         } else if (actionId === 'stop') {
           update(ref(db, `${rootGetters['users/userId']}/tasks/${taskPath}`), {
-            taskEnded: Date.now()
+            continuousEnded: Date.now()
           })
         }
       }

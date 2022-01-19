@@ -3,7 +3,7 @@
     <q-card class="flex justify-between no-padding">
       <q-btn icon="arrow_back" flat class="zindex-high" @click="routerBack()" />
       <q-btn
-        v-if="!editState && task['continuous'] && !task['taskStarted']"
+        v-if="!editState && task['continuous'] && !task['continuousStarted']"
         icon="play_arrow"
         color="green"
         flat
@@ -16,8 +16,8 @@
         v-if="
           !editState &&
           task['continuous'] &&
-          task['taskStarted'] &&
-          !task['taskEnded']
+          task['continuousStarted'] &&
+          !task['continuousEnded']
         "
         icon="stop"
         color="red"
@@ -106,16 +106,16 @@
             {{ task.continuous ? 'Continuous' : 'Common' }}
           </q-item-section>
           <q-separator />
-          <q-item-section v-if="task.taskStarted && task.taskEnded">
+          <q-item-section v-if="task.continuousStarted && task.continuousEnded">
             Spent time : {{ timeSpent }} minutes
           </q-item-section>
           <q-separator />
-          <q-item-section v-if="task.taskStarted">
-            Started : {{ formatUnix(task.taskStarted) }}
+          <q-item-section v-if="task.continuousStarted">
+            Started : {{ formatUnix(task.continuousStarted) }}
           </q-item-section>
           <q-separator />
-          <q-item-section v-if="task.taskEnded">
-            Ended : {{ formatUnix(task.taskEnded) }}
+          <q-item-section v-if="task.continuousEnded">
+            Ended : {{ formatUnix(task.continuousEnded) }}
           </q-item-section>
         </q-item-section>
       </q-item>
@@ -304,8 +304,8 @@ export default {
         ],
         notificationsId: [],
         continuous: false,
-        taskStarted: '',
-        taskEnded: '',
+        continuousStarted: '',
+        continuousEnded: '',
         processes: [],
         processesTime: 0,
         subtasks: [],
@@ -334,10 +334,10 @@ export default {
       return this.$route.query.edit ? true : false
     },
     timeSpent() {
-      if (this.task.taskEnded && this.task.taskStarted) {
+      if (this.task.continuousEnded && this.task.continuousStarted) {
         const timeSpent = date.getDateDiff(
-          this.task.taskEnded,
-          this.task.taskStarted,
+          this.task.continuousEnded,
+          this.task.continuousStarted,
           'minutes'
         )
         return timeSpent
@@ -467,8 +467,10 @@ export default {
                 ? this.task.finishedDate
                 : Date.now()
               : null,
-          taskEnded:
-            this.task.continuous && this.task.taskStarted && !this.task.progress
+          continuousEnded:
+            this.task.continuous &&
+            this.task.continuousStarted &&
+            !this.task.progress
               ? Date.now()
               : null
         }
@@ -501,7 +503,7 @@ export default {
           `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
         ),
         {
-          taskStarted: Date.now()
+          continuousStarted: Date.now()
         }
       )
       this.updateTaskData()
@@ -519,8 +521,10 @@ export default {
             : !this.task.progress
             ? Date.now()
             : null,
-          taskEnded:
-            this.task.continuous && this.task.taskStarted && !this.task.progress
+          continuousEnded:
+            this.task.continuous &&
+            this.task.continuousStarted &&
+            !this.task.progress
               ? Date.now()
               : null
         }
