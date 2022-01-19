@@ -41,12 +41,14 @@
         <template #prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy
+              ref="datePicked"
               cover
               transition-show="scale"
               transition-hide="scale"
             >
               <q-date
                 v-model="form.eventDate"
+                first-day-of-week="1"
                 mask="DD-MM-YYYY HH:mm"
                 today-btn
               >
@@ -98,12 +100,14 @@
           <template #prepend>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy
+                ref="endingDatePicked"
                 cover
                 transition-show="scale"
                 transition-hide="scale"
               >
                 <q-date
                   v-model="form.eventEndingDate"
+                  first-day-of-week="1"
                   mask="DD-MM-YYYY HH:mm"
                   today-btn
                 >
@@ -680,6 +684,12 @@ export default {
         return false
       }
     },
+    eventDate() {
+      return this.form.eventDate
+    },
+    eventEndingDate() {
+      return this.form.eventEndingDate
+    },
     notesList() {
       const notes = this.$store.getters['users/notes']
       let notesArray = []
@@ -722,6 +732,12 @@ export default {
   watch: {
     processesTimeCalc() {
       this.form.processesTime = this.processesTimeCalc
+    },
+    eventDate() {
+      this.$refs['datePicked'].hide()
+    },
+    eventEndingDate() {
+      this.$refs['endingDatePicked'].hide()
     }
   },
   mounted() {
