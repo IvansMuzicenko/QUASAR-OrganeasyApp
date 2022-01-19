@@ -187,8 +187,8 @@ export default {
     }
   },
   computed: {
-    id() {
-      return this.$route.path.slice(this.$route.path.lastIndexOf('/') + 1)
+    noteId() {
+      return this.$route.params.id
     },
     error() {
       return (
@@ -198,7 +198,7 @@ export default {
     }
   },
   watch: {
-    id: {
+    noteId: {
       handler: function () {
         this.updateNoteData()
       },
@@ -209,7 +209,7 @@ export default {
 
   methods: {
     updateNoteData() {
-      const note = this.$store.getters['users/notes'][`id-${this.id}`]
+      const note = this.$store.getters['users/notes'][`id-${this.noteId}`]
       if (!note) {
         return this.$router.push('/notes')
       }
@@ -239,7 +239,7 @@ export default {
       update(
         ref(
           db,
-          `${this.$store.getters['users/userId']}/notes/id-${this.note.id}`
+          `${this.$store.getters['users/userId']}/notes/id-${this.noteId}`
         ),
         this.note
       )
@@ -263,7 +263,7 @@ export default {
       remove(
         ref(
           db,
-          `${this.$store.getters['users/userId']}/notes/id-${this.note.id}`
+          `${this.$store.getters['users/userId']}/notes/id-${this.noteId}`
         )
       )
       this.$refs.confirmDialog.hide()

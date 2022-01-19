@@ -202,14 +202,7 @@
             :key="subtask"
             class="cursor-pointer"
             :class="subtask['progress'] ? 'text-strike' : ''"
-            @click="
-              changeSubtaskProgress(
-                task.id,
-                task.time,
-                index,
-                subtask['progress']
-              )
-            "
+            @click="changeSubtaskProgress(index, subtask['progress'])"
           >
             <q-separator v-if="index > 0" spaced="sm" />
             {{ subtask['title'] }}
@@ -325,6 +318,12 @@ export default {
     path() {
       return this.$route.path
     },
+    taskDate() {
+      return this.$route.params.date
+    },
+    taskId() {
+      return this.$route.params.id
+    },
     editState() {
       return this.$route.query.edit ? true : false
     },
@@ -354,27 +353,20 @@ export default {
       return date.formatDate(ms, 'DD-MM-YYYY HH:mm')
     },
     updateTaskData() {
-      const taskDate = this.path.slice(
-        this.path.indexOf('/') + 1,
-        this.path.lastIndexOf('/')
-      )
-      const taskId = this.path.slice(this.path.lastIndexOf('/') + 1)
-
-      const dayTasks = this.$store.getters['users/tasks'][`date-${taskDate}`]
+      const dayTasks =
+        this.$store.getters['users/tasks'][`date-${this.taskDate}`]
       if (!dayTasks) {
         return this.$router.push('/')
       }
-      const task = dayTasks[`id-${taskId}`]
+      const task = dayTasks[`id-${this.taskId}`]
 
       if (!task) {
-        return this.$router.push('/')
+        return this.$router.push(`/?date=${this.taskDate}`)
       }
       this.task = JSON.parse(JSON.stringify(task))
     },
     routerBack() {
-      return this.$router.push(
-        '/?date=' + this.task.time.slice(0, this.task.time.indexOf(' '))
-      )
+      return this.$router.push(`/?date=${this.taskDate}`)
     },
     toggleEdit() {
       this.$router.push(this.path + '?edit=true')
@@ -382,14 +374,11 @@ export default {
     callEditClick() {
       this.$refs.taskForm.onEditClick()
     },
-    changeSubtaskProgress(taskId, taskDate, index, progress) {
+    changeSubtaskProgress(index, progress) {
       update(
         ref(
           db,
-          `${this.$store.getters['users/userId']}/tasks/date-${taskDate.slice(
-            0,
-            taskDate.indexOf(' ')
-          )}/id-${taskId}/subtasks/${index}`
+          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}/subtasks/${index}`
         ),
         { progress: !progress }
       )
@@ -492,12 +481,7 @@ export default {
       update(
         ref(
           db,
-          `${
-            this.$store.getters['users/userId']
-          }/tasks/date-${this.task.time.slice(
-            0,
-            this.task.time.indexOf(' ')
-          )}/id-${this.task.id}`
+          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
         ),
         {
           taskStarted: Date.now()
@@ -509,12 +493,7 @@ export default {
       update(
         ref(
           db,
-          `${
-            this.$store.getters['users/userId']
-          }/tasks/date-${this.task.time.slice(
-            0,
-            this.task.time.indexOf(' ')
-          )}/id-${this.task.id}`
+          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
         ),
         {
           taskEnded: Date.now()
@@ -526,12 +505,7 @@ export default {
       update(
         ref(
           db,
-          `${
-            this.$store.getters['users/userId']
-          }/tasks/date-${this.task.time.slice(
-            0,
-            this.task.time.indexOf(' ')
-          )}/id-${this.task.id}`
+          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
         ),
         { progress: !this.task.progress }
       )
@@ -556,12 +530,7 @@ export default {
       remove(
         ref(
           db,
-          `${
-            this.$store.getters['users/userId']
-          }/tasks/date-${this.task.time.slice(
-            0,
-            this.task.time.indexOf(' ')
-          )}/id-${this.task.id}`
+          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
         )
       )
       this.$router.push('/')

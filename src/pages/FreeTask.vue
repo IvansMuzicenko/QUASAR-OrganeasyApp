@@ -158,7 +158,7 @@
             :key="subtask"
             class="cursor-pointer"
             :class="subtask['progress'] ? 'text-strike' : ''"
-            @click="changeSubtaskProgress(task.id, index, subtask['progress'])"
+            @click="changeSubtaskProgress(index, subtask['progress'])"
           >
             <q-separator v-if="index > 0" spaced="sm" />
             {{ subtask['title'] }}
@@ -229,6 +229,9 @@ export default {
     path() {
       return this.$route.path
     },
+    taskId() {
+      return this.$route.params.id
+    },
     editState() {
       return this.$route.query.edit ? true : false
     },
@@ -259,8 +262,8 @@ export default {
     },
 
     updateTaskData() {
-      const taskId = this.path.slice(this.path.lastIndexOf('/') + 1)
-      const freeTask = this.$store.getters['users/freeTasks'][`id-${taskId}`]
+      const freeTask =
+        this.$store.getters['users/freeTasks'][`id-${this.taskId}`]
       if (!freeTask) {
         return this.$router.push('/free-tasks')
       }
@@ -275,11 +278,11 @@ export default {
     callEditClick() {
       this.$refs.freeTaskForm.onEditClick()
     },
-    changeSubtaskProgress(taskId, index, progress) {
+    changeSubtaskProgress(index, progress) {
       update(
         ref(
           db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${taskId}/subtasks/${index}`
+          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}/subtasks/${index}`
         ),
         { progress: !progress }
       )
@@ -304,7 +307,7 @@ export default {
       update(
         ref(
           db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${updateTodo.id}/`
+          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}/`
         ),
         updateTodo
       )
@@ -322,7 +325,7 @@ export default {
       update(
         ref(
           db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${this.task.id}`
+          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
         ),
         {
           taskStarted: Date.now()
@@ -334,7 +337,7 @@ export default {
       update(
         ref(
           db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${this.task.id}`
+          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
         ),
         {
           taskEnded: Date.now()
@@ -346,7 +349,7 @@ export default {
       update(
         ref(
           db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${this.task.id}`
+          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
         ),
         { progress: !this.task.progress }
       )
@@ -362,7 +365,7 @@ export default {
       remove(
         ref(
           db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${this.task.id}`
+          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
         )
       )
       this.$router.push('/')
