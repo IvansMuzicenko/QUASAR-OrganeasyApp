@@ -369,7 +369,10 @@ export default {
           db,
           `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}`
         ),
-        { progress: !task.progress }
+        {
+          progress: !task.progress,
+          finishedDate: !task.progress ? Date.now() : null
+        }
       )
     },
     subtasksState(subtasks) {

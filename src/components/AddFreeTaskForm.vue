@@ -40,7 +40,8 @@ export default {
         continuous: form.continuousState,
         notes: form.toggleNotes ? form.notes : null,
         subtasks: form.toggleSubtasks ? form.subtasks : null,
-        dateModified: Date.now()
+        dateModified: Date.now(),
+        finishedDate: form.progress ? Date.now() : null
       }
 
       set(
