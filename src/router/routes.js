@@ -5,7 +5,7 @@ const routes = [
     children: [
       { path: '', component: () => import('src/pages/Index.vue') },
       { path: '/auth', component: () => import('src/pages/Auth.vue') },
-      { path: '/:date/:title', component: () => import('src/pages/Task.vue') },
+      { path: '/:date/:id', component: () => import('src/pages/Task.vue') },
       {
         path: '/free-tasks',
         component: () => import('src/pages/FreeTasks.vue')
@@ -19,7 +19,7 @@ const routes = [
         component: () => import('src/pages/Notes.vue')
       },
       {
-        path: '/notes/:title',
+        path: '/notes/:id',
         component: () => import('src/pages/Note.vue')
       },
       {
