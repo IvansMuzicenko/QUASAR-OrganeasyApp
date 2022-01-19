@@ -264,6 +264,30 @@
               {{ holdedTask['progress'] ? 'Undone' : 'Done' }}
             </q-btn>
           </q-card-section>
+          <q-card-section
+            v-if="holdedTask['continuous'] && !holdedTask['continuousStarted']"
+            class="text-center"
+          >
+            <q-btn
+              icon="play_arrow"
+              color="green"
+              @click="continuousStart(holdedTask)"
+            >
+              Start
+            </q-btn>
+          </q-card-section>
+          <q-card-section
+            v-if="
+              holdedTask['continuous'] &&
+              holdedTask['continuousStarted'] &&
+              !holdedTask['continuousEnded']
+            "
+            class="text-center"
+          >
+            <q-btn icon="stop" color="red" @click="continuousStop(holdedTask)">
+              Stop
+            </q-btn>
+          </q-card-section>
           <q-card-section class="text-center border">
             <q-separator />
             <q-btn
@@ -372,6 +396,28 @@ export default {
         {
           progress: !task.progress,
           finishedDate: !task.progress ? Date.now() : null
+        }
+      )
+    },
+    continuousStart(task) {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}`
+        ),
+        {
+          continuousStarted: Date.now()
+        }
+      )
+    },
+    continuousStop(task) {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}`
+        ),
+        {
+          continuousEnded: Date.now()
         }
       )
     },
