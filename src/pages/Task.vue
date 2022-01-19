@@ -80,6 +80,11 @@
         <q-separator vertical spaced="md" />
         {{ task.progress ? 'Done' : 'Undone' }}
       </q-item>
+      <q-item v-if="task.progress && task.finishedDate">
+        <q-item-section avatar class="taskInfo">Completion Date</q-item-section>
+        <q-separator vertical spaced="md" />
+        {{ formatUnix(task.finishedDate) }}
+      </q-item>
 
       <q-item>
         <q-item-section avatar class="taskInfo">Date</q-item-section>
@@ -106,11 +111,11 @@
           </q-item-section>
           <q-separator />
           <q-item-section v-if="task.taskStarted">
-            Started : {{ date(task.taskStarted) }}
+            Started : {{ formatUnix(task.taskStarted) }}
           </q-item-section>
           <q-separator />
           <q-item-section v-if="task.taskEnded">
-            Ended : {{ date(task.taskEnded) }}
+            Ended : {{ formatUnix(task.taskEnded) }}
           </q-item-section>
         </q-item-section>
       </q-item>
@@ -281,6 +286,7 @@ export default {
         id: '',
         title: '',
         progress: false,
+        finishedDate: '',
         time: '',
         endingTime: '',
         notes: {
@@ -349,8 +355,8 @@ export default {
     }
   },
   methods: {
-    date(ms) {
-      return date.formatDate(ms, 'DD-MM-YYYY HH:mm')
+    formatUnix(unix) {
+      return date.formatDate(unix, 'DD-MM-YYYY HH:mm')
     },
     updateTaskData() {
       const dayTasks =
@@ -455,8 +461,11 @@ export default {
             : null,
           dateModified: Date.now(),
           finishedDate:
-            form.progress && form.progress != this.task.progress
-              ? Date.now()
+            form.progress &&
+            (form.progress != this.task.progress || this.task.finishedDate)
+              ? this.task.finishedDate
+                ? this.task.finishedDate
+                : Date.now()
               : null
         }
         update(
