@@ -99,7 +99,7 @@
             round
             :icon="note['favorite'] ? 'star' : 'star_outline'"
             :text-color="note['favorite'] ? 'yellow' : ''"
-            @click.prevent="favoriteNote(note['favorite'], note['id'])"
+            @click.prevent.stop="favoriteNote(note['favorite'], note['id'])"
           />
         </q-item-section>
       </q-item>
@@ -112,6 +112,7 @@
               (filtering.priority == 'common' && !el['favorite']))
         )"
         :key="index"
+        v-touch-hold:400:12:15.mouse="(event) => taskHold(event, note['id'])"
         clickable
         :to="`/notes/${note['id']}`"
       >
@@ -124,7 +125,7 @@
             round
             :icon="note['favorite'] ? 'star' : 'star_outline'"
             :text-color="note['favorite'] ? 'yellow' : ''"
-            @click.prevent="favoriteNote(note['favorite'], note['id'])"
+            @click.prevent.stop="favoriteNote(note['favorite'], note['id'])"
           />
         </q-item-section>
       </q-item>
@@ -153,6 +154,15 @@
               :to="`/notes/${holdedNote['id']}?edit=true`"
             >
               Edit
+            </q-btn>
+          </q-card-section>
+          <q-card-section class="text-center">
+            <q-btn
+              :color="holdedNote['favorite'] ? 'grey-6' : 'warning'"
+              :icon="holdedNote['favorite'] ? 'star_outline' : 'star'"
+              @click="favoriteNote(holdedNote['favorite'], holdedNote['id'])"
+            >
+              {{ holdedNote['favorite'] ? 'Unfavorite' : 'Favorite' }}
             </q-btn>
           </q-card-section>
         </q-card>
