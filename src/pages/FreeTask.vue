@@ -24,7 +24,7 @@
         icon="stop"
         color="red"
         flat
-        @click="changeProgress(true)"
+        @click="continuousStop"
       >
         Stop
       </q-btn>
@@ -34,7 +34,7 @@
         :icon="task['progress'] ? 'close' : 'check'"
         :color="task['progress'] ? 'red' : 'positive'"
         flat
-        @click="changeProgress(false)"
+        @click="changeProgress"
       >
         {{ task['progress'] ? 'Undone' : 'Done' }}
       </q-btn>
@@ -316,12 +316,6 @@ export default {
             ? this.task.finishedDate
               ? this.task.finishedDate
               : Date.now()
-            : null,
-        continuousEnded:
-          this.task.continuous &&
-          this.task.continuousStarted &&
-          !this.task.progress
-            ? Date.now()
             : null
       }
       update(
@@ -353,25 +347,27 @@ export default {
       )
       this.updateTaskData()
     },
-    changeProgress(stop) {
+    continuousStop() {
       update(
         ref(
           db,
           `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
         ),
         {
-          progress: stop ? true : !this.task.progress,
-          finishedDate: stop
-            ? Date.now()
-            : !this.task.progress
-            ? Date.now()
-            : null,
-          continuousEnded:
-            this.task.continuous &&
-            this.task.continuousStarted &&
-            !this.task.progress
-              ? Date.now()
-              : null
+          continuousEnded: Date.now()
+        }
+      )
+      this.updateTaskData()
+    },
+    changeProgress() {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
+        ),
+        {
+          progress: !this.task.progress,
+          finishedDate: !this.task.progress ? Date.now() : null
         }
       )
       this.updateTaskData()
