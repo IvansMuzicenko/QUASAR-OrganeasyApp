@@ -453,7 +453,11 @@ export default {
                   : null
               }
             : null,
-          dateModified: Date.now()
+          dateModified: Date.now(),
+          finishedDate:
+            form.progress && form.progress != this.task.progress
+              ? Date.now()
+              : null
         }
         update(
           ref(
@@ -507,7 +511,10 @@ export default {
           db,
           `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
         ),
-        { progress: !this.task.progress }
+        {
+          progress: !this.task.progress,
+          finishedDate: !this.task.progress ? Date.now() : null
+        }
       )
       this.updateTaskData()
     },

@@ -382,7 +382,10 @@ export default {
             task.time.indexOf(' ')
           )}/id-${task.id}`
         ),
-        { progress: !task.progress }
+        {
+          progress: !task.progress,
+          finishedDate: !task.progress ? Date.now() : null
+        }
       )
     },
     subtasksState(subtasks) {

@@ -108,7 +108,8 @@ export default {
                   : null
               }
             : null,
-          dateModified: Date.now()
+          dateModified: Date.now(),
+          finishedDate: form.progress ? Date.now() : null
         }
 
         set(
