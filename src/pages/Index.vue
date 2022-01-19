@@ -300,18 +300,22 @@ export default {
         date.formatDate(date.extractDate(newDate, 'DD-MM-YYYY'), 'x')
       )
       this.$refs.datePicked.hide()
-    }
-  },
-  mounted() {
-    if (!this.queryDate) {
-      this.$router.push(`?date=${this.date}`)
-    }
+    },
+    queryDate: {
+      handler: function () {
+        if (!this.queryDate) {
+          this.$router.push(`?date=${this.date}`)
+        }
 
-    if (this.queryDate) {
-      this.timeStamp = Number(
-        date.formatDate(date.extractDate(this.queryDate, 'DD-MM-YYYY'), 'x')
-      )
-      this.date = date.formatDate(this.timeStamp, 'DD-MM-YYYY')
+        if (this.queryDate) {
+          this.timeStamp = Number(
+            date.formatDate(date.extractDate(this.queryDate, 'DD-MM-YYYY'), 'x')
+          )
+          this.date = date.formatDate(this.timeStamp, 'DD-MM-YYYY')
+        }
+      },
+      immediate: true,
+      flush: 'post'
     }
   },
   methods: {
