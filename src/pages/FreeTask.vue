@@ -249,7 +249,8 @@ export default {
       handler: function () {
         this.updateTaskData()
       },
-      immediate: true
+      immediate: true,
+      flush: 'post'
     }
   },
   methods: {

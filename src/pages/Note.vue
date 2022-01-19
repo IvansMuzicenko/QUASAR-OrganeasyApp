@@ -202,7 +202,8 @@ export default {
       handler: function () {
         this.updateNoteData()
       },
-      immediate: true
+      immediate: true,
+      flush: 'post'
     }
   },
 
