@@ -227,70 +227,70 @@
           </q-item-section>
         </q-item-section>
       </q-item>
+      <q-popup-proxy
+        v-if="holdedTask"
+        :ref="`taskHold`"
+        cover
+        :breakpoint="10000"
+        transition-show="scale"
+        transition-hide="scale"
+      >
+        <q-card>
+          <q-card-section class="text-center">
+            <q-btn
+              color="primary"
+              icon="visibility"
+              @click="openTask(holdedTask)"
+            >
+              View
+            </q-btn>
+          </q-card-section>
+          <q-card-section class="text-center">
+            <q-btn
+              color="secondary"
+              icon="edit"
+              @click="openTask(holdedTask, true)"
+            >
+              Edit
+            </q-btn>
+          </q-card-section>
+          <q-card-section class="text-center">
+            <q-btn
+              :icon="holdedTask['progress'] ? 'close' : 'check'"
+              :color="holdedTask['progress'] ? 'red' : 'positive'"
+              @click="changeProgress(holdedTask)"
+            >
+              {{ holdedTask['progress'] ? 'Undone' : 'Done' }}
+            </q-btn>
+          </q-card-section>
+          <q-card-section class="text-center border">
+            <q-separator />
+            <q-btn
+              v-if="holdedTask['priority'] != 1"
+              flat
+              dense
+              class="full-width"
+              icon="expand_less"
+              @click="changePriority(holdedTask, -1)"
+            />
+            Priority
+            <q-btn
+              v-if="holdedTask['priority'] != 3"
+              flat
+              dense
+              class="full-width"
+              icon="expand_more"
+              @click="changePriority(holdedTask, 1)"
+            />
+            <q-separator />
+          </q-card-section>
+        </q-card>
+      </q-popup-proxy>
     </q-list>
     <div class="text-center q-my-md">
       <p v-if="!Object.keys(freeTasks).length">You have not free-tasks</p>
       <q-btn color="secondary" @click="addFreeTask()">Add free-task</q-btn>
     </div>
-    <q-popup-proxy
-      v-if="holdedTask"
-      :ref="`taskHold`"
-      cover
-      :breakpoint="10000"
-      transition-show="scale"
-      transition-hide="scale"
-    >
-      <q-card>
-        <q-card-section class="text-center">
-          <q-btn
-            color="primary"
-            icon="visibility"
-            @click="openTask(holdedTask)"
-          >
-            View
-          </q-btn>
-        </q-card-section>
-        <q-card-section class="text-center">
-          <q-btn
-            color="secondary"
-            icon="edit"
-            @click="openTask(holdedTask, true)"
-          >
-            Edit
-          </q-btn>
-        </q-card-section>
-        <q-card-section class="text-center">
-          <q-btn
-            :icon="holdedTask['progress'] ? 'close' : 'check'"
-            :color="holdedTask['progress'] ? 'red' : 'positive'"
-            @click="changeProgress(holdedTask)"
-          >
-            {{ holdedTask['progress'] ? 'Undone' : 'Done' }}
-          </q-btn>
-        </q-card-section>
-        <q-card-section class="text-center border">
-          <q-separator />
-          <q-btn
-            v-if="holdedTask['priority'] != 1"
-            flat
-            dense
-            class="full-width"
-            icon="expand_less"
-            @click="changePriority(holdedTask, -1)"
-          />
-          Priority
-          <q-btn
-            v-if="holdedTask['priority'] != 3"
-            flat
-            dense
-            class="full-width"
-            icon="expand_more"
-            @click="changePriority(holdedTask, 1)"
-          />
-          <q-separator />
-        </q-card-section>
-      </q-card>
-    </q-popup-proxy>
   </q-page>
 </template>
 
