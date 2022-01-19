@@ -182,8 +182,7 @@ export default {
         text: '',
         favorite: false,
         dateModified: Date.now()
-      },
-      editState: false
+      }
     }
   },
   computed: {
@@ -195,6 +194,9 @@ export default {
         !this.note.text.replace('<br>', '') &&
         !this.note.title.replace('<br>', '')
       )
+    },
+    editState() {
+      return this.$route.query.edit ? true : false
     }
   },
   watch: {
@@ -219,7 +221,7 @@ export default {
       return this.$router.push('/notes')
     },
     toggleEdit() {
-      this.editState = true
+      this.$router.push(this.path + '?edit=true')
     },
     deleteNote() {
       this.$refs.confirmDialog.show()

@@ -86,6 +86,7 @@
               (filtering.priority == 'favorites' && el['favorite']))
         )"
         :key="index"
+        v-touch-hold:400:12:15.mouse="(event) => taskHold(event, note['id'])"
         clickable
         :to="`/notes/${note['id']}`"
       >
@@ -127,6 +128,35 @@
           />
         </q-item-section>
       </q-item>
+      <q-popup-proxy
+        v-if="holdedNote"
+        :ref="`noteHold`"
+        cover
+        :breakpoint="10000"
+        transition-show="scale"
+        transition-hide="scale"
+      >
+        <q-card>
+          <q-card-section class="text-center">
+            <q-btn
+              color="primary"
+              icon="visibility"
+              :to="`/notes/${holdedNote['id']}`"
+            >
+              View
+            </q-btn>
+          </q-card-section>
+          <q-card-section class="text-center">
+            <q-btn
+              color="secondary"
+              icon="edit"
+              :to="`/notes/${holdedNote['id']}?edit=true`"
+            >
+              Edit
+            </q-btn>
+          </q-card-section>
+        </q-card>
+      </q-popup-proxy>
     </q-list>
     <div class="text-center q-my-md">
       <p v-if="!Object.keys(notes).length">You have not notes!</p>
@@ -145,6 +175,7 @@ const db = getDatabase()
 export default {
   data() {
     return {
+      holdedNoteId: '',
       sorting: {
         title: 'none',
         creationDate: 'desc'
@@ -179,6 +210,9 @@ export default {
         })
       }
       return notes
+    },
+    holdedNote() {
+      return this.$store.getters['users/notes'][`id-${this.holdedNoteId}`] || {}
     }
   },
   methods: {
@@ -186,6 +220,10 @@ export default {
       this.$q.dialog({
         component: addNoteForm
       })
+    },
+    taskHold(event, id) {
+      this.holdedNoteId = id
+      this.$refs[`noteHold`].show()
     },
     openSearch() {
       this.$q.dialog({
