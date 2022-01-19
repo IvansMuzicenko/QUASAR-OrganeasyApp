@@ -308,6 +308,14 @@ export default {
             ? form.notes
             : null,
         continuous: form.continuousState,
+        continuousStarted:
+          form.continuousState && this.task.continuousStarted
+            ? this.task.continuousStarted
+            : null,
+        continuousEnded:
+          form.continuousState && this.task.continuousEnded
+            ? this.task.continuousEnded
+            : null,
         subtasks: form.toggleSubtasks ? form.subtasks : null,
         dateModified: Date.now(),
         finishedDate:

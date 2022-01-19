@@ -442,6 +442,14 @@ export default {
             : null,
           notificationsId: form.notificationsId ? form.notificationsId : null,
           continuous: form.continuousState,
+          continuousStarted:
+            form.continuousState && this.task.continuousStarted
+              ? this.task.continuousStarted
+              : null,
+          continuousEnded:
+            form.continuousState && this.task.continuousEnded
+              ? this.task.continuousEnded
+              : null,
           processes: form.toggleProcesses ? form.processesModel : null,
           processesTime: form.toggleProcesses ? form.processesTime : null,
           subtasks: form.toggleSubtasks ? form.subtasks : null,
