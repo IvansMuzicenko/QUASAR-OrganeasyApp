@@ -6,7 +6,7 @@
           <q-btn flat @click="previousDay()">&lt;</q-btn>
         </span>
         <span class="cursor-pointer wrap">
-          {{ formattedDate }}
+          {{ displayDate }}
 
           <q-popup-proxy
             ref="datePicked"
@@ -15,10 +15,11 @@
             transition-hide="scale"
           >
             <q-date
-              v-model="formattedDate"
+              v-model="date"
+              first-day-of-week="1"
               :events="calendarEvents"
               event-color="teal"
-              mask="dddd, DD-MM-YYYY"
+              mask="DD-MM-YYYY"
               today-btn
             >
               <div class="items-center justify-end row">
@@ -229,7 +230,7 @@ export default {
   data() {
     return {
       timeStamp: Date.now(),
-      formattedDate: date.formatDate(Date.now(), 'dddd, DD-MM-YYYY'),
+      date: date.formatDate(Date.now(), 'DD-MM-YYYY'),
       sorting: {
         title: 'none',
         time: 'asc'
@@ -240,6 +241,12 @@ export default {
     }
   },
   computed: {
+    queryDate() {
+      return this.$route.query.date
+    },
+    displayDate() {
+      return date.formatDate(this.timeStamp, 'ddd, DD-MM-YYYY')
+    },
     tasks() {
       return this.$store.getters['users/tasks']
     },
@@ -255,11 +262,7 @@ export default {
     },
     dayTasks() {
       if (!this.tasks) return []
-      const vuexDayTasks =
-        this.tasks[
-          'date-' +
-            this.formattedDate.slice(this.formattedDate.indexOf(' ') + 1)
-        ]
+      const vuexDayTasks = this.tasks[`date-${this.queryDate}`]
       let dayTasks = []
       if (vuexDayTasks) {
         for (const vuexDayTask in vuexDayTasks) {
@@ -292,20 +295,23 @@ export default {
     }
   },
   watch: {
-    formattedDate(newDate) {
+    date(newDate) {
       this.timeStamp = Number(
-        date.formatDate(date.extractDate(newDate, 'dddd, DD-MM-YYYY'), 'x')
+        date.formatDate(date.extractDate(newDate, 'DD-MM-YYYY'), 'x')
       )
       this.$refs.datePicked.hide()
     }
   },
   mounted() {
-    const queryDate = this.$route.query.date
-    if (queryDate) {
+    if (!this.queryDate) {
+      this.$router.push(`?date=${this.date}`)
+    }
+
+    if (this.queryDate) {
       this.timeStamp = Number(
-        date.formatDate(date.extractDate(queryDate, 'DD-MM-YYYY'), 'x')
+        date.formatDate(date.extractDate(this.queryDate, 'DD-MM-YYYY'), 'x')
       )
-      this.formattedDate = date.formatDate(this.timeStamp, 'dddd, DD-MM-YYYY')
+      this.date = date.formatDate(this.timeStamp, 'DD-MM-YYYY')
     }
   },
   methods: {
@@ -313,9 +319,7 @@ export default {
       this.$q.dialog({
         component: AddTaskForm,
         componentProps: {
-          exactDate: this.formattedDate.slice(
-            this.formattedDate.indexOf(' ') + 1
-          )
+          exactDate: this.queryDate
         }
       })
     },
@@ -336,17 +340,13 @@ export default {
     },
     nextDay() {
       this.timeStamp += 86400000
-      this.formattedDate = date.formatDate(this.timeStamp, 'dddd, DD-MM-YYYY')
-      this.$router.push(
-        '?date=' + this.formattedDate.slice(this.formattedDate.indexOf(' ') + 1)
-      )
+      this.date = date.formatDate(this.timeStamp, 'DD-MM-YYYY')
+      this.$router.push(`?date=${this.date}`)
     },
     previousDay() {
       this.timeStamp -= 86400000
-      this.formattedDate = date.formatDate(this.timeStamp, 'dddd, DD-MM-YYYY')
-      this.$router.push(
-        '?date=' + this.formattedDate.slice(this.formattedDate.indexOf(' ') + 1)
-      )
+      this.date = date.formatDate(this.timeStamp, 'DD-MM-YYYY')
+      this.$router.push(`?date=${this.date}`)
     },
     openSearch() {
       this.$q.dialog({
