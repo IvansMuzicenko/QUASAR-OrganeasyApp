@@ -241,7 +241,7 @@
             <q-btn
               color="primary"
               icon="visibility"
-              @click="openTask(holdedTask)"
+              :to="`/free-tasks/${holdedTask['id']}`"
             >
               View
             </q-btn>
@@ -250,7 +250,7 @@
             <q-btn
               color="secondary"
               icon="edit"
-              @click="openTask(holdedTask, true)"
+              :to="`/free-tasks/${holdedTask['id']}?edit=true`"
             >
               Edit
             </q-btn>
@@ -361,13 +361,6 @@ export default {
       this.$q.dialog({
         component: AddFreeTaskForm
       })
-    },
-    openTask(task, edit) {
-      if (!edit) {
-        this.$router.push(`/free-tasks/${task.id}`)
-      } else {
-        this.$router.push(`/free-tasks/${task.id}?edit=true`)
-      }
     },
 
     changeProgress(task) {
