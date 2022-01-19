@@ -734,10 +734,12 @@ export default {
       this.form.processesTime = this.processesTimeCalc
     },
     eventDate() {
-      this.$refs['datePicked'].hide()
+      this.$refs.datePicked.hide()
     },
     eventEndingDate() {
-      this.$refs['endingDatePicked'].hide()
+      if (this.form.toggleEventEnd) {
+        this.$refs.endingDatePicked.hide()
+      }
     }
   },
   mounted() {
@@ -758,7 +760,7 @@ export default {
         this.form.toggleEventEnd = this.editTask.endingTime ? true : false
         this.form.eventEndingDate = this.editTask.endingTime
           ? this.editTask.endingTime
-          : ''
+          : this.form.eventDate
 
         this.form.toggleLocation = this.editTask.location ? true : false
         this.form.eventLocation = this.editTask.location
