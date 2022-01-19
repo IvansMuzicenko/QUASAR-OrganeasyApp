@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <q-card class="q-py-sm">
-      <p class="text-center text-h6 full-width">Notes</p>
+      <p class="text-center text-h6 full-width no-margin">Notes</p>
       <q-card-section class="flex justify-between no-padding">
         <q-card-section class="no-padding">
           <q-btn
