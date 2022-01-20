@@ -133,6 +133,10 @@
                 :key="note"
                 :to="`/notes/${note['id']}`"
               >
+                <q-icon
+                  color="yellow"
+                  :name="isNoteFavorite(note['id']) ? 'star' : ''"
+                />
                 {{ note['title'] }}
               </q-item>
             </q-list>
@@ -370,6 +374,9 @@ export default {
         return this.$router.push(`/?date=${this.taskDate}`)
       }
       this.task = JSON.parse(JSON.stringify(task))
+    },
+    isNoteFavorite(id) {
+      return this.$store.getters['users/notes'][`id-${id}`]['favorite']
     },
     routerBack() {
       return this.$router.push(`/?date=${this.taskDate}`)

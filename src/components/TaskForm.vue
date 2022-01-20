@@ -177,7 +177,9 @@
           stack-label
           label="Attach notes"
           :options="notesList"
-          option-label="title"
+          :option-label="
+            (opt) => (isNoteFavorite(opt['id']) ? `* ${opt.title}` : opt.title)
+          "
           emit-value
           map-options
         />
@@ -695,10 +697,17 @@ export default {
       let notesArray = []
       if (Object.keys(notes).length) {
         for (const note in notes) {
-          notesArray.push({
-            title: notes[note]['title'],
-            id: notes[note]['id']
-          })
+          if (notes[note]['favorite']) {
+            notesArray.unshift({
+              title: notes[note]['title'],
+              id: notes[note]['id']
+            })
+          } else {
+            notesArray.push({
+              title: notes[note]['title'],
+              id: notes[note]['id']
+            })
+          }
         }
       }
       return notesArray
@@ -944,6 +953,9 @@ export default {
         )
       }
       this.form.notificationsId = notificationsId
+    },
+    isNoteFavorite(id) {
+      return this.$store.getters['users/notes'][`id-${id}`]['favorite']
     },
     async onSubtaskClick(index, progress) {
       await this.$emit(
