@@ -69,6 +69,19 @@
                   >
                     Title
                   </q-btn>
+                  <q-btn
+                    :icon="
+                      sorting.dateModified == 'none'
+                        ? 'last_page'
+                        : sorting.dateModified == 'asc'
+                        ? 'vertical_align_bottom'
+                        : 'vertical_align_top'
+                    "
+                    class="full-width"
+                    @click="sortByDateModified"
+                  >
+                    Date modified
+                  </q-btn>
                 </q-card-section>
               </q-card>
             </q-popup-proxy>
@@ -188,11 +201,10 @@ export default {
       holdedNoteId: '',
       sorting: {
         title: 'none',
-        creationDate: 'desc'
+        dateModified: 'desc'
       },
       filtering: {
-        priority: 'all',
-        group: ''
+        priority: 'all'
       }
     }
   },
@@ -215,6 +227,18 @@ export default {
               if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
               if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
               return 0
+            }
+          } else if (this.sorting.dateModified != 'none') {
+            if (this.sorting.dateModified == 'asc') {
+              return (
+                (a.dateModified ? a.dateModified : 0) -
+                (b.dateModified ? b.dateModified : 0)
+              )
+            } else {
+              return (
+                (b.dateModified ? b.dateModified : 0) -
+                (a.dateModified ? a.dateModified : 0)
+              )
             }
           }
         })
@@ -244,7 +268,13 @@ export default {
       })
     },
     sortByTitle() {
+      this.sorting.dateModified = 'none'
       this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
+    },
+    sortByDateModified() {
+      this.sorting.title = 'none'
+      this.sorting.dateModified =
+        this.sorting.dateModified == 'asc' ? 'desc' : 'asc'
     },
     favoriteNote(favorite, id) {
       update(ref(db, `${this.$store.getters['users/userId']}/notes/id-${id}`), {

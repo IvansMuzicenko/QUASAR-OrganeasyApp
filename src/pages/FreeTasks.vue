@@ -112,6 +112,19 @@
                   >
                     Priority
                   </q-btn>
+                  <q-btn
+                    :icon="
+                      sorting.dateModified == 'none'
+                        ? 'last_page'
+                        : sorting.dateModified == 'asc'
+                        ? 'vertical_align_bottom'
+                        : 'vertical_align_top'
+                    "
+                    class="full-width"
+                    @click="sortByDateModified"
+                  >
+                    Date modified
+                  </q-btn>
                 </q-card-section>
               </q-card>
             </q-popup-proxy>
@@ -332,7 +345,8 @@ export default {
       holdedTaskId: '',
       sorting: {
         title: 'none',
-        priority: 'asc'
+        priority: 'asc',
+        dateModified: 'none'
       },
       filtering: {
         progress: 'all',
@@ -367,6 +381,18 @@ export default {
             } else {
               return (
                 (b.priority ? b.priority : 3) - (a.priority ? a.priority : 3)
+              )
+            }
+          } else if (this.sorting.dateModified != 'none') {
+            if (this.sorting.dateModified == 'asc') {
+              return (
+                (a.dateModified ? a.dateModified : 0) -
+                (b.dateModified ? b.dateModified : 0)
+              )
+            } else {
+              return (
+                (b.dateModified ? b.dateModified : 0) -
+                (a.dateModified ? a.dateModified : 0)
               )
             }
           }
@@ -455,11 +481,19 @@ export default {
     },
     sortByTitle() {
       this.sorting.priority = 'none'
+      this.sorting.dateModified = 'none'
       this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
     },
     sortByPriority() {
       this.sorting.title = 'none'
+      this.sorting.dateModified = 'none'
       this.sorting.priority = this.sorting.priority == 'asc' ? 'desc' : 'asc'
+    },
+    sortByDateModified() {
+      this.sorting.title = 'none'
+      this.sorting.priority = 'none'
+      this.sorting.dateModified =
+        this.sorting.dateModified == 'asc' ? 'desc' : 'asc'
     },
     openSearch() {
       this.$q.dialog({
