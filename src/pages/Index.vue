@@ -319,11 +319,14 @@ export default {
     }
   },
   watch: {
-    date(newDate) {
-      this.timeStamp = Number(
-        date.formatDate(date.extractDate(newDate, 'DD-MM-YYYY'), 'x')
-      )
-      this.$refs.datePicked.hide()
+    date: {
+      handler: function () {
+        this.$router.push(`?date=${this.date}`)
+
+        this.$refs['datePicked']?.hide()
+      },
+      immediate: true,
+      flush: 'post'
     },
     queryDate: {
       handler: function () {
