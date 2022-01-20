@@ -221,7 +221,7 @@ export default {
       return this.$router.push('/notes')
     },
     toggleEdit() {
-      this.$router.push(this.path + '?edit=true')
+      this.$router.push(this.$route.path + '?edit=true')
     },
     deleteNote() {
       this.$refs.confirmDialog.show()
