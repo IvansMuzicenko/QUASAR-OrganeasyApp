@@ -151,6 +151,16 @@
         transition-hide="scale"
       >
         <q-card>
+          <q-card-section class="text-center text-subtitle1">
+            <p class="no-margin">Note</p>
+            <p class="no-margin">
+              {{
+                `${holdedNote['title'].slice(0, 10)}${
+                  holdedNote['title'].length > 10 ? '...' : ''
+                }`
+              }}
+            </p>
+          </q-card-section>
           <q-card-section class="text-center">
             <q-btn
               color="primary"

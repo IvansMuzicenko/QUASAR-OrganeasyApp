@@ -191,6 +191,16 @@
             transition-hide="scale"
           >
             <q-card>
+              <q-card-section class="text-center text-subtitle1">
+                <p class="no-margin">Task</p>
+                <p class="no-margin">
+                  {{
+                    `${task['title'].slice(0, 10)}${
+                      task['title'].length > 10 ? '...' : ''
+                    }`
+                  }}
+                </p>
+              </q-card-section>
               <q-card-section class="text-center">
                 <q-btn
                   color="primary"
