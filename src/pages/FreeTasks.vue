@@ -252,7 +252,7 @@
         <q-card>
           <q-card-section class="text-center text-subtitle1">
             <p class="no-margin">Free Task</p>
-            <p class="no-margin">
+            <p v-if="holdedTask['title']" class="no-margin">
               {{
                 `${holdedTask['title'].slice(0, 10)}${
                   holdedTask['title'].length > 10 ? '...' : ''
