@@ -245,7 +245,7 @@ export default {
         ),
         this.note
       )
-      this.editState = false
+      this.$router.push(this.$route.path)
 
       this.$q.notify({
         position: 'top',
