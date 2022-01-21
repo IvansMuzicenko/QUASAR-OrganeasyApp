@@ -20,7 +20,12 @@
             class="zindex-high"
             @click="openSearch"
           />
-          <q-btn icon="tune" flat class="zindex-high">
+          <q-btn
+            icon="tune"
+            :color="filtering.priority != 'all' ? 'green' : ''"
+            flat
+            class="zindex-high"
+          >
             <q-popup-proxy>
               <q-card>
                 <q-card-section class="text-subtitle1 text-center">

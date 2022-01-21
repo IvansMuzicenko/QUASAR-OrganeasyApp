@@ -20,7 +20,16 @@
             rounded
             @click="openSearch"
           />
-          <q-btn icon="tune" class="zindex-high" flat>
+          <q-btn
+            icon="tune"
+            :color="
+              filtering.priority != 'all' || filtering.progress != 'all'
+                ? 'green'
+                : ''
+            "
+            class="zindex-high"
+            flat
+          >
             <q-popup-proxy>
               <q-card>
                 <q-card-section class="text-subtitle1 text-center">
