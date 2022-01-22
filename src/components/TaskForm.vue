@@ -716,8 +716,8 @@ export default {
       const processes = this.$store.getters['users/processes']
       let processesArray = []
       if (Object.keys(processes).length) {
-        for (const process of processes) {
-          processesArray.push(process['title'])
+        for (const process in processes) {
+          processesArray.push(processes[process]['title'])
         }
       }
       return processesArray
@@ -728,9 +728,9 @@ export default {
       let time = 0
       if (Object.keys(processes).length) {
         for (const select of selectedProcesses) {
-          for (const process of processes) {
-            if (select == process['title']) {
-              time += process['time']
+          for (const process in processes) {
+            if (select == processes[process]['title']) {
+              time += processes[process]['time']
             }
           }
         }

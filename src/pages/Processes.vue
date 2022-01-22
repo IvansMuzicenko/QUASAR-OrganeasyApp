@@ -161,8 +161,8 @@ export default {
       let processes = []
 
       if (vuexProcesses) {
-        for (const vuexProcesse in vuexProcesses) {
-          processes.push(vuexProcesses[vuexProcesse])
+        for (const vuexProcess in vuexProcesses) {
+          processes.push(vuexProcesses[vuexProcess])
         }
         processes.sort((a, b) => {
           if (this.sorting.title != 'none') {
