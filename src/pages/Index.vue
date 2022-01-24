@@ -182,7 +182,11 @@
                 @mousedown.stop
               >
                 <q-item-section>
-                  <q-separator v-if="subIndex > 0" size="3px" spaced="sm" />
+                  <q-separator
+                    v-if="subIndex > 0 && !subtask['progress']"
+                    size="3px"
+                    spaced="sm"
+                  />
                   <q-item-label>- {{ subtask['title'] }}</q-item-label>
                   <q-separator
                     v-if="subtask['subtasks'] && subtask['subtasks'].length"
