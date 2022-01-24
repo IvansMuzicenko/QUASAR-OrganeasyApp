@@ -362,8 +362,8 @@ export default {
       }
     },
 
-    async onSubtaskClick(index, progress) {
-      await this.$emit('subtaskEvent', this.form.id, index, progress)
+    onSubtaskClick(index, progress) {
+      this.form.subtasks[index]['progress'] = !progress
       this.updateData()
     },
     async onOKClick() {

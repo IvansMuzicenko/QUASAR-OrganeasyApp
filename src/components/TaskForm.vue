@@ -957,14 +957,8 @@ export default {
     isNoteFavorite(id) {
       return this.$store.getters['users/notes'][`id-${id}`]['favorite']
     },
-    async onSubtaskClick(index, progress) {
-      await this.$emit(
-        'subtaskEvent',
-        this.form.id,
-        this.form.eventDate,
-        index,
-        progress
-      )
+    onSubtaskClick(index, progress) {
+      this.form.subtasks[index]['progress'] = !progress
       this.updateData()
     },
     async onOKClick() {
