@@ -210,11 +210,12 @@
             v-for="(subtask, index) in task.subtasks"
             :key="subtask"
             class="cursor-pointer"
-            :class="subtask['progress'] ? 'text-strike' : ''"
             @click="changeSubtaskProgress(index, subtask['progress'])"
           >
             <q-separator v-if="index > 0" size="5px" spaced="sm" />
-            {{ subtask['title'] }}
+            <q-item-label :class="subtask['progress'] ? 'text-strike' : ''">
+              {{ subtask['title'] }}
+            </q-item-label>
             <q-separator
               v-if="subtask['subtasks'] && subtask['subtasks'].length"
               spaced="sm"
@@ -224,8 +225,20 @@
                 v-for="(subSubtask, subIndex) of subtask['subtasks']"
                 :key="subIndex"
                 dense
+                clickable
+                @click.prevent.stop="
+                  changeSubSubtaskProgress(
+                    index,
+                    subIndex,
+                    subSubtask['progress']
+                  )
+                "
               >
-                ~ {{ subSubtask['title'] }}
+                <q-item-label
+                  :class="subSubtask['progress'] ? 'text-strike' : ''"
+                >
+                  ~ {{ subSubtask['title'] }}
+                </q-item-label>
               </q-item>
             </q-list>
           </q-item-section>
@@ -405,6 +418,16 @@ export default {
         ref(
           db,
           `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}/subtasks/${index}`
+        ),
+        { progress: !progress }
+      )
+      this.updateTaskData()
+    },
+    changeSubSubtaskProgress(index, subIndex, progress) {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}/subtasks/${index}/subtasks/${subIndex}`
         ),
         { progress: !progress }
       )

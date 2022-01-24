@@ -215,8 +215,14 @@
                   <q-list separator>
                     <q-item
                       v-for="(subSubtask, subSubIndex) of subtask['subtasks']"
+                      v-show="!subSubtask['progress']"
                       :key="subSubIndex"
+                      v-touch-hold:400:12:15.mouse.stop="
+                        (event) => doneSubSubtask(task, subIndex, subSubIndex)
+                      "
                       dense
+                      @touchstart.stop
+                      @mousedown.stop
                     >
                       ~ {{ subSubtask['title'] }}
                     </q-item>
@@ -490,6 +496,15 @@ export default {
         ref(
           db,
           `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}/subtasks/${index}`
+        ),
+        { progress: true }
+      )
+    },
+    doneSubSubtask(task, index, subIndex) {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}/subtasks/${index}/subtasks/${subIndex}`
         ),
         { progress: true }
       )
