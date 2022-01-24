@@ -189,10 +189,7 @@
             <q-separator
               v-if="task['subtasks'] && subtasksState(task['subtasks'])"
               spaced="sm"
-            />
-            <q-separator
-              v-if="task['subtasks'] && subtasksState(task['subtasks'])"
-              spaced="sm"
+              size="7px"
             />
 
             <q-list separator dense>
@@ -208,7 +205,23 @@
                 @touchstart.stop
                 @mousedown.stop
               >
-                <q-item-label>~ {{ subtask['title'] }}</q-item-label>
+                <q-item-section>
+                  <q-separator v-if="subIndex > 0" size="3px" spaced="sm" />
+                  <q-item-label>- {{ subtask['title'] }}</q-item-label>
+                  <q-separator
+                    v-if="subtask['subtasks'] && subtask['subtasks'].length"
+                    spaced="sm"
+                  />
+                  <q-list separator>
+                    <q-item
+                      v-for="(subSubtask, subSubIndex) of subtask['subtasks']"
+                      :key="subSubIndex"
+                      dense
+                    >
+                      ~ {{ subSubtask['title'] }}
+                    </q-item>
+                  </q-list>
+                </q-item-section>
               </q-item>
             </q-list>
           </q-item-section>

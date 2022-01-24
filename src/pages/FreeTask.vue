@@ -170,8 +170,21 @@
             :class="subtask['progress'] ? 'text-strike' : ''"
             @click="changeSubtaskProgress(index, subtask['progress'])"
           >
-            <q-separator v-if="index > 0" spaced="sm" />
+            <q-separator v-if="index > 0" size="5px" spaced="sm" />
             {{ subtask['title'] }}
+            <q-separator
+              v-if="subtask['subtasks'] && subtask['subtasks'].length"
+              spaced="sm"
+            />
+            <q-list separator>
+              <q-item
+                v-for="(subSubtask, subIndex) of subtask['subtasks']"
+                :key="subIndex"
+                dense
+              >
+                ~ {{ subSubtask['title'] }}
+              </q-item>
+            </q-list>
           </q-item-section>
         </q-item-section>
       </q-item>
