@@ -349,7 +349,7 @@
         </p>
         <q-card-section class="no-padding">
           <q-input
-            v-model="form.subtaskInput"
+            v-model="subtaskInput"
             bottom-slots
             label="Subtask"
             :dense="false"
@@ -360,7 +360,7 @@
                 dense
                 flat
                 icon="add"
-                @click="addSubtask(form.subtaskInput)"
+                @click="addSubtask(subtaskInput)"
               />
             </template>
           </q-input>
@@ -369,7 +369,7 @@
             <q-item
               v-for="(subtask, index) in form.subtasks"
               :key="subtask"
-              class="q-pl-sm"
+              class="q-pa-none"
             >
               <q-btn
                 v-if="editTask && editTask.subtasks"
@@ -379,36 +379,118 @@
                 :icon="subtask['progress'] ? 'close' : 'check'"
                 @click="onSubtaskClick(index, subtask['progress'])"
               />
-              <q-item-section
-                v-if="subtaskEdit != index"
-                :class="subtask['progress'] ? 'text-strike' : ''"
-              >
-                {{ subtask['title'] }}
+              <q-item-section>
+                <div
+                  v-if="subtaskEdit != index"
+                  :class="subtask['progress'] ? 'text-strike' : ''"
+                  class="vertical-middle"
+                >
+                  <span>
+                    {{ subtask['title'] }}
+                  </span>
+
+                  <span class="float-right">
+                    <q-btn
+                      v-if="editTask && subtaskEdit != index"
+                      icon="edit"
+                      flat
+                      class="q-px-sm"
+                      @click="editSubtask(index)"
+                    />
+                    <q-btn
+                      icon="delete"
+                      color="red"
+                      flat
+                      class="q-px-sm"
+                      @click="deleteSubtask(index)"
+                    />
+                  </span>
+                </div>
+                <q-input v-if="subtaskEdit == index" v-model="subtask['title']">
+                  <template #append>
+                    <q-btn
+                      v-if="editTask && subtaskEdit == index"
+                      icon="save"
+                      flat
+                      class="q-px-sm"
+                      @click="editSubtask(index)"
+                    />
+                    <q-btn
+                      icon="delete"
+                      color="red"
+                      flat
+                      class="q-px-sm"
+                      @click="deleteSubtask(index)"
+                    />
+                  </template>
+                </q-input>
+
+                <q-separator
+                  v-if="subtask['subtasks'] && subtask['subtasks'].length"
+                />
+                <q-separator
+                  v-if="subtask['subtasks'] && subtask['subtasks'].length"
+                />
+                <q-input
+                  v-if="subtaskEdit == index"
+                  v-model="subSubtaskInput"
+                  dense
+                  label="Add subSubtask"
+                >
+                  <template #append>
+                    <q-btn
+                      round
+                      dense
+                      flat
+                      icon="add"
+                      @click="addSubSubtask(subSubtaskInput, index)"
+                    />
+                  </template>
+                </q-input>
+                <q-list separator bordered>
+                  <q-item
+                    v-for="(subSubtask, subIndex) of subtask['subtasks']"
+                    :key="subIndex"
+                    dense
+                    class="q-px-none"
+                  >
+                    <q-btn
+                      v-if="editTask"
+                      dense
+                      flat
+                      :color="subSubtask['progress'] ? 'negative' : 'positive'"
+                      :icon="subSubtask['progress'] ? 'close' : 'check'"
+                      @click="
+                        onSubSubtaskClick(
+                          index,
+                          subIndex,
+                          subSubtask['progress']
+                        )
+                      "
+                    />
+                    <q-item-section>
+                      <span
+                        v-if="subtaskEdit != index"
+                        :class="subSubtask['progress'] ? 'text-strike' : ''"
+                      >
+                        {{ subSubtask['title'] }}
+                      </span>
+                      <q-input
+                        v-if="subtaskEdit == index"
+                        v-model="subSubtask['title']"
+                        dense
+                      />
+                    </q-item-section>
+                    <q-btn
+                      icon="delete"
+                      color="red"
+                      flat
+                      round
+                      @click="deleteSubSubtask(index, subIndex)"
+                    />
+                  </q-item>
+                </q-list>
               </q-item-section>
-              <q-item-section v-if="subtaskEdit == index">
-                <q-input v-model="form.subtasks[index]['title']" />
-              </q-item-section>
-              <q-btn
-                v-if="editTask && subtaskEdit != index"
-                icon="edit"
-                flat
-                round
-                @click="editSubtask(index)"
-              />
-              <q-btn
-                v-if="editTask && subtaskEdit == index"
-                icon="save"
-                flat
-                round
-                @click="editSubtask(index)"
-              />
-              <q-btn
-                icon="delete"
-                color="red"
-                flat
-                round
-                @click="deleteSubtask(index)"
-              />
             </q-item>
           </q-list>
         </q-card-section>
@@ -632,7 +714,6 @@ export default {
 
         toggleSubtasks: false,
         subtasks: [],
-        subtaskInput: '',
 
         toggleDefaultNotif: false,
         toggleNotifications: false,
@@ -656,6 +737,8 @@ export default {
           minutesModel: 0
         }
       },
+      subtaskInput: '',
+      subSubtaskInput: '',
       subtaskEdit: null,
       processTitle: '',
       processTime: 0,
@@ -991,6 +1074,10 @@ export default {
       this.form.subtasks[index]['progress'] = !progress
       this.updateData()
     },
+    onSubSubtaskClick(index, subIndex, progress) {
+      this.form.subtasks[index]['subtasks'][subIndex]['progress'] = !progress
+      this.updateData()
+    },
     async onOKClick() {
       await this.addNotifsId()
       this.$emit('OKEvent', this.form)
@@ -1024,7 +1111,7 @@ export default {
     },
     addSubtask(newSubtask) {
       this.form.subtasks.push({ title: newSubtask, progress: false })
-      this.form.subtaskInput = ''
+      this.subtaskInput = ''
     },
     editSubtask(index) {
       if (this.subtaskEdit == index) {
@@ -1032,9 +1119,23 @@ export default {
       } else {
         this.subtaskEdit = index
       }
+      this.subSubtaskInput = ''
+    },
+    addSubSubtask(newSubSubtask, index) {
+      if (typeof this.form.subtasks[index]['subtasks'] != 'object') {
+        this.form.subtasks[index]['subtasks'] = []
+      }
+      this.form.subtasks[index]['subtasks'].push({
+        title: newSubSubtask,
+        progress: false
+      })
+      this.subSubtaskInput = ''
     },
     deleteSubtask(index) {
       this.form.subtasks.splice(index, 1)
+    },
+    deleteSubSubtask(index, subIndex) {
+      this.form.subtasks[index]['subtasks'].splice(subIndex, 1)
     },
     addErrorMessage(message) {
       if (!this.errorMessages.includes(message)) {
