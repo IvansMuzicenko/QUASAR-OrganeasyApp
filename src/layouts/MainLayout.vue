@@ -236,6 +236,21 @@
                       </q-item-section>
                     </q-item-section>
                   </q-item>
+                  <q-item
+                    class="col justify-center no-padding"
+                    clickable
+                    exact
+                    to="/categories"
+                  >
+                    <q-item-section class="text-center" style="line-height: 0">
+                      <q-item-section class="row no-padding">
+                        <q-icon size="sm" name="category" class="col" />
+                      </q-item-section>
+                      <q-item-section class="no-margin text-weight-light">
+                        Categories
+                      </q-item-section>
+                    </q-item-section>
+                  </q-item>
 
                   <q-item
                     class="col justify-center no-padding"
@@ -334,6 +349,12 @@ export default {
           caption: '',
           icon: 'update',
           link: '/processes'
+        },
+        {
+          title: 'Categories',
+          caption: '',
+          icon: 'category',
+          link: '/categories'
         },
         {
           title: 'Help',
