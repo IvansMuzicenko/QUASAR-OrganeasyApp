@@ -21,9 +21,14 @@
             v-for="(color, index) of colors"
             :key="index"
             :color="color"
+            :style="
+              color == form.categoryColor ? 'border: 1px solid black' : ''
+            "
             style="width: 40px; height: 40px"
             @click="selectColor(color)"
-          />
+          >
+            {{ color == form.categoryColor ? 'x' : '' }}
+          </q-btn>
         </q-menu>
       </q-btn>
     </q-card-section>
@@ -42,9 +47,10 @@
           v-for="(icon, index) of icons"
           :key="index"
           :icon="icon['name']"
-          flat
           :color="form.categoryColor"
           style="width: 40px; height: 40px"
+          :outline="icon['name'] == form.categoryIcon"
+          :flat="icon['name'] != form.categoryIcon"
           @click="selectIcon(icon['name'])"
         />
       </q-card-section>
