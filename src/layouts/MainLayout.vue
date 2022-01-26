@@ -93,6 +93,13 @@
                   </q-item-section>
                   <q-item-section>Process</q-item-section>
                 </q-item>
+                <q-separator />
+                <q-item clickable @click="addCategory">
+                  <q-item-section avatar>
+                    <q-icon name="category" />
+                  </q-item-section>
+                  <q-item-section>Category</q-item-section>
+                </q-item>
               </q-list>
             </q-menu>
           </q-btn>
@@ -178,6 +185,13 @@
                       <q-icon name="update" />
                     </q-item-section>
                     <q-item-section>Process</q-item-section>
+                  </q-item>
+                  <q-separator />
+                  <q-item clickable @click="addCategory">
+                    <q-item-section avatar>
+                      <q-icon name="category" />
+                    </q-item-section>
+                    <q-item-section>Category</q-item-section>
                   </q-item>
                 </q-list>
               </q-menu>
@@ -282,6 +296,7 @@ import AddTaskForm from 'src/components/AddTaskForm.vue'
 import AddFreeTaskForm from 'src/components/AddFreeTaskForm.vue'
 import AddProcessForm from 'src/components/AddProcessForm.vue'
 import AddNoteForm from 'src/components/AddNoteForm.vue'
+import AddCategoryForm from 'src/components/AddCategoryForm.vue'
 import Search from 'src/components/Search.vue'
 
 export default {
@@ -364,14 +379,19 @@ export default {
         component: AddFreeTaskForm
       })
     },
+    addNote() {
+      this.$q.dialog({
+        component: AddNoteForm
+      })
+    },
     addProcess() {
       this.$q.dialog({
         component: AddProcessForm
       })
     },
-    addNote() {
+    addCategory() {
       this.$q.dialog({
-        component: AddNoteForm
+        component: AddCategoryForm
       })
     },
     openSearch() {
