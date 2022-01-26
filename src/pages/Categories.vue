@@ -15,10 +15,33 @@
         v-for="(category, index) of categories"
         :key="index"
         clickable
+        class="justify-between"
         @click="editCategory(category)"
       >
-        <q-icon :name="category['icon']" :color="category['color']" size="sm" />
-        {{ category['title'] }}
+        <div>
+          <q-icon
+            :name="category['icon']"
+            :color="category['color']"
+            size="sm"
+          />
+          {{ category['title'] }}
+        </div>
+        <div>
+          <q-btn
+            flat
+            round
+            icon="edit"
+            color="secondary"
+            @click.prevent.stop="editCategory(category)"
+          />
+          <q-btn
+            flat
+            round
+            icon="delete"
+            color="red"
+            @click.prevent.stop="deleteCategory(category)"
+          />
+        </div>
       </q-item>
     </q-list>
 
@@ -32,6 +55,24 @@
         @saveEvent="onSaveClick"
         @cancelEvent="onCancelClick"
       />
+    </q-dialog>
+    <q-dialog ref="deleteDialog" @hide="deleteDialogHide">
+      <q-card>
+        <q-card-section>
+          Are you sure you wand to delete
+          <q-icon
+            :name="selectedCategory['icon']"
+            :color="selectedCategory['color']"
+          />
+          {{ selectedCategory['title'] }} category?
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn icon="delete" color="red" @click="onConfirmDelete">
+            Delete
+          </q-btn>
+          <q-btn color="primary" @click="deleteDialogHide">Cancel</q-btn>
+        </q-card-actions>
+      </q-card>
     </q-dialog>
   </q-page>
 </template>
@@ -74,18 +115,27 @@ export default {
       this.selectedCategory = JSON.parse(JSON.stringify(category))
       this.show()
     },
+    deleteCategory(category) {
+      this.selectedCategory = JSON.parse(JSON.stringify(category))
+      this.$refs['deleteDialog'].show()
+    },
     show() {
       this.$refs.dialog.show()
     },
 
     hide() {
       this.$refs.dialog.hide()
+      this.selectedCategory = {}
     },
 
     onDialogHide() {
       this.$emit('hide')
+      this.selectedCategory = {}
     },
-
+    deleteDialogHide() {
+      this.$refs['deleteDialog'].hide()
+      this.selectedCategory = {}
+    },
     onSaveClick(form) {
       update(
         ref(
@@ -109,6 +159,21 @@ export default {
 
     onCancelClick() {
       this.hide()
+    },
+    onConfirmDelete() {
+      remove(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/categories/id-${this.selectedCategory.id}`
+        )
+      )
+      this.deleteDialogHide()
+      this.$q.notify({
+        position: 'top',
+        message: 'Category deleted',
+        color: 'red',
+        timeout: 1000
+      })
     }
   }
 }
