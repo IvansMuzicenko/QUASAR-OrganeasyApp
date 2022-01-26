@@ -44,7 +44,8 @@ const getters = {
   tasks: (state) => state.user?.userData?.tasks || {},
   freeTasks: (state) => state.user?.userData?.freeTasks || {},
   notes: (state) => state.user?.userData?.notes || {},
-  processes: (state) => state.user?.userData?.processes || {}
+  processes: (state) => state.user?.userData?.processes || {},
+  categories: (state) => state.user?.userData?.categories || {}
 }
 
 export default {

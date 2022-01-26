@@ -2,15 +2,15 @@
   <q-card class="q-dialog-plugin">
     <q-card-section class="text-center text-subtitle1">
       Preview:
-      <q-icon :name="form.categoryIcon" :color="form.categoryColor" />
-      {{ form.categoryTitle }}
+      <q-icon :name="form.icon" :color="form.color" />
+      {{ form.title }}
     </q-card-section>
     <q-card-section>
-      <q-input v-model="form.categoryTitle" label="Title" />
+      <q-input v-model="form.title" label="Title" />
     </q-card-section>
     <q-card-section>
       Color:
-      <q-btn :color="form.categoryColor" style="width: 3rem">
+      <q-btn :color="form.color" style="width: 3rem">
         <q-menu
           ref="colorPicker"
           anchor="center middle"
@@ -21,13 +21,11 @@
             v-for="(color, index) of colors"
             :key="index"
             :color="color"
-            :style="
-              color == form.categoryColor ? 'border: 1px solid black' : ''
-            "
+            :style="color == form.color ? 'border: 1px solid black' : ''"
             style="width: 40px; height: 40px"
             @click="selectColor(color)"
           >
-            {{ color == form.categoryColor ? 'x' : '' }}
+            {{ color == form.color ? 'x' : '' }}
           </q-btn>
         </q-menu>
       </q-btn>
@@ -47,16 +45,22 @@
           v-for="(icon, index) of icons"
           :key="index"
           :icon="icon['name']"
-          :color="form.categoryColor"
+          :color="form.color"
           style="width: 40px; height: 40px"
-          :outline="icon['name'] == form.categoryIcon"
-          :flat="icon['name'] != form.categoryIcon"
+          :outline="icon['name'] == form.icon"
+          :flat="icon['name'] != form.icon"
           @click="selectIcon(icon['name'])"
         />
       </q-card-section>
     </q-card-section>
     <q-card-actions align="right">
-      <q-btn color="positive" label="Add" @click="onOKClick" />
+      <q-btn
+        v-if="!editCategory"
+        color="positive"
+        label="Add"
+        @click="onOKClick"
+      />
+      <q-btn v-else color="positive" label="Save" @click="onSaveClick" />
       <q-btn color="secondary" label="Cancel" @click="onCancelClick" />
     </q-card-actions>
   </q-card>
@@ -64,14 +68,21 @@
 
 <script>
 export default {
-  emits: ['OKEvent', 'cancelEvent'],
+  props: {
+    editCategory: {
+      type: Object,
+      required: false,
+      default: null
+    }
+  },
+  emits: ['OKEvent', 'cancelEvent', 'saveEvent'],
   data() {
     return {
       form: {
         id: '',
-        categoryTitle: '',
-        categoryIcon: '',
-        categoryColor: 'dark'
+        title: '',
+        icon: '',
+        color: 'dark'
       },
       iconSearch: ''
     }
@@ -103,17 +114,28 @@ export default {
       return this.$store.getters['categories/categoryColors']
     }
   },
+  mounted() {
+    if (this.editCategory) {
+      this.form.id = this.editCategory.id
+      this.form.title = this.editCategory.title
+      this.form.icon = this.editCategory.icon
+      this.form.color = this.editCategory.color
+    }
+  },
   methods: {
     selectIcon(iconName) {
-      this.form.categoryIcon = iconName
+      this.form.icon = iconName
     },
     selectColor(color) {
-      this.form.categoryColor = color
+      this.form.color = color
       this.$refs['colorPicker'].hide()
     },
     onOKClick() {
-      this.form.id = this.form.categoryTitle.replace(' ', '-')
+      this.form.id = this.form.title.replace(' ', '-')
       this.$emit('OKEvent', this.form)
+    },
+    onSaveClick() {
+      this.$emit('saveEvent', this.form)
     },
     onCancelClick() {
       this.$emit('cancelEvent')

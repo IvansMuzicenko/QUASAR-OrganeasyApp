@@ -27,6 +27,10 @@ const routes = [
         component: () => import('src/pages/Processes.vue')
       },
       {
+        path: '/categories',
+        component: () => import('src/pages/Categories.vue')
+      },
+      {
         path: '/settings',
         component: () => import('src/pages/Settings.vue')
       },
