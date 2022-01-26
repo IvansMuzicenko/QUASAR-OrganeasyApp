@@ -21,7 +21,6 @@ const state = () => {
       { name: 'emoji_events', tags: [] },
       { name: 'people', tags: [] },
       { name: 'restaurant', tags: [] },
-      { name: 'female', tags: [] },
       { name: 'pets', tags: [] },
       { name: 'home', tags: [] },
       { name: 'lock', tags: [] },
@@ -43,6 +42,7 @@ const state = () => {
       { name: 'location_on', tags: [] },
       { name: 'public', tags: [] },
       { name: 'male', tags: [] },
+      { name: 'female', tags: [] },
       { name: 'headphones', tags: [] },
       { name: 'music_note', tags: [] },
       { name: 'explore', tags: [] },
@@ -132,12 +132,11 @@ const state = () => {
       { name: 'play_arrow', tags: [] },
       { name: 'pause', tags: [] },
       { name: 'stop', tags: [] },
-      { name: 'flag', tags: [] },
       { name: 'lightbulb', tags: [] },
-      { name: 'android', tags: [] },
       { name: 'smoking_rooms', tags: [] },
       { name: 'push_pin', tags: [] },
-      { name: 'umbrella', tags: [] }
+      { name: 'android', tags: [] },
+      { name: 'flag', tags: [] }
     ],
     categoryColors: [
       'red-2',
