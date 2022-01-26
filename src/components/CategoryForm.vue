@@ -29,7 +29,7 @@
     </q-card-section>
     <q-card-section>
       Icon:
-      <q-input v-model="iconSearch" dense debounce="1000" label="Icon search">
+      <q-input v-model="iconSearch" dense label="Icon search">
         <template #append>
           <q-icon name="search" />
         </template>
@@ -76,6 +76,20 @@ export default {
       let icons = []
       for (const icon in vuexIcons) {
         icons.push(vuexIcons[icon])
+      }
+      if (this.iconSearch) {
+        return icons.filter((icon) => {
+          return this.iconSearch
+            .toLowerCase()
+            .split(' ')
+            .every(
+              (v) =>
+                icon.name.toLowerCase().includes(v) ||
+                icon.tags.find((tag) => {
+                  return tag.toLowerCase().includes(v)
+                })
+            )
+        })
       }
       return icons
     },
