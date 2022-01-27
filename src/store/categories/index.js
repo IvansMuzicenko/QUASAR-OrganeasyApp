@@ -2,11 +2,14 @@ const state = () => {
   return {
     categoryIcons: [
       { name: '', tags: [] },
-      { name: 'handyman', tags: [] },
-      { name: 'alternate_email', tags: [] },
-      { name: 'star_border', tags: [] },
-      { name: 'add', tags: [] },
-      { name: 'remove', tags: [] },
+      { name: 'handyman', tags: ['work', 'hobby', 'tools', 'instrument'] },
+      { name: 'alternate_email', tags: ['@', 'mail', 'e-mail', 'email'] },
+      {
+        name: 'star_border',
+        tags: ['star', 'favorites', 'hotel', 'sky', 'night']
+      },
+      { name: 'add', tags: ['plus', '+'] },
+      { name: 'remove', tags: ['delete', 'minus', '-'] },
       { name: 'tag', tags: [] },
       { name: 'format_quote', tags: [] },
       { name: 'help_outline', tags: [] },
