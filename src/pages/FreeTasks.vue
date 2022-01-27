@@ -169,18 +169,23 @@
         :to="`/free-tasks/${task['id']}`"
         class="q-pa-none"
       >
-        <q-item-section
-          thumbnail
-          class="no-margin no-padding"
-          :class="
-            task['priority'] == 1
-              ? 'bg-green'
-              : task['priority'] == 2
-              ? 'bg-yellow'
-              : 'bg-red-11'
-          "
-          style="width: 1rem"
-        />
+        <q-item-section thumbnail class="no-margin">
+          <div
+            :class="
+              task['priority'] == 1
+                ? 'bg-green'
+                : task['priority'] == 2
+                ? 'bg-yellow'
+                : 'bg-red-11'
+            "
+            class="full-height"
+            style="width: 1rem"
+          />
+          <q-icon
+            :name="task.category ? task.category.icon : ''"
+            :color="task.category ? task.category.color : ''"
+          />
+        </q-item-section>
         <q-item-section>
           <q-item-section class="q-px-md">
             <q-item-section class="text-weight-bolder">
@@ -267,10 +272,14 @@
         clickable
         :to="`/free-tasks/${task['id']}`"
       >
-        <q-item-section>
-          <q-item-section class="text-weight-bolder">
-            {{ task['title'] }}
-          </q-item-section>
+        <q-item-section thumbnail class="q-px-sm">
+          <q-icon
+            :name="task.category ? task.category.icon : ''"
+            :color="task.category ? task.category.color : ''"
+          />
+        </q-item-section>
+        <q-item-section class="text-weight-bolder">
+          {{ task['title'] }}
         </q-item-section>
       </q-item>
       <q-popup-proxy
@@ -364,6 +373,58 @@
             />
             <q-separator />
           </q-card-section>
+          <q-card-section class="text-center">
+            <p class="text-center no-margin">Category</p>
+            <q-btn flat dense>
+              <q-icon
+                :name="holdedTask.category ? holdedTask.category.icon : ''"
+                :color="holdedTask.category ? holdedTask.category.color : ''"
+              />
+              {{ holdedTask.category?.title || 'None' }}
+              <q-icon name="expand_more" />
+              <q-menu anchor="bottom left" self="top left">
+                <p class="text-center text-subtitle1 no-margin">Categories</p>
+                <q-list separator>
+                  <q-item
+                    clickable
+                    class="full-width text-subtitle1"
+                    @click="changeCategory(null, holdedTask['id'])"
+                  >
+                    <div>
+                      <q-icon />
+                      None
+                    </div>
+                  </q-item>
+                  <q-item
+                    v-for="(category, categoryIndex) of categories"
+                    :key="categoryIndex"
+                    clickable
+                    class="full-width text-subtitle1"
+                    @click="changeCategory(category, holdedTask['id'])"
+                  >
+                    <div class="full-width">
+                      <q-icon
+                        :name="category['icon']"
+                        :color="category['color']"
+                        size="sm"
+                      />
+                      {{ category['title'] }}
+                    </div>
+                  </q-item>
+                  <q-item
+                    clickable
+                    class="full-width text-subtitle1"
+                    @click="addCategory"
+                  >
+                    <div>
+                      <q-icon name="add" />
+                      Add new
+                    </div>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </q-card-section>
         </q-card>
       </q-popup-proxy>
     </q-list>
@@ -378,6 +439,7 @@
 import { date } from 'quasar'
 import { getDatabase, ref, update } from 'firebase/database'
 import AddFreeTaskForm from 'src/components/AddFreeTaskForm.vue'
+import AddCategoryForm from 'src/components/AddCategoryForm.vue'
 import Search from 'src/components/Search.vue'
 const db = getDatabase()
 
@@ -441,6 +503,14 @@ export default {
         })
       }
       return freeTasks
+    },
+    categories() {
+      const vuexCategories = this.$store.getters['users/categories']
+      let categories = []
+      for (const category in vuexCategories) {
+        categories.push(vuexCategories[category])
+      }
+      return categories
     },
     holdedTask() {
       return (
@@ -529,6 +599,19 @@ export default {
           { priority: modifiedPriority }
         )
       }
+    },
+    changeCategory(category, id) {
+      update(
+        ref(db, `${this.$store.getters['users/userId']}/freeTasks/id-${id}`),
+        {
+          category: category
+        }
+      )
+    },
+    addCategory() {
+      this.$q.dialog({
+        component: AddCategoryForm
+      })
     },
     sortByTitle() {
       this.sorting.priority = 'none'

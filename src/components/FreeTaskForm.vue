@@ -42,6 +42,60 @@
     </q-card-section>
 
     <q-card-section>
+      Category:
+      <q-btn flat dense>
+        <q-icon
+          :name="form.category ? form.category.icon : ''"
+          :color="form.category ? form.category.color : ''"
+        />
+        {{ form.category?.title || 'Uncategorized' }}
+        <q-icon name="expand_more" />
+        <q-menu anchor="bottom left" self="top left">
+          <p class="text-center text-subtitle1 no-margin">Categories</p>
+          <q-list separator>
+            <q-item
+              clickable
+              class="full-width text-subtitle1"
+              @click="form.category = null"
+            >
+              <div>
+                <q-icon />
+                None
+              </div>
+            </q-item>
+            <q-item
+              v-for="(listCategory, categoryIndex) of categories"
+              :key="categoryIndex"
+              clickable
+              class="full-width text-subtitle1"
+              @click="form.category = listCategory"
+            >
+              <div class="full-width">
+                <q-icon
+                  :name="listCategory['icon']"
+                  :color="listCategory['color']"
+                  size="sm"
+                />
+                {{ listCategory['title'] }}
+              </div>
+            </q-item>
+
+            <q-item
+              clickable
+              class="full-width text-subtitle1"
+              @click="addCategory"
+            >
+              <div>
+                <q-icon name="add" />
+                Add new
+              </div>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-btn>
+    </q-card-section>
+
+    <q-card-section>
       <q-checkbox
         v-if="!form.toggleNotes"
         v-model="form.toggleNotes"
@@ -365,6 +419,7 @@
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
+import AddCategoryForm from 'src/components/AddCategoryForm.vue'
 
 export default {
   props: {
@@ -384,6 +439,7 @@ export default {
         progress: false,
         priority: 3,
         continuousState: false,
+        category: null,
 
         toggleNotes: false,
         notes: {
@@ -444,6 +500,14 @@ export default {
         }
       }
       return notesArray
+    },
+    categories() {
+      const vuexCategories = this.$store.getters['users/categories']
+      let categories = []
+      for (const category in vuexCategories) {
+        categories.push(vuexCategories[category])
+      }
+      return categories
     }
   },
   mounted() {
@@ -457,6 +521,7 @@ export default {
         this.form.progress = this.editTask.progress
         this.form.priority = this.editTask.priority ? this.editTask.priority : 3
         this.form.continuousState = this.editTask.continuous
+        this.form.category = this.editTask.category
 
         this.form.toggleNotes = this.editTask.notes ? true : false
         this.form.notes.attachedNotes =
@@ -524,6 +589,12 @@ export default {
         progress: false
       })
       this.subSubtaskInput = ''
+    },
+
+    addCategory() {
+      this.$q.dialog({
+        component: AddCategoryForm
+      })
     },
     addErrorMessage(message) {
       if (!this.errorMessages.includes(message)) {

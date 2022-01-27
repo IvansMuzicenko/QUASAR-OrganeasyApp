@@ -105,6 +105,60 @@
         }}
       </q-item>
 
+      <q-item>
+        <q-item-section avatar class="taskInfo">Category</q-item-section>
+        <q-separator vertical spaced="md" />
+        <q-btn flat dense>
+          <q-icon
+            :name="task.category ? task.category.icon : ''"
+            :color="task.category ? task.category.color : ''"
+          />
+          {{ task.category?.title || 'None' }}
+          <q-icon name="expand_more" />
+          <q-menu anchor="bottom left" self="top left">
+            <p class="text-center text-subtitle1 no-margin">Categories</p>
+            <q-list separator>
+              <q-item
+                clickable
+                class="full-width text-subtitle1"
+                @click="changeCategory(null)"
+              >
+                <div>
+                  <q-icon />
+                  None
+                </div>
+              </q-item>
+              <q-item
+                v-for="(category, categoryIndex) of categories"
+                :key="categoryIndex"
+                clickable
+                class="full-width text-subtitle1"
+                @click="changeCategory(category)"
+              >
+                <div class="full-width">
+                  <q-icon
+                    :name="category['icon']"
+                    :color="category['color']"
+                    size="sm"
+                  />
+                  {{ category['title'] }}
+                </div>
+              </q-item>
+              <q-item
+                clickable
+                class="full-width text-subtitle1"
+                @click="addCategory"
+              >
+                <div>
+                  <q-icon name="add" />
+                  Add new
+                </div>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+      </q-item>
+
       <q-item v-if="task.continuous">
         <q-item-section avatar class="taskInfo">Action</q-item-section>
         <q-separator vertical spaced="md" />
@@ -233,6 +287,7 @@
 import { getDatabase, ref, set, update, remove } from 'firebase/database'
 import { date } from 'quasar'
 import FreeTaskForm from 'src/components/FreeTaskForm.vue'
+import AddCategoryForm from 'src/components/AddCategoryForm.vue'
 
 const db = getDatabase()
 
@@ -249,6 +304,7 @@ export default {
         progress: false,
         finishedDate: '',
         priority: 3,
+        category: null,
         continuous: false,
         continuousStarted: '',
         continuousEnded: '',
@@ -282,6 +338,14 @@ export default {
         return timeSpent
       }
       return 0
+    },
+    categories() {
+      const vuexCategories = this.$store.getters['users/categories']
+      let categories = []
+      for (const category in vuexCategories) {
+        categories.push(vuexCategories[category])
+      }
+      return categories
     }
   },
   watch: {
@@ -318,6 +382,21 @@ export default {
     callEditClick() {
       this.$refs.freeTaskForm.onEditClick()
     },
+    changeCategory(category) {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
+        ),
+        { category: category }
+      )
+      this.updateTaskData()
+    },
+    addCategory() {
+      this.$q.dialog({
+        component: AddCategoryForm
+      })
+    },
     changeSubtaskProgress(index, progress) {
       update(
         ref(
@@ -350,6 +429,7 @@ export default {
           (form.notes.text || form.notes.attachedNotes.length)
             ? form.notes
             : null,
+        category: form.category || null,
         continuous: form.continuousState,
         continuousStarted:
           form.continuousState && this.task.continuousStarted
