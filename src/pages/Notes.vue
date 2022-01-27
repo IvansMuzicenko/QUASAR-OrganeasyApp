@@ -110,8 +110,8 @@
       >
         <q-item-section thumbnail class="q-px-sm">
           <q-icon
-            :name="note.category ? note.category.icon : ''"
-            :color="note.category ? note.category.color : ''"
+            :name="note.category ? note.category['icon'] : ''"
+            :color="note.category ? note.category['color'] : ''"
           />
         </q-item-section>
         <q-item-section>
@@ -142,8 +142,8 @@
       >
         <q-item-section thumbnail class="q-px-sm">
           <q-icon
-            :name="note.category ? note.category.icon : ''"
-            :color="note.category ? note.category.color : ''"
+            :name="note.category ? note.category['icon'] : ''"
+            :color="note.category ? note.category['color'] : ''"
           />
         </q-item-section>
         <q-item-section>
@@ -209,8 +209,8 @@
             <p class="text-center no-margin">Category</p>
             <q-btn flat dense>
               <q-icon
-                :name="holdedNote.category ? holdedNote.category.icon : ''"
-                :color="holdedNote.category ? holdedNote.category.color : ''"
+                :name="holdedNote.category ? holdedNote.category['icon'] : ''"
+                :color="holdedNote.category ? holdedNote.category['color'] : ''"
               />
               {{ holdedNote.category?.title || 'None' }}
               <q-icon name="expand_more" />

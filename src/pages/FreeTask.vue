@@ -110,8 +110,8 @@
         <q-separator vertical spaced="md" />
         <q-btn flat dense>
           <q-icon
-            :name="task.category ? task.category.icon : ''"
-            :color="task.category ? task.category.color : ''"
+            :name="task.category ? task.category['icon'] : ''"
+            :color="task.category ? task.category['color'] : ''"
           />
           {{ task.category?.title || 'None' }}
           <q-icon name="expand_more" />

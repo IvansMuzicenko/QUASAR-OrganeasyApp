@@ -43,8 +43,8 @@
         <p v-if="!editState">
           <q-btn flat dense>
             <q-icon
-              :name="note.category ? note.category.icon : ''"
-              :color="note.category ? note.category.color : ''"
+              :name="note.category ? note.category['icon'] : ''"
+              :color="note.category ? note.category['color'] : ''"
             />
             <q-icon name="expand_more" />
             <q-menu anchor="bottom left" self="top left">
@@ -97,8 +97,8 @@
 
         <q-btn v-if="editState" flat dense>
           <q-icon
-            :name="note.category ? note.category.icon : ''"
-            :color="note.category ? note.category.color : ''"
+            :name="note.category ? note.category['icon'] : ''"
+            :color="note.category ? note.category['color'] : ''"
           />
           {{ note.category?.title || 'Uncategorized' }}
           <q-icon name="expand_more" />

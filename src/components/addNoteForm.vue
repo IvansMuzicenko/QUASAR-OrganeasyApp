@@ -15,8 +15,8 @@
           Category:
           <q-btn flat dense>
             <q-icon
-              :name="category ? category.icon : ''"
-              :color="category ? category.color : ''"
+              :name="category ? category['icon'] : ''"
+              :color="category ? category['color'] : ''"
             />
             {{ category?.title || 'Uncategorized' }}
             <q-icon name="expand_more" />

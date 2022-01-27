@@ -182,8 +182,8 @@
             style="width: 1rem"
           />
           <q-icon
-            :name="task.category ? task.category.icon : ''"
-            :color="task.category ? task.category.color : ''"
+            :name="task.category ? task.category['icon'] : ''"
+            :color="task.category ? task.category['color'] : ''"
           />
         </q-item-section>
         <q-item-section>
@@ -274,8 +274,8 @@
       >
         <q-item-section thumbnail class="q-px-sm">
           <q-icon
-            :name="task.category ? task.category.icon : ''"
-            :color="task.category ? task.category.color : ''"
+            :name="task.category ? task.category['icon'] : ''"
+            :color="task.category ? task.category['color'] : ''"
           />
         </q-item-section>
         <q-item-section class="text-weight-bolder">
@@ -377,8 +377,8 @@
             <p class="text-center no-margin">Category</p>
             <q-btn flat dense>
               <q-icon
-                :name="holdedTask.category ? holdedTask.category.icon : ''"
-                :color="holdedTask.category ? holdedTask.category.color : ''"
+                :name="holdedTask.category ? holdedTask.category['icon'] : ''"
+                :color="holdedTask.category ? holdedTask.category['color'] : ''"
               />
               {{ holdedTask.category?.title || 'None' }}
               <q-icon name="expand_more" />
