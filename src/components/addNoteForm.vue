@@ -10,6 +10,60 @@
           :dense="false"
         />
         <q-checkbox v-model="favorite" label="Favorite" />
+
+        <q-card-section>
+          Category:
+          <q-btn flat dense>
+            <q-icon
+              :name="category ? category.icon : ''"
+              :color="category ? category.color : ''"
+            />
+            {{ category?.title || 'Uncategorized' }}
+            <q-icon name="expand_more" />
+            <q-menu anchor="bottom left" self="top left">
+              <p class="text-center text-subtitle1 no-margin">Categories</p>
+              <q-list separator>
+                <q-item
+                  clickable
+                  class="full-width text-subtitle1"
+                  @click="category = null"
+                >
+                  <div>
+                    <q-icon />
+                    None
+                  </div>
+                </q-item>
+                <q-item
+                  v-for="(listCategory, categoryIndex) of categories"
+                  :key="categoryIndex"
+                  clickable
+                  class="full-width text-subtitle1"
+                  @click="category = listCategory"
+                >
+                  <div class="full-width">
+                    <q-icon
+                      :name="listCategory['icon']"
+                      :color="listCategory['color']"
+                      size="sm"
+                    />
+                    {{ listCategory['title'] }}
+                  </div>
+                </q-item>
+
+                <q-item
+                  clickable
+                  class="full-width text-subtitle1"
+                  @click="addCategory"
+                >
+                  <div>
+                    <q-icon name="add" />
+                    Add new
+                  </div>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </q-card-section>
         <q-editor
           v-model="noteText"
           dense
@@ -116,6 +170,7 @@
 
 <script>
 import { getDatabase, ref, set } from 'firebase/database'
+import AddCategoryForm from 'src/components/AddCategoryForm.vue'
 
 export default {
   emits: ['ok', 'hide'],
@@ -123,7 +178,8 @@ export default {
     return {
       noteTitle: '',
       noteText: '',
-      favorite: false
+      favorite: false,
+      category: null
     }
   },
   computed: {
@@ -132,6 +188,14 @@ export default {
         !this.noteText.replace('<br>', '') &&
         !this.noteTitle.replace('<br>', '')
       )
+    },
+    categories() {
+      const vuexCategories = this.$store.getters['users/categories']
+      let categories = []
+      for (const category in vuexCategories) {
+        categories.push(vuexCategories[category])
+      }
+      return categories
     }
   },
   methods: {
@@ -165,6 +229,7 @@ export default {
         title: this.noteTitle,
         text: this.noteText,
         favorite: this.favorite,
+        category: this.category,
         dateModified: Date.now()
       }
 
@@ -190,6 +255,11 @@ export default {
 
     onCancelClick() {
       this.hide()
+    },
+    addCategory() {
+      this.$q.dialog({
+        component: AddCategoryForm
+      })
     }
   }
 }

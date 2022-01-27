@@ -108,6 +108,12 @@
         clickable
         :to="`/notes/${note['id']}`"
       >
+        <q-item-section thumbnail class="q-px-sm">
+          <q-icon
+            :name="note.category ? note.category.icon : ''"
+            :color="note.category ? note.category.color : ''"
+          />
+        </q-item-section>
         <q-item-section>
           {{ note['title'] }}
         </q-item-section>
@@ -134,6 +140,12 @@
         clickable
         :to="`/notes/${note['id']}`"
       >
+        <q-item-section thumbnail class="q-px-sm">
+          <q-icon
+            :name="note.category ? note.category.icon : ''"
+            :color="note.category ? note.category.color : ''"
+          />
+        </q-item-section>
         <q-item-section>
           {{ note['title'] }}
         </q-item-section>
@@ -193,6 +205,58 @@
               {{ holdedNote['favorite'] ? 'Unfavorite' : 'Favorite' }}
             </q-btn>
           </q-card-section>
+          <q-card-section class="text-center">
+            <p class="text-center no-margin">Category</p>
+            <q-btn flat dense>
+              <q-icon
+                :name="holdedNote.category ? holdedNote.category.icon : ''"
+                :color="holdedNote.category ? holdedNote.category.color : ''"
+              />
+              {{ holdedNote.category?.title || 'None' }}
+              <q-icon name="expand_more" />
+              <q-menu anchor="bottom left" self="top left">
+                <p class="text-center text-subtitle1 no-margin">Categories</p>
+                <q-list separator>
+                  <q-item
+                    clickable
+                    class="full-width text-subtitle1"
+                    @click="changeCategory(null, holdedNote['id'])"
+                  >
+                    <div>
+                      <q-icon />
+                      None
+                    </div>
+                  </q-item>
+                  <q-item
+                    v-for="(category, categoryIndex) of categories"
+                    :key="categoryIndex"
+                    clickable
+                    class="full-width text-subtitle1"
+                    @click="changeCategory(category, holdedNote['id'])"
+                  >
+                    <div class="full-width">
+                      <q-icon
+                        :name="category['icon']"
+                        :color="category['color']"
+                        size="sm"
+                      />
+                      {{ category['title'] }}
+                    </div>
+                  </q-item>
+                  <q-item
+                    clickable
+                    class="full-width text-subtitle1"
+                    @click="addCategory"
+                  >
+                    <div>
+                      <q-icon name="add" />
+                      Add new
+                    </div>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </q-card-section>
         </q-card>
       </q-popup-proxy>
     </q-list>
@@ -205,7 +269,8 @@
 
 <script>
 import { getDatabase, ref, update } from 'firebase/database'
-import addNoteForm from 'src/components/AddNoteForm.vue'
+import AddNoteForm from 'src/components/AddNoteForm.vue'
+import AddCategoryForm from 'src/components/AddCategoryForm.vue'
 import Search from 'src/components/Search.vue'
 
 const db = getDatabase()
@@ -262,12 +327,21 @@ export default {
     },
     holdedNote() {
       return this.$store.getters['users/notes'][`id-${this.holdedNoteId}`] || {}
+    },
+    categories() {
+      const vuexCategories = this.$store.getters['users/categories']
+      let categories = []
+      for (const category in vuexCategories) {
+        categories.push(vuexCategories[category])
+      }
+      return categories
     }
   },
+
   methods: {
     addNote() {
       this.$q.dialog({
-        component: addNoteForm
+        component: AddNoteForm
       })
     },
     taskHold(event, id) {
@@ -294,6 +368,16 @@ export default {
     favoriteNote(favorite, id) {
       update(ref(db, `${this.$store.getters['users/userId']}/notes/id-${id}`), {
         favorite: !favorite
+      })
+    },
+    changeCategory(category, id) {
+      update(ref(db, `${this.$store.getters['users/userId']}/notes/id-${id}`), {
+        category: category
+      })
+    },
+    addCategory() {
+      this.$q.dialog({
+        component: AddCategoryForm
       })
     }
   }

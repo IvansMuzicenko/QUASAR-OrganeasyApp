@@ -41,9 +41,108 @@
 
       <q-card-section class="text-h6" @dblclick="toggleEdit()">
         <p v-if="!editState">
+          <q-btn flat dense>
+            <q-icon
+              :name="note.category ? note.category.icon : ''"
+              :color="note.category ? note.category.color : ''"
+            />
+            <q-icon name="expand_more" />
+            <q-menu anchor="bottom left" self="top left">
+              <p class="text-center text-subtitle1 no-margin">Categories</p>
+              <q-list separator>
+                <q-item
+                  clickable
+                  class="full-width text-subtitle1"
+                  @click="changeCategory(null)"
+                >
+                  <div>
+                    <q-icon />
+                    None
+                  </div>
+                </q-item>
+                <q-item
+                  v-for="(category, categoryIndex) of categories"
+                  :key="categoryIndex"
+                  clickable
+                  class="full-width text-subtitle1"
+                  @click="changeCategory(category)"
+                >
+                  <div class="full-width">
+                    <q-icon
+                      :name="category['icon']"
+                      :color="category['color']"
+                      size="sm"
+                    />
+                    {{ category['title'] }}
+                  </div>
+                </q-item>
+
+                <q-item
+                  clickable
+                  class="full-width text-subtitle1"
+                  @click="addCategory"
+                >
+                  <div>
+                    <q-icon name="add" />
+                    Add new
+                  </div>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
           {{ note.title }}
         </p>
         <q-checkbox v-if="editState" v-model="note.favorite" label="Favorite" />
+
+        <q-btn v-if="editState" flat dense>
+          <q-icon
+            :name="note.category ? note.category.icon : ''"
+            :color="note.category ? note.category.color : ''"
+          />
+          {{ note.category?.title || 'Uncategorized' }}
+          <q-icon name="expand_more" />
+          <q-menu anchor="bottom left" self="top left">
+            <p class="text-center text-subtitle1 no-margin">Categories</p>
+            <q-list separator>
+              <q-item
+                clickable
+                class="full-width text-subtitle1"
+                @click="note.category = null"
+              >
+                <div>
+                  <q-icon />
+                  None
+                </div>
+              </q-item>
+              <q-item
+                v-for="(category, categoryIndex) of categories"
+                :key="categoryIndex"
+                clickable
+                class="full-width text-subtitle1"
+                @click="note.category = category"
+              >
+                <div class="full-width">
+                  <q-icon
+                    :name="category['icon']"
+                    :color="category['color']"
+                    size="sm"
+                  />
+                  {{ category['title'] }}
+                </div>
+              </q-item>
+              <q-item
+                clickable
+                class="full-width text-subtitle1"
+                @click="addCategory"
+              >
+                <div>
+                  <q-icon name="add" />
+                  Add new
+                </div>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
 
         <q-input
           v-if="editState"
@@ -171,7 +270,9 @@
 
 <script>
 import { getDatabase, ref, update, remove } from 'firebase/database'
+import AddCategoryForm from 'src/components/AddCategoryForm.vue'
 const db = getDatabase()
+
 export default {
   emits: ['hide'],
   data() {
@@ -181,6 +282,7 @@ export default {
         title: '',
         text: '',
         favorite: false,
+        category: null,
         dateModified: Date.now()
       }
     }
@@ -197,6 +299,14 @@ export default {
     },
     editState() {
       return this.$route.query.edit ? true : false
+    },
+    categories() {
+      const vuexCategories = this.$store.getters['users/categories']
+      let categories = []
+      for (const category in vuexCategories) {
+        categories.push(vuexCategories[category])
+      }
+      return categories
     }
   },
   watch: {
@@ -225,6 +335,16 @@ export default {
     },
     deleteNote() {
       this.$refs.confirmDialog.show()
+    },
+    changeCategory(category) {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/notes/id-${this.noteId}`
+        ),
+        { category: category }
+      )
+      this.updateNoteData()
     },
 
     saveEdit() {
@@ -276,6 +396,11 @@ export default {
         message: 'Note removed',
         color: 'red',
         timeout: 1000
+      })
+    },
+    addCategory() {
+      this.$q.dialog({
+        component: AddCategoryForm
       })
     }
   }
