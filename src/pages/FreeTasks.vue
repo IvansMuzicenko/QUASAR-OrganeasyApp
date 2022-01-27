@@ -36,58 +36,79 @@
                   <q-icon name="filter_alt" />
                   Filter
                 </q-card-section>
-                <q-card-section class="no-padding">
-                  <q-card-section>
-                    Progress:
-                    <q-radio
-                      v-model="filtering.progress"
-                      val="all"
-                      label="All"
-                      class="full-width"
-                    />
-                    <q-radio
-                      v-model="filtering.progress"
-                      val="done"
-                      label="Done"
-                      class="full-width"
-                    />
-                    <q-radio
-                      v-model="filtering.progress"
-                      val="undone"
-                      label="Undone"
-                      class="full-width"
-                    />
-                  </q-card-section>
-                  <q-separator />
-                  <q-card-section>
-                    Priority:
-                    <q-radio
-                      v-model="filtering.priority"
-                      val="all"
-                      label="All"
-                      class="full-width"
-                    />
-                    <q-radio
-                      v-model="filtering.priority"
-                      val="1"
-                      label="High"
-                      class="full-width"
-                    />
-                    <q-radio
-                      v-model="filtering.priority"
-                      val="2"
-                      label="Medium"
-                      class="full-width"
-                    />
-                    <q-radio
-                      v-model="filtering.priority"
-                      val="3"
-                      label="Low"
-                      class="full-width"
-                    />
-                  </q-card-section>
+                <q-card-section>
+                  Progress:
+                  <q-radio
+                    v-model="filtering.progress"
+                    val="all"
+                    label="All"
+                    class="full-width"
+                  />
+                  <q-radio
+                    v-model="filtering.progress"
+                    val="done"
+                    label="Done"
+                    class="full-width"
+                  />
+                  <q-radio
+                    v-model="filtering.progress"
+                    val="undone"
+                    label="Undone"
+                    class="full-width"
+                  />
                 </q-card-section>
-
+                <q-separator />
+                <q-card-section>
+                  Priority:
+                  <q-radio
+                    v-model="filtering.priority"
+                    val="all"
+                    label="All"
+                    class="full-width"
+                  />
+                  <q-radio
+                    v-model="filtering.priority"
+                    val="1"
+                    label="High"
+                    class="full-width"
+                  />
+                  <q-radio
+                    v-model="filtering.priority"
+                    val="2"
+                    label="Medium"
+                    class="full-width"
+                  />
+                  <q-radio
+                    v-model="filtering.priority"
+                    val="3"
+                    label="Low"
+                    class="full-width"
+                  />
+                </q-card-section>
+                <q-separator />
+                <q-card-section>
+                  Category:
+                  <q-radio
+                    v-model="filtering.category"
+                    val="all"
+                    label="All"
+                    class="full-width"
+                  />
+                  <q-radio
+                    v-for="(category, index) of freeTasksCategories"
+                    :key="index"
+                    v-model="filtering.category"
+                    :val="category['id']"
+                    class="full-width"
+                  >
+                    <q-icon
+                      :name="category['icon']"
+                      :color="category['color']"
+                      size="xs"
+                    />
+                    {{ category['title'] }}
+                  </q-radio>
+                </q-card-section>
                 <q-separator />
 
                 <q-card-section class="text-subtitle1 text-center">
@@ -160,11 +181,14 @@
           (el) =>
             !el['progress'] &&
             (filtering.priority == 'all' ||
-              filtering.priority == el['priority'])
+              filtering.priority == el['priority']) &&
+            (filtering.category == 'all' ||
+              filtering.category == el['category']['id'])
         )"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, task['id'])"
         :style="task['progress'] ? ' background: lightgrey' : ''"
+        style="border: 2px solid lightgrey"
         clickable
         :to="`/free-tasks/${task['id']}`"
         class="q-pa-none"
@@ -179,7 +203,7 @@
                 : 'bg-red-11'
             "
             class="full-height"
-            style="width: 1rem"
+            style="width: 1rem; border-right: 1px solid lightgrey"
           />
           <q-icon
             :name="task.category ? task.category['icon'] : ''"
@@ -240,7 +264,6 @@
               </q-item>
             </q-list>
           </q-item-section>
-          <q-separator size="5px" />
         </q-item-section>
       </q-item>
     </q-list>
@@ -265,7 +288,14 @@
       bordered
     >
       <q-item
-        v-for="(task, index) of freeTasks.filter((el) => el['progress'])"
+        v-for="(task, index) of freeTasks.filter(
+          (el) =>
+            el['progress'] &&
+            (filtering.priority == 'all' ||
+              filtering.priority == el['priority']) &&
+            (filtering.category == 'all' ||
+              filtering.category == el['category']['id'])
+        )"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, task['id'])"
         :class="task['progress'] ? 'bg-green-11' : ''"
@@ -455,7 +485,8 @@ export default {
       },
       filtering: {
         progress: 'all',
-        priority: 'all'
+        priority: 'all',
+        category: 'all'
       }
     }
   },
@@ -512,6 +543,20 @@ export default {
         categories.push(vuexCategories[category])
       }
       return categories
+    },
+    freeTasksCategories() {
+      let freeTasksCategories = []
+      for (const freeTask in this.freeTasks) {
+        if (
+          !freeTasksCategories.some(
+            (element) =>
+              element['id'] == this.freeTasks[freeTask]['category']['id']
+          )
+        ) {
+          freeTasksCategories.push(this.freeTasks[freeTask]['category'])
+        }
+      }
+      return freeTasksCategories
     },
     holdedTask() {
       return (

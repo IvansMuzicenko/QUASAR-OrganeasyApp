@@ -53,6 +53,30 @@
                     class="full-width"
                   />
                 </q-card-section>
+                <q-separator />
+                <q-card-section>
+                  Category:
+                  <q-radio
+                    v-model="filtering.category"
+                    val="all"
+                    label="All"
+                    class="full-width"
+                  />
+                  <q-radio
+                    v-for="(category, index) of notesCategories"
+                    :key="index"
+                    v-model="filtering.category"
+                    :val="category['id']"
+                    class="full-width"
+                  >
+                    <q-icon
+                      :name="category['icon']"
+                      :color="category['color']"
+                      size="xs"
+                    />
+                    {{ category['title'] }}
+                  </q-radio>
+                </q-card-section>
 
                 <q-separator />
 
@@ -101,7 +125,9 @@
           (el) =>
             el['favorite'] &&
             (filtering.priority == 'all' ||
-              (filtering.priority == 'favorites' && el['favorite']))
+              filtering.priority == 'favorites') &&
+            (filtering.category == 'all' ||
+              filtering.category == el['category']['id'])
         )"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, note['id'])"
@@ -132,8 +158,9 @@
         v-for="(note, index) in notes.filter(
           (el) =>
             !el['favorite'] &&
-            (filtering.priority == 'all' ||
-              (filtering.priority == 'common' && !el['favorite']))
+            (filtering.priority == 'all' || filtering.priority == 'common') &&
+            (filtering.category == 'all' ||
+              filtering.category == el['category']['id'])
         )"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, note['id'])"
@@ -285,7 +312,8 @@ export default {
         dateModified: 'desc'
       },
       filtering: {
-        priority: 'all'
+        priority: 'all',
+        category: 'all'
       }
     }
   },
@@ -336,6 +364,19 @@ export default {
         categories.push(vuexCategories[category])
       }
       return categories
+    },
+    notesCategories() {
+      let notesCategories = []
+      for (const note in this.notes) {
+        if (
+          !notesCategories.some(
+            (element) => element['id'] == this.notes[note]['category']['id']
+          )
+        ) {
+          notesCategories.push(this.notes[note]['category'])
+        }
+      }
+      return notesCategories
     }
   },
 
