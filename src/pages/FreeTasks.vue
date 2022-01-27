@@ -385,6 +385,7 @@
               <q-menu anchor="bottom left" self="top left">
                 <p class="text-center text-subtitle1 no-margin">Categories</p>
                 <q-list separator>
+                  <q-separator />
                   <q-item
                     clickable
                     class="full-width text-subtitle1"
