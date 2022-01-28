@@ -383,25 +383,49 @@
             </q-btn>
           </q-card-section>
           <q-card-section class="text-center border">
-            <q-separator />
-            <q-btn
-              v-if="holdedTask['priority'] != 1"
-              flat
-              dense
-              class="full-width"
-              icon="expand_less"
-              @click="changePriority(holdedTask, -1)"
-            />
-            Priority
-            <q-btn
-              v-if="holdedTask['priority'] != 3"
-              flat
-              dense
-              class="full-width"
-              icon="expand_more"
-              @click="changePriority(holdedTask, 1)"
-            />
-            <q-separator />
+            <p class="text-center no-margin">Priority</p>
+            <q-btn flat dense>
+              <q-icon
+                name="fiber_manual_record"
+                :color="
+                  holdedTask.priority === 1
+                    ? 'green'
+                    : holdedTask.priority === 2
+                    ? 'yellow'
+                    : 'red-11'
+                "
+              />
+              {{
+                holdedTask['priority'] == 1
+                  ? 'High'
+                  : holdedTask['priority'] == 2
+                  ? 'Medium'
+                  : 'Low'
+              }}
+              <q-icon name="expand_more" />
+              <q-menu anchor="bottom left" self="top left">
+                <q-list separator>
+                  <q-item clickable @click="changePriority(holdedTask, 1)">
+                    <div class="full-width">
+                      <q-icon name="fiber_manual_record" color="green" />
+                      High
+                    </div>
+                  </q-item>
+                  <q-item clickable @click="changePriority(holdedTask, 2)">
+                    <div class="full-width">
+                      <q-icon name="fiber_manual_record" color="yellow" />
+                      Medium
+                    </div>
+                  </q-item>
+                  <q-item clickable @click="changePriority(holdedTask, 3)">
+                    <div class="full-width">
+                      <q-icon name="fiber_manual_record" color="red" />
+                      Low
+                    </div>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
           </q-card-section>
           <q-card-section class="text-center">
             <p class="text-center no-margin">Category</p>
@@ -635,18 +659,14 @@ export default {
       this.holdedTaskId = id
       this.$refs[`taskHold`].show()
     },
-    changePriority(task, modifier) {
-      const modifiedPriority =
-        Number(task['priority'] ? task['priority'] : 3) + modifier
-      if (modifiedPriority > 0 && modifiedPriority < 4) {
-        update(
-          ref(
-            db,
-            `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}`
-          ),
-          { priority: modifiedPriority }
-        )
-      }
+    changePriority(task, priority) {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}`
+        ),
+        { priority: priority }
+      )
     },
     changeCategory(category, id) {
       update(
