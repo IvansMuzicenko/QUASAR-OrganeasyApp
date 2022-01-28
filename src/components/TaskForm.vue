@@ -1,5 +1,8 @@
 <template>
   <q-card :class="editTask ? '' : 'q-dialog-plugin'">
+    <p v-if="!editTask" class="text-center text-subtitle1 no-margin">
+      New task
+    </p>
     <q-card-section class="no-padding">
       <q-input
         v-model="form.todoTitle"

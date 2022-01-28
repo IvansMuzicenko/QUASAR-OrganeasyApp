@@ -1,5 +1,6 @@
 <template>
   <q-card class="q-dialog-plugin">
+    <p class="text-center text-subtitle1 no-margin">New category</p>
     <q-card-section class="text-center text-subtitle1">
       Preview:
       <q-icon :name="form.icon" :color="form.color" />
