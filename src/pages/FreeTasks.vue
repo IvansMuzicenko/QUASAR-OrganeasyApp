@@ -211,8 +211,8 @@
           />
         </q-item-section>
         <q-item-section>
-          <q-item-section class="q-px-md">
-            <q-item-section class="text-weight-bolder">
+          <q-item-section class="q-px-md text-weight-bolder">
+            <q-item-section>
               {{ task['title'] }}
             </q-item-section>
             <q-separator
@@ -221,7 +221,7 @@
               size="7px"
             />
 
-            <q-list separator dense>
+            <q-list separator dense class="q-pl-sm">
               <q-item
                 v-for="(subtask, subIndex) in task['subtasks']"
                 v-show="!subtask['progress']"
@@ -257,7 +257,7 @@
                       @touchstart.stop
                       @mousedown.stop
                     >
-                      ~ {{ subSubtask['title'] }}
+                      ~~ {{ subSubtask['title'] }}
                     </q-item>
                   </q-list>
                 </q-item-section>

@@ -209,7 +209,7 @@
           <q-item-section
             v-for="(subtask, index) in task.subtasks"
             :key="subtask"
-            class="cursor-pointer"
+            class="cursor-pointer q-ml-sm"
             @click="changeSubtaskProgress(index, subtask['progress'])"
           >
             <q-separator v-if="index > 0" size="5px" spaced="sm" />
@@ -237,7 +237,7 @@
                 <q-item-label
                   :class="subSubtask['progress'] ? 'text-strike' : ''"
                 >
-                  ~ {{ subSubtask['title'] }}
+                  ~~ {{ subSubtask['title'] }}
                 </q-item-label>
               </q-item>
             </q-list>

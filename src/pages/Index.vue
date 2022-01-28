@@ -158,7 +158,7 @@
           </td>
 
           <td class="text-left text-weight-bolder">
-            <q-item-section avatar class="text-weight-bolder">
+            <q-item-section avatar>
               {{ task['title'] }}
             </q-item-section>
 
@@ -168,7 +168,7 @@
               size="7px"
             />
 
-            <q-list separator dense>
+            <q-list separator dense class="q-pl-sm">
               <q-item
                 v-for="(subtask, subIndex) in task['subtasks']"
                 v-show="!subtask['progress']"
@@ -204,7 +204,7 @@
                       @touchstart.stop
                       @mousedown.stop
                     >
-                      ~ {{ subSubtask['title'] }}
+                      ~~ {{ subSubtask['title'] }}
                     </q-item>
                   </q-list>
                 </q-item-section>
