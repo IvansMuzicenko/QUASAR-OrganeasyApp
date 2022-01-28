@@ -18,14 +18,14 @@
         v-if="!editState"
         icon="edit"
         class="zindex-high"
-        dense
+        color="secondary"
         flat
         @click="toggleEdit()"
       >
         Edit
       </q-btn>
       <q-btn
-        v-if="!editState"
+        v-if="editState"
         icon="delete"
         dense
         flat
