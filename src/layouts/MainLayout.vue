@@ -53,6 +53,11 @@
         <essential-link
           v-for="link in email ? essentialLinks : unauthLinks"
           :key="link.title"
+          :class="
+            parentPath == (link['link'].replace('/', '') || 'tasks')
+              ? 'activeLink'
+              : ''
+          "
           v-bind="link"
         />
 
@@ -121,6 +126,7 @@
               class="col justify-center no-padding"
               clickable
               exact
+              :class="parentPath == 'tasks' ? 'activeLink' : ''"
               to="/"
             >
               <q-item-section class="text-center" style="line-height: 0">
@@ -136,7 +142,7 @@
             <q-item
               class="col justify-center no-padding"
               clickable
-              exact
+              :class="parentPath == 'free-tasks' ? 'activeLink' : ''"
               to="/free-tasks"
             >
               <q-item-section class="text-center" style="line-height: 0">
@@ -200,7 +206,7 @@
             <q-item
               class="col justify-center no-padding"
               clickable
-              exact
+              :class="parentPath == 'notes' ? 'activeLink' : ''"
               to="/notes"
             >
               <q-item-section class="text-center" style="line-height: 0">
@@ -213,7 +219,18 @@
               </q-item-section>
             </q-item>
 
-            <q-item class="col justify-center no-padding" clickable exact>
+            <q-item
+              class="col justify-center no-padding"
+              clickable
+              :class="
+                parentPath == 'processes' ||
+                parentPath == 'categories' ||
+                parentPath == 'settings' ||
+                parentPath == 'help'
+                  ? 'activeLink'
+                  : ''
+              "
+            >
               <q-menu
                 class="text-center"
                 auto-close
@@ -224,7 +241,7 @@
                   <q-item
                     class="col justify-center no-padding"
                     clickable
-                    exact
+                    :class="parentPath == 'processes' ? 'activeLink' : ''"
                     to="/processes"
                   >
                     <q-item-section class="text-center" style="line-height: 0">
@@ -239,7 +256,7 @@
                   <q-item
                     class="col justify-center no-padding"
                     clickable
-                    exact
+                    :class="parentPath == 'categories' ? 'activeLink' : ''"
                     to="/categories"
                   >
                     <q-item-section class="text-center" style="line-height: 0">
@@ -255,7 +272,7 @@
                   <q-item
                     class="col justify-center no-padding"
                     clickable
-                    exact
+                    :class="parentPath == 'help' ? 'activeLink' : ''"
                     to="/help"
                   >
                     <q-item-section class="text-center" style="line-height: 0">
@@ -270,7 +287,7 @@
                   <q-item
                     class="col justify-center no-padding"
                     clickable
-                    exact
+                    :class="parentPath == 'settings' ? 'activeLink' : ''"
                     to="/settings"
                   >
                     <q-item-section class="text-center" style="line-height: 0">
@@ -383,6 +400,9 @@ export default {
   computed: {
     email() {
       return this.$store.getters['users/email']
+    },
+    parentPath() {
+      return this.$route.meta.parentPath || null
     }
   },
   methods: {
@@ -429,3 +449,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.activeLink {
+  color: rgb(50, 115, 255);
+}
+</style>
