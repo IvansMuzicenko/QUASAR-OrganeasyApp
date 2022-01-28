@@ -183,7 +183,7 @@
             (filtering.priority == 'all' ||
               filtering.priority == el['priority']) &&
             (filtering.category == 'all' ||
-              filtering.category == el['category']['id'])
+              (el['category'] && filtering.category == el['category']['id']))
         )"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, task['id'])"
@@ -294,7 +294,7 @@
             (filtering.priority == 'all' ||
               filtering.priority == el['priority']) &&
             (filtering.category == 'all' ||
-              filtering.category == el['category']['id'])
+              (el['category'] && filtering.category == el['category']['id']))
         )"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, task['id'])"
@@ -547,13 +547,15 @@ export default {
     freeTasksCategories() {
       let freeTasksCategories = []
       for (const freeTask in this.freeTasks) {
+        const task = this.freeTasks[freeTask]
         if (
-          !freeTasksCategories.some(
-            (element) =>
-              element['id'] == this.freeTasks[freeTask]['category']['id']
-          )
+          task['category'] &&
+          (!freeTasksCategories.length ||
+            !freeTasksCategories.some(
+              (element) => element['id'] == task['category']['id']
+            ))
         ) {
-          freeTasksCategories.push(this.freeTasks[freeTask]['category'])
+          freeTasksCategories.push(task['category'])
         }
       }
       return freeTasksCategories
