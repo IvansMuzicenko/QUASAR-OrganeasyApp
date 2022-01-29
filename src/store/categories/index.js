@@ -35,9 +35,9 @@ const state = () => {
       { name: 'business', tags: ['building', 'office', 'work', 'job'] },
       { name: 'watch_later', tags: ['clock', 'time', 'plans', 'alarm'] },
       { name: 'attach_money', tags: ['finance', 'dollar', 'usd', 'cash', '$'] },
-      { name: 'euro', tags: ['finance', '€', 'cash'] },
-      { name: 'currency_pound', tags: ['finance', 'cash', '£'] },
-      { name: 'currency_ruble', tags: ['finance', 'cash', '₽'] },
+      { name: 'euro', tags: ['money', 'finance', '€', 'cash'] },
+      { name: 'currency_pound', tags: ['money', 'finance', 'cash', '£'] },
+      { name: 'currency_ruble', tags: ['money', 'finance', 'cash', '₽'] },
       { name: 'child_friendly', tags: ['kids', 'baby', 'family'] },
       { name: 'description', tags: ['note', 'bookmark', 'list', 'sheet'] },
       {
@@ -181,7 +181,8 @@ const state = () => {
           'makeup',
           'cosmetics',
           'art',
-          'creativity'
+          'creativity',
+          'beauty'
         ]
       },
       {
