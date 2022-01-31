@@ -148,27 +148,30 @@ const actions = {
     const tasks = rootGetters['users/tasks']
     const dateNow = new Date(Date.now())
     for (const tasksDate of Object.keys(tasks)) {
-      for (const task of tasks[tasksDate]) {
-        if (task.notificationsId) {
-          if (!task.progress) {
-            for (const notifId in task.notificationsId) {
-              const notificationId = task.notificationsId[notifId].id
+      for (const task in tasks[tasksDate]) {
+        const exactTask = tasks[tasksDate][task]
+        if (exactTask.notificationsId) {
+          if (!exactTask.progress) {
+            for (const notifId in exactTask.notificationsId) {
+              const notificationId = exactTask.notificationsId[notifId].id
               const notificationDate = new Date(Number(notificationId) * 1000)
 
-              const notificationTitle = `${task.title} | ${task.time.slice(
+              const notificationTitle = `${
+                exactTask.title
+              } | ${exactTask.time.slice(
                 0,
-                task.time.indexOf(' ')
-              )} (${task.time.slice(task.time.indexOf(' ') + 1)} ${
-                task.endingTime
-                  ? `- ${task.endingTime.slice(
-                      task.endingTime.indexOf(' ') + 1
+                exactTask.time.indexOf(' ')
+              )} (${exactTask.time.slice(exactTask.time.indexOf(' ') + 1)} ${
+                exactTask.endingTime
+                  ? `- ${exactTask.endingTime.slice(
+                      exactTask.endingTime.indexOf(' ') + 1
                     )}`
                   : ''
               })`
 
               let notificationText = ``
               const beforeStart = date.getDateDiff(
-                date.extractDate(task.time, 'DD-MM-YYYY HH:mm'),
+                date.extractDate(exactTask.time, 'DD-MM-YYYY HH:mm'),
                 notificationDate,
                 'minutes'
               )
@@ -177,9 +180,9 @@ const actions = {
                   ? 'started'
                   : `starts in ${beforeStart} minutes.`
               }`
-              if (beforeStart < 0 && task.endingTime) {
+              if (beforeStart < 0 && exactTask.endingTime) {
                 const beforeEnd = date.getDateDiff(
-                  date.extractDate(task.endingTime, 'DD-MM-YYYY HH:mm'),
+                  date.extractDate(exactTask.endingTime, 'DD-MM-YYYY HH:mm'),
                   notificationDate,
                   'minutes'
                 )
@@ -189,15 +192,15 @@ const actions = {
               }
 
               if (
-                task.processes &&
+                exactTask.processes &&
                 notificationId.toString()[
                   notificationId.toString().length - 1
                 ] == '2'
               ) {
                 let processesList = ''
-                for (const process in task.processes) {
+                for (const process in exactTask.processes) {
                   processesList +=
-                    (process > 0 ? ', ' : '') + task.processes[process]
+                    (process > 0 ? ', ' : '') + exactTask.processes[process]
                 }
                 console.log(processesList)
                 notificationText = `starts in ${beforeStart} minutes. Preparation processes: ${processesList}`
@@ -222,19 +225,20 @@ const actions = {
                       allowWhileIdle: true,
                       autoCancel: true,
                       ongoing: true,
-                      actionTypeId: task.continuous
+                      actionTypeId: exactTask.continuous
                         ? 'CONTINUOUS_TASK_NOTIFICATION'
                         : 'TASK_NOTIFICATION',
-                      extra: `/${task.time.slice(0, task.time.indexOf(' '))}/${
-                        task.id
-                      }`
+                      extra: `/${exactTask.time.slice(
+                        0,
+                        exactTask.time.indexOf(' ')
+                      )}/${exactTask.id}`
                     }
                   ]
                 }).then((res) => console.log('scheduled', res))
               }
             }
           } else {
-            dispatch('removeNotifications', task.notificationsId)
+            dispatch('removeNotifications', exactTask.notificationsId)
           }
         }
       }
