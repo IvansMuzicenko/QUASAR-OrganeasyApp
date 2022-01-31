@@ -40,61 +40,85 @@
       <q-separator color="black" />
 
       <q-card-section class="text-h6" @dblclick="toggleEdit()">
-        <p v-if="!editState">
-          <q-btn flat dense>
-            <q-icon
-              :name="note.category ? note.category['icon'] : ''"
-              :color="note.category ? note.category['color'] : ''"
+        <q-item v-if="!editState" class="no-padding">
+          <q-item-section thumbnail class="q-pr-none">
+            <q-btn flat dense>
+              <q-icon
+                :name="note.category ? note.category['icon'] : ''"
+                :color="note.category ? note.category['color'] : ''"
+              />
+              <q-icon name="expand_more" />
+              <q-menu anchor="bottom left" self="top left">
+                <p class="text-center text-subtitle1 no-margin">Categories</p>
+                <q-list separator>
+                  <q-separator />
+                  <q-item
+                    clickable
+                    class="full-width text-subtitle1"
+                    @click="changeCategory(null)"
+                  >
+                    <div>
+                      <q-icon />
+                      None
+                    </div>
+                  </q-item>
+                  <q-item
+                    v-for="(category, categoryIndex) of categories"
+                    :key="categoryIndex"
+                    clickable
+                    class="full-width text-subtitle1"
+                    @click="changeCategory(category)"
+                  >
+                    <div class="full-width">
+                      <q-icon
+                        :name="category['icon']"
+                        :color="category['color']"
+                        size="sm"
+                      />
+                      {{ category['title'] }}
+                    </div>
+                  </q-item>
+
+                  <q-item
+                    clickable
+                    class="full-width text-subtitle1"
+                    @click="addCategory"
+                  >
+                    <div>
+                      <q-icon name="add" />
+                      Add new
+                    </div>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </q-item-section>
+          <q-item-section>
+            {{ note.title }}
+          </q-item-section>
+          <q-item-section side class="q-pl-none">
+            <q-btn
+              flat
+              round
+              :icon="note['favorite'] ? 'star' : 'star_outline'"
+              :text-color="note['favorite'] ? 'yellow' : ''"
+              @click.prevent.stop="favoriteNote()"
             />
-            <q-icon name="expand_more" />
-            <q-menu anchor="bottom left" self="top left">
-              <p class="text-center text-subtitle1 no-margin">Categories</p>
-              <q-list separator>
-                <q-separator />
-                <q-item
-                  clickable
-                  class="full-width text-subtitle1"
-                  @click="changeCategory(null)"
-                >
-                  <div>
-                    <q-icon />
-                    None
-                  </div>
-                </q-item>
-                <q-item
-                  v-for="(category, categoryIndex) of categories"
-                  :key="categoryIndex"
-                  clickable
-                  class="full-width text-subtitle1"
-                  @click="changeCategory(category)"
-                >
-                  <div class="full-width">
-                    <q-icon
-                      :name="category['icon']"
-                      :color="category['color']"
-                      size="sm"
-                    />
-                    {{ category['title'] }}
-                  </div>
-                </q-item>
-
-                <q-item
-                  clickable
-                  class="full-width text-subtitle1"
-                  @click="addCategory"
-                >
-                  <div>
-                    <q-icon name="add" />
-                    Add new
-                  </div>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
-          {{ note.title }}
-        </p>
-        <q-checkbox v-if="editState" v-model="note.favorite" label="Favorite" />
-
+          </q-item-section>
+        </q-item>
+        <q-btn
+          v-if="editState"
+          dense
+          flat
+          @click="note.favorite = !note.favorite"
+        >
+          <q-icon
+            :name="note['favorite'] ? 'star' : 'star_outline'"
+            :color="note['favorite'] ? 'yellow' : ''"
+          />
+          Favorite
+        </q-btn>
+        <br />
         <q-btn v-if="editState" flat dense>
           <q-icon
             :name="note.category ? note.category['icon'] : ''"
@@ -153,7 +177,7 @@
           class="text-h6"
         />
 
-        <q-separator v-if="!editState" color="black" inset />
+        <q-separator v-if="!editState" color="black" />
 
         <p v-if="!editState" v-html="note.text" />
         <q-editor
@@ -170,77 +194,26 @@
               'subscript',
               'superscript'
             ],
+            ['hr', 'link', 'code'],
+            ['unordered', 'ordered', 'outdent', 'indent'],
             [
-              {
-                label: $q.lang.editor.align,
-                icon: $q.iconSet.editor.align,
-                fixedLabel: true,
-                list: 'only-icons',
-                options: ['left', 'center', 'right', 'justify']
-              },
-              {
-                label: $q.lang.editor.align,
-                icon: $q.iconSet.editor.align,
-                fixedLabel: true,
-                options: ['left', 'center', 'right', 'justify']
-              }
-            ],
-            ['token', 'hr', 'link', 'custom_btn'],
-            ['print', 'fullscreen'],
-            [
-              {
-                label: $q.lang.editor.formatting,
-                icon: $q.iconSet.editor.formatting,
-                list: 'no-icons',
-                options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code']
-              },
               {
                 label: $q.lang.editor.fontSize,
                 icon: $q.iconSet.editor.fontSize,
                 fixedLabel: true,
                 fixedIcon: true,
                 list: 'no-icons',
-                options: [
-                  'size-1',
-                  'size-2',
-                  'size-3',
-                  'size-4',
-                  'size-5',
-                  'size-6',
-                  'size-7'
-                ]
+                options: ['size-1', 'size-2', 'size-3', 'size-4', 'size-5']
               },
               {
-                label: $q.lang.editor.defaultFont,
-                icon: $q.iconSet.editor.font,
-                fixedIcon: true,
-                list: 'no-icons',
-                options: [
-                  'default_font',
-                  'arial',
-                  'arial_black',
-                  'comic_sans',
-                  'courier_new',
-                  'impact',
-                  'lucida_grande',
-                  'times_new_roman',
-                  'verdana'
-                ]
-              },
-              'removeFormat'
-            ],
-            ['quote', 'unordered', 'ordered', 'outdent', 'indent']
+                label: $q.lang.editor.align,
+                icon: $q.iconSet.editor.align,
+                fixedLabel: true,
+                list: 'only-icons',
+                options: ['left', 'center', 'right', 'justify']
+              }
+            ]
           ]"
-          :fonts="{
-            arial: 'Arial',
-            arial_black: 'Arial Black',
-            comic_sans: 'Comic Sans MS',
-            courier_new: 'Courier New',
-            impact: 'Impact',
-            lucida_grande: 'Lucida Grande',
-            times_new_roman: 'Times New Roman',
-            verdana: 'Verdana'
-          }"
         />
         <q-card-section v-if="error">
           <p class="text-negative">Title or text is required</p>
@@ -345,6 +318,18 @@ export default {
           `${this.$store.getters['users/userId']}/notes/id-${this.noteId}`
         ),
         { category: category }
+      )
+      this.updateNoteData()
+    },
+    favoriteNote() {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/notes/id-${this.note.id}`
+        ),
+        {
+          favorite: !this.note.favorite
+        }
       )
       this.updateNoteData()
     },
