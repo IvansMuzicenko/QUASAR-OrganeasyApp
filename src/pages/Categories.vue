@@ -15,33 +15,37 @@
         v-for="(category, index) of categories"
         :key="index"
         clickable
-        class="justify-between"
         @click="editCategory(category)"
       >
-        <div>
-          <q-icon
-            :name="category['icon']"
-            :color="category['color']"
-            size="sm"
-          />
-          {{ category['title'] }}
-        </div>
-        <div>
-          <q-btn
-            flat
-            round
-            icon="edit"
-            color="secondary"
-            @click.prevent.stop="editCategory(category)"
-          />
-          <q-btn
-            flat
-            round
-            icon="delete"
-            color="red"
-            @click.prevent.stop="deleteCategory(category)"
-          />
-        </div>
+        <q-item-section>
+          <div>
+            <q-icon
+              :name="category['icon']"
+              :color="category['color']"
+              size="sm"
+              class="vertical-middle"
+            />
+            {{ category['title'] }}
+          </div>
+        </q-item-section>
+        <q-item-section side>
+          <div class="float-right">
+            <q-btn
+              flat
+              round
+              icon="edit"
+              color="secondary"
+              @click.prevent.stop="editCategory(category)"
+            />
+            <q-btn
+              flat
+              round
+              icon="delete"
+              color="red"
+              @click.prevent.stop="deleteCategory(category)"
+            />
+          </div>
+        </q-item-section>
       </q-item>
     </q-list>
 
