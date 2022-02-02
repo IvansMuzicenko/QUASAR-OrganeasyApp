@@ -352,6 +352,7 @@ export default {
         ),
         this.note
       )
+
       this.$router.push(this.$route.path)
 
       this.$q.notify({
@@ -375,6 +376,7 @@ export default {
           `${this.$store.getters['users/userId']}/notes/id-${this.noteId}`
         )
       )
+      this.deleteExists(this.noteId)
       this.$refs.confirmDialog.hide()
       this.$router.push('/notes')
 
@@ -389,6 +391,50 @@ export default {
       this.$q.dialog({
         component: AddCategoryForm
       })
+    },
+    deleteExists(noteId) {
+      const vuexTasks = this.$store.getters['users/tasks']
+      for (const vuexDate in vuexTasks) {
+        for (const vuexTask in vuexTasks[vuexDate]) {
+          const task = vuexTasks[vuexDate][vuexTask]
+          if (task.notes?.attachedNotes) {
+            const attachedNotes = task.notes.attachedNotes
+            for (const attachedNote of Object.keys(attachedNotes)) {
+              if (attachedNotes[attachedNote]['id'] == noteId) {
+                remove(
+                  ref(
+                    db,
+                    `${
+                      this.$store.getters['users/userId']
+                    }/tasks/date-${task.time.slice(
+                      0,
+                      task.time.indexOf(' ')
+                    )}/id-${task.id}/notes/attachedNotes/${attachedNote}`
+                  )
+                )
+              }
+            }
+          }
+        }
+      }
+
+      const vuexFreeTasks = this.$store.getters['users/freeTasks']
+      for (const vuexFreeTask in vuexFreeTasks) {
+        const freeTask = vuexFreeTasks[vuexFreeTask]
+        if (freeTask.notes?.attachedNotes) {
+          const attachedNotes = freeTask.notes.attachedNotes
+          for (const attachedNote of Object.keys(attachedNotes)) {
+            if (attachedNotes[attachedNote]['id'] == noteId) {
+              remove(
+                ref(
+                  db,
+                  `${this.$store.getters['users/userId']}/freeTasks/id-${freeTask.id}/notes/attachedNotes/${attachedNote}`
+                )
+              )
+            }
+          }
+        }
+      }
     }
   }
 }
