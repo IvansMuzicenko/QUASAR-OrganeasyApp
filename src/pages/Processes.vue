@@ -248,6 +248,14 @@ export default {
     onDeleteClick() {
       this.$refs.confirmDialog.show()
     },
+    sortByTitle() {
+      this.sorting.time = 'none'
+      this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
+    },
+    sortByTime() {
+      this.sorting.title = 'none'
+      this.sorting.time = this.sorting.time == 'asc' ? 'desc' : 'asc'
+    },
     onConfirmDeleteClick() {
       remove(
         ref(
@@ -255,6 +263,7 @@ export default {
           `${this.$store.getters['users/userId']}/processes/id-${this.selectedProcess.id}`
         )
       )
+      this.deleteExists(this.selectedProcess.id)
       this.$refs.confirmDialog.hide()
       this.hide()
       this.$q.notify({
@@ -264,13 +273,31 @@ export default {
         timeout: 1000
       })
     },
-    sortByTitle() {
-      this.sorting.time = 'none'
-      this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
-    },
-    sortByTime() {
-      this.sorting.title = 'none'
-      this.sorting.time = this.sorting.time == 'asc' ? 'desc' : 'asc'
+    deleteExists(processId) {
+      const vuexTasks = this.$store.getters['users/tasks']
+      for (const vuexDate in vuexTasks) {
+        for (const vuexTask in vuexTasks[vuexDate]) {
+          const task = vuexTasks[vuexDate][vuexTask]
+          if (task.processes) {
+            const processes = task.processes
+            for (const process of Object.keys(processes)) {
+              if (processes[process] == processId) {
+                remove(
+                  ref(
+                    db,
+                    `${
+                      this.$store.getters['users/userId']
+                    }/tasks/date-${task.time.slice(
+                      0,
+                      task.time.indexOf(' ')
+                    )}/id-${task.id}/processes/${process}`
+                  )
+                )
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
