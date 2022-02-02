@@ -118,7 +118,6 @@
       reveal
       class="lt-sm bg-orange-3 text-black text-caption"
     >
-      <div v-if="email" class="fixed-bottom text-center q-mb-xl q-pa-sm" />
       <q-toolbar class="row no-padding">
         <div class="col-12">
           <q-list class="row">
