@@ -147,6 +147,12 @@
             style="width: 60px"
             class="text-center text-weight-bolder no-padding"
           >
+            <q-icon
+              v-if="task['notificationsId']"
+              name="notifications_active"
+              size="xs"
+            />
+            <br v-if="task['notificationsId']" />
             <span v-if="task['processesTime']">
               ({{ calcPrepTime(task['time'], task['processesTime']) }})
             </span>
