@@ -807,11 +807,11 @@ export default {
       this.form.processesTime = this.processesTimeCalc
     },
     eventDate() {
-      this.$refs.datePicked.hide()
+      this.$refs['datePicked']?.hide()
     },
     eventEndingDate() {
       if (this.form.toggleEventEnd) {
-        this.$refs.endingDatePicked.hide()
+        this.$refs['endingDatePicked']?.hide()
       }
     }
   },
