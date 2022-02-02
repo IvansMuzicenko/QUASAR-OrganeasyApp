@@ -257,13 +257,13 @@ export default {
       this.sorting.time = this.sorting.time == 'asc' ? 'desc' : 'asc'
     },
     onConfirmDeleteClick() {
+      this.deleteExists(this.selectedProcess.id)
       remove(
         ref(
           db,
           `${this.$store.getters['users/userId']}/processes/id-${this.selectedProcess.id}`
         )
       )
-      this.deleteExists(this.selectedProcess.id)
       this.$refs.confirmDialog.hide()
       this.hide()
       this.$q.notify({
@@ -292,6 +292,25 @@ export default {
                       task.time.indexOf(' ')
                     )}/id-${task.id}/processes/${process}`
                   )
+                )
+
+                update(
+                  ref(
+                    db,
+                    `${
+                      this.$store.getters['users/userId']
+                    }/tasks/date-${task.time.slice(
+                      0,
+                      task.time.indexOf(' ')
+                    )}/id-${task.id}`
+                  ),
+                  {
+                    processesTime:
+                      task.processesTime -
+                      this.$store.getters['users/processes'][`id-${processId}`][
+                        'time'
+                      ]
+                  }
                 )
               }
             }
