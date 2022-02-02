@@ -1,6 +1,15 @@
 <template>
   <q-card class="q-dialog-plugin">
-    <p class="text-center text-subtitle1 no-margin">New category</p>
+    <p v-if="!editCategory" class="text-center text-subtitle1 no-margin">
+      New category
+      <q-btn
+        icon="close"
+        class="absolute-top-right"
+        flat
+        dense
+        @click="onCancelClick"
+      />
+    </p>
     <q-card-section class="text-center text-subtitle1">
       Preview:
       <q-icon :name="form.icon" :color="form.color" />

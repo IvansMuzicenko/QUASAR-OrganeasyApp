@@ -1,7 +1,16 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      <p class="text-center text-subtitle1 no-margin">New process</p>
+      <p class="text-center text-subtitle1 no-margin">
+        New process
+        <q-btn
+          icon="close"
+          class="absolute-top-right"
+          flat
+          dense
+          @click="onCancelClick"
+        />
+      </p>
       <q-card-section>
         <q-input
           v-model="processTitle"

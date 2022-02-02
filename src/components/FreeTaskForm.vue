@@ -2,6 +2,13 @@
   <q-card :class="editTask ? '' : 'q-dialog-plugin'">
     <p v-if="!editTask" class="text-center text-subtitle1 no-margin">
       New free-task
+      <q-btn
+        icon="close"
+        class="absolute-top-right"
+        flat
+        dense
+        @click="onCancelClick"
+      />
     </p>
     <q-card-section class="no-padding">
       <q-input
