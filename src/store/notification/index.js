@@ -143,6 +143,7 @@ const actions = {
             continuousEnded: Date.now()
           })
         }
+        location.reload()
       }
     )
     const tasks = rootGetters['users/tasks']
