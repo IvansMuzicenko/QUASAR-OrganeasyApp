@@ -164,13 +164,23 @@
         </a>
       </q-item>
 
-      <q-item v-if="task.notifications">
+      <q-item v-if="task.notificationsId">
         <q-item-section avatar class="taskInfo">Notifications</q-item-section>
         <q-separator vertical spaced="md" />
         <q-item-section>
+          <q-item-section v-if="task['toggleDefaultNotif']" class="q-ml-sm">
+            On starting time
+          </q-item-section>
+          <q-item-section
+            v-if="task['toggleDefaultNotif'] && task.endingTime"
+            class="q-ml-sm"
+          >
+            On ending time
+          </q-item-section>
           <q-item-section
             v-for="(notification, index) in task.notifications"
             :key="index"
+            class="q-ml-sm"
           >
             <q-separator v-if="index > 0" spaced="sm" />
             {{ notification.notificationTimeValuesModel }}
