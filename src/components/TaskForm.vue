@@ -798,9 +798,9 @@ export default {
       const selectedProcesses = this.form.processesModel
       let time = 0
       if (Object.keys(processes).length) {
-        for (const select of selectedProcesses) {
+        for (const select in selectedProcesses) {
           for (const process in processes) {
-            if (select == processes[process]['title']) {
+            if (selectedProcesses[select] == processes[process]['title']) {
               time += processes[process]['time']
             }
           }

@@ -279,10 +279,14 @@ export default {
         for (const vuexTask in vuexTasks[vuexDate]) {
           const task = vuexTasks[vuexDate][vuexTask]
           if (task.processes) {
-            const processes = task.processes
-            for (const process of Object.keys(processes)) {
-              if (processes[process] == processId) {
-                remove(
+            const taskProcesses = task.processes
+            let processesArray = []
+
+            taskProcesses.forEach((el) => processesArray.push(el))
+            for (const process of processesArray) {
+              if (process == processId) {
+                processesArray.splice(processesArray.indexOf(process), 1)
+                update(
                   ref(
                     db,
                     `${
@@ -290,8 +294,9 @@ export default {
                     }/tasks/date-${task.time.slice(
                       0,
                       task.time.indexOf(' ')
-                    )}/id-${task.id}/processes/${process}`
-                  )
+                    )}/id-${task.id}`
+                  ),
+                  { processes: processesArray }
                 )
 
                 update(

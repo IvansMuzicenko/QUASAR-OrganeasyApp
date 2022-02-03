@@ -198,6 +198,7 @@
           <q-item-section
             v-for="(process, index) in task.processes"
             :key="process"
+            class="q-ml-sm"
           >
             <q-separator v-if="index > 0" spaced="sm" />
             {{ process }}
