@@ -227,6 +227,8 @@ export default {
         processChanges
       )
 
+      this.recalculatePreparationTime(this.selectedProcess.id)
+
       this.$emit('ok')
 
       this.hide()
@@ -302,6 +304,44 @@ export default {
                     this.$store.getters['users/processes'][`id-${processId}`][
                       'time'
                     ]
+                }
+              )
+            }
+          }
+        }
+      }
+    },
+    recalculatePreparationTime(processId) {
+      const vuexTasks = this.$store.getters['users/tasks']
+      for (const vuexDate in vuexTasks) {
+        for (const vuexTask in vuexTasks[vuexDate]) {
+          const task = vuexTasks[vuexDate][vuexTask]
+          if (task.processes) {
+            const taskProcesses = task.processes
+            if (taskProcesses.find((el) => el == processId)) {
+              const processes = this.$store.getters['users/processes']
+              let time = 0
+              if (Object.keys(processes).length) {
+                for (const select in taskProcesses) {
+                  for (const process in processes) {
+                    if (taskProcesses[select] == processes[process]['id']) {
+                      time += processes[process]['time']
+                    }
+                  }
+                }
+              }
+              update(
+                ref(
+                  db,
+                  `${
+                    this.$store.getters['users/userId']
+                  }/tasks/date-${task.time.slice(
+                    0,
+                    task.time.indexOf(' ')
+                  )}/id-${task.id}`
+                ),
+                {
+                  processesTime: time
                 }
               )
             }
