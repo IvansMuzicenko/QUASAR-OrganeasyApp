@@ -399,20 +399,28 @@ export default {
           const task = vuexTasks[vuexDate][vuexTask]
           if (task.notes?.attachedNotes) {
             const attachedNotes = task.notes.attachedNotes
-            for (const attachedNote of Object.keys(attachedNotes)) {
-              if (attachedNotes[attachedNote]['id'] == noteId) {
-                remove(
-                  ref(
-                    db,
-                    `${
-                      this.$store.getters['users/userId']
-                    }/tasks/date-${task.time.slice(
-                      0,
-                      task.time.indexOf(' ')
-                    )}/id-${task.id}/notes/attachedNotes/${attachedNote}`
-                  )
-                )
-              }
+            if (attachedNotes.find((el) => el.id == noteId)) {
+              let notesArray = []
+              attachedNotes.forEach((el) => notesArray.push(el))
+
+              notesArray.splice(
+                notesArray.indexOf(attachedNotes.find((el) => el.id == noteId)),
+                1
+              )
+              update(
+                ref(
+                  db,
+                  `${
+                    this.$store.getters['users/userId']
+                  }/tasks/date-${task.time.slice(
+                    0,
+                    task.time.indexOf(' ')
+                  )}/id-${task.id}/notes`
+                ),
+                {
+                  attachedNotes: notesArray
+                }
+              )
             }
           }
         }
