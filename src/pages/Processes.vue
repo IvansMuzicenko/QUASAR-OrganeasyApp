@@ -280,44 +280,30 @@ export default {
           const task = vuexTasks[vuexDate][vuexTask]
           if (task.processes) {
             const taskProcesses = task.processes
-            let processesArray = []
+            if (taskProcesses.find((el) => el == processId)) {
+              let processesArray = []
+              taskProcesses.forEach((el) => processesArray.push(el))
 
-            taskProcesses.forEach((el) => processesArray.push(el))
-            for (const process of processesArray) {
-              if (process == processId) {
-                processesArray.splice(processesArray.indexOf(process), 1)
-                update(
-                  ref(
-                    db,
-                    `${
-                      this.$store.getters['users/userId']
-                    }/tasks/date-${task.time.slice(
-                      0,
-                      task.time.indexOf(' ')
-                    )}/id-${task.id}`
-                  ),
-                  { processes: processesArray }
-                )
-
-                update(
-                  ref(
-                    db,
-                    `${
-                      this.$store.getters['users/userId']
-                    }/tasks/date-${task.time.slice(
-                      0,
-                      task.time.indexOf(' ')
-                    )}/id-${task.id}`
-                  ),
-                  {
-                    processesTime:
-                      task.processesTime -
-                      this.$store.getters['users/processes'][`id-${processId}`][
-                        'time'
-                      ]
-                  }
-                )
-              }
+              processesArray.splice(processesArray.indexOf(processId), 1)
+              update(
+                ref(
+                  db,
+                  `${
+                    this.$store.getters['users/userId']
+                  }/tasks/date-${task.time.slice(
+                    0,
+                    task.time.indexOf(' ')
+                  )}/id-${task.id}`
+                ),
+                {
+                  processes: processesArray,
+                  processesTime:
+                    task.processesTime -
+                    this.$store.getters['users/processes'][`id-${processId}`][
+                      'time'
+                    ]
+                }
+              )
             }
           }
         }
