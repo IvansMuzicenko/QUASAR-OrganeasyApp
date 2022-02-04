@@ -267,10 +267,14 @@
             v-model="form.processesModel"
             outlined
             multiple
-            :options="processesList"
             use-chips
             stack-label
             label="Processes"
+            :options="processesList"
+            option-value="id"
+            option-label="title"
+            emit-value
+            map-options
           />
           <p v-else>Processes list is empty</p>
           <q-btn outline color="success" class="q-ma-xs" @click="addProcess">
@@ -788,7 +792,10 @@ export default {
       let processesArray = []
       if (Object.keys(processes).length) {
         for (const process in processes) {
-          processesArray.push(processes[process]['title'])
+          processesArray.push({
+            title: processes[process]['title'],
+            id: processes[process]['id']
+          })
         }
       }
       return processesArray
@@ -800,7 +807,7 @@ export default {
       if (Object.keys(processes).length) {
         for (const select in selectedProcesses) {
           for (const process in processes) {
-            if (selectedProcesses[select] == processes[process]['title']) {
+            if (selectedProcesses[select] == processes[process]['id']) {
               time += processes[process]['time']
             }
           }
