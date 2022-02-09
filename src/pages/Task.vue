@@ -201,7 +201,7 @@
             class="q-ml-sm"
           >
             <q-separator v-if="index > 0" spaced="sm" />
-            {{ process }}
+            {{ process.title || process }}
           </q-item-section>
         </q-item-section>
       </q-item>
@@ -413,7 +413,11 @@ export default {
       this.task = JSON.parse(JSON.stringify(task))
     },
     isNoteFavorite(id) {
-      return this.$store.getters['users/notes'][`id-${id}`]['favorite']
+      const note = this.$store.getters['users/notes'][`id-${id}`]
+      if (note) {
+        return note['favorite']
+      }
+      return false
     },
     routerBack() {
       return this.$router.push(`/?date=${this.taskDate}`)

@@ -282,11 +282,16 @@ export default {
           const task = vuexTasks[vuexDate][vuexTask]
           if (task.processes) {
             const taskProcesses = task.processes
-            if (taskProcesses.find((el) => el == processId)) {
+            if (taskProcesses.find((el) => el.id == processId)) {
               let processesArray = []
               taskProcesses.forEach((el) => processesArray.push(el))
 
-              processesArray.splice(processesArray.indexOf(processId), 1)
+              processesArray.splice(
+                processesArray.indexOf(
+                  taskProcesses.find((el) => el.id == processId)
+                ),
+                1
+              )
               update(
                 ref(
                   db,
@@ -318,13 +323,15 @@ export default {
           const task = vuexTasks[vuexDate][vuexTask]
           if (task.processes) {
             const taskProcesses = task.processes
-            if (taskProcesses.find((el) => el == processId)) {
+            if (taskProcesses.find((el) => el.id == processId)) {
               const processes = this.$store.getters['users/processes']
               let time = 0
               if (Object.keys(processes).length) {
                 for (const select in taskProcesses) {
                   for (const process in processes) {
-                    if (taskProcesses[select] == processes[process]['id']) {
+                    if (
+                      taskProcesses[select]['id'] == processes[process]['id']
+                    ) {
                       time += processes[process]['time']
                     }
                   }

@@ -271,7 +271,6 @@
             stack-label
             label="Processes"
             :options="processesList"
-            option-value="id"
             option-label="title"
             emit-value
             map-options
@@ -807,7 +806,7 @@ export default {
       if (Object.keys(processes).length) {
         for (const select in selectedProcesses) {
           for (const process in processes) {
-            if (selectedProcesses[select] == processes[process]['id']) {
+            if (selectedProcesses[select]['id'] == processes[process]['id']) {
               time += processes[process]['time']
             }
           }
@@ -1033,7 +1032,11 @@ export default {
       this.form.notificationsId = notificationsId
     },
     isNoteFavorite(id) {
-      return this.$store.getters['users/notes'][`id-${id}`]['favorite']
+      const note = this.$store.getters['users/notes'][`id-${id}`]
+      if (note) {
+        return note['favorite']
+      }
+      return false
     },
     onSubtaskClick(index, progress) {
       this.form.subtasks[index]['progress'] = !progress
