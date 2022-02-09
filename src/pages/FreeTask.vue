@@ -372,7 +372,11 @@ export default {
       this.task = JSON.parse(JSON.stringify(freeTask))
     },
     isNoteFavorite(id) {
-      return this.$store.getters['users/notes'][`id-${id}`]['favorite']
+      const note = this.$store.getters['users/notes'][`id-${id}`]
+      if (note) {
+        return note['favorite']
+      }
+      return false
     },
     routerBack() {
       return this.$router.push('/free-tasks')

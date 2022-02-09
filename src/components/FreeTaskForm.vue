@@ -518,7 +518,11 @@ export default {
     },
 
     isNoteFavorite(id) {
-      return this.$store.getters['users/notes'][`id-${id}`]['favorite']
+      const note = this.$store.getters['users/notes'][`id-${id}`]
+      if (note) {
+        return note['favorite']
+      }
+      return false
     },
 
     addSubtask(newSubtask) {
