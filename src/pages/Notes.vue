@@ -127,7 +127,7 @@
             (filtering.priority == 'all' ||
               filtering.priority == 'favorites') &&
             (filtering.category == 'all' ||
-              filtering.category == el['category']['id'])
+              filtering.category == el['category'])
         )"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, note['id'])"
@@ -136,8 +136,8 @@
       >
         <q-item-section thumbnail class="q-px-sm">
           <q-icon
-            :name="note.category ? note.category['icon'] : ''"
-            :color="note.category ? note.category['color'] : ''"
+            :name="note.category ? findCategory(note.category)['icon'] : ''"
+            :color="note.category ? findCategory(note.category)['color'] : ''"
           />
         </q-item-section>
         <q-item-section>
@@ -160,7 +160,7 @@
             !el['favorite'] &&
             (filtering.priority == 'all' || filtering.priority == 'common') &&
             (filtering.category == 'all' ||
-              filtering.category == el['category']['id'])
+              filtering.category == el['category'])
         )"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, note['id'])"
@@ -169,8 +169,8 @@
       >
         <q-item-section thumbnail class="q-px-sm">
           <q-icon
-            :name="note.category ? note.category['icon'] : ''"
-            :color="note.category ? note.category['color'] : ''"
+            :name="note.category ? findCategory(note.category)['icon'] : ''"
+            :color="note.category ? findCategory(note.category)['color'] : ''"
           />
         </q-item-section>
         <q-item-section>
@@ -236,10 +236,18 @@
             <p class="text-center no-margin">Category</p>
             <q-btn flat dense>
               <q-icon
-                :name="holdedNote.category ? holdedNote.category['icon'] : ''"
-                :color="holdedNote.category ? holdedNote.category['color'] : ''"
+                :name="
+                  holdedNote.category
+                    ? findCategory(holdedNote.category)['icon']
+                    : ''
+                "
+                :color="
+                  holdedNote.category
+                    ? findCategory(holdedNote.category)['color']
+                    : ''
+                "
               />
-              {{ holdedNote.category?.title || 'None' }}
+              {{ findCategory(holdedNote.category)['title'] || 'None' }}
               <q-icon name="expand_more" />
               <q-menu anchor="bottom left" self="top left">
                 <p class="text-center text-subtitle1 no-margin">Categories</p>
@@ -260,7 +268,7 @@
                     :key="categoryIndex"
                     clickable
                     class="full-width text-subtitle1"
-                    @click="changeCategory(category, holdedNote['id'])"
+                    @click="changeCategory(category.id, holdedNote['id'])"
                   >
                     <div class="full-width">
                       <q-icon
@@ -373,7 +381,7 @@ export default {
             (element) => element['id'] == this.notes[note]['category']['id']
           )
         ) {
-          notesCategories.push(this.notes[note]['category'])
+          notesCategories.push(this.findCategory(this.notes[note]['category']))
         }
       }
       return notesCategories
@@ -389,6 +397,14 @@ export default {
     taskHold(event, id) {
       this.holdedNoteId = id
       this.$refs[`noteHold`].show()
+    },
+    findCategory(id) {
+      const vuexCategories = this.$store.getters['users/categories']
+      if (id) {
+        return vuexCategories[`id-${id}`] || {}
+      } else {
+        return {}
+      }
     },
     openSearch() {
       this.$q.dialog({

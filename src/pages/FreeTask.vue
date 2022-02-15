@@ -110,10 +110,10 @@
         <q-separator vertical spaced="md" />
         <q-btn flat dense>
           <q-icon
-            :name="task.category ? task.category['icon'] : ''"
-            :color="task.category ? task.category['color'] : ''"
+            :name="task.category ? selectedCategory['icon'] : ''"
+            :color="task.category ? selectedCategory['color'] : ''"
           />
-          {{ task.category?.title || 'None' }}
+          {{ selectedCategory['title'] || 'None' }}
           <q-icon name="expand_more" />
           <q-menu anchor="bottom left" self="top left">
             <p class="text-center text-subtitle1 no-margin">Categories</p>
@@ -134,7 +134,7 @@
                 :key="categoryIndex"
                 clickable
                 class="full-width text-subtitle1"
-                @click="changeCategory(category)"
+                @click="changeCategory(category['id'])"
               >
                 <div class="full-width">
                   <q-icon
@@ -347,6 +347,14 @@ export default {
         categories.push(vuexCategories[category])
       }
       return categories
+    },
+    selectedCategory() {
+      const vuexCategories = this.$store.getters['users/categories']
+      if (this.task.category) {
+        return vuexCategories[`id-${this.task.category}`] || {}
+      } else {
+        return {}
+      }
     }
   },
   watch: {

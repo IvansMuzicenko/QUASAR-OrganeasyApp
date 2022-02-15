@@ -55,10 +55,10 @@
       Category:
       <q-btn flat dense>
         <q-icon
-          :name="form.category ? form.category['icon'] : ''"
-          :color="form.category ? form.category['color'] : ''"
+          :name="form.category ? selectedCategory['icon'] : ''"
+          :color="form.category ? selectedCategory['color'] : ''"
         />
-        {{ form.category?.title || 'Uncategorized' }}
+        {{ selectedCategory['title'] || 'Uncategorized' }}
         <q-icon name="expand_more" />
         <q-menu anchor="bottom left" self="top left">
           <p class="text-center text-subtitle1 no-margin">Categories</p>
@@ -79,7 +79,7 @@
               :key="categoryIndex"
               clickable
               class="full-width text-subtitle1"
-              @click="form.category = listCategory"
+              @click="form.category = listCategory['id']"
             >
               <div class="full-width">
                 <q-icon
@@ -467,6 +467,14 @@ export default {
         categories.push(vuexCategories[category])
       }
       return categories
+    },
+    selectedCategory() {
+      const vuexCategories = this.$store.getters['users/categories']
+      if (this.form.category) {
+        return vuexCategories[`id-${this.form.category}`] || {}
+      } else {
+        return {}
+      }
     }
   },
   mounted() {

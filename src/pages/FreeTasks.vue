@@ -183,7 +183,7 @@
             (filtering.priority == 'all' ||
               filtering.priority == el['priority']) &&
             (filtering.category == 'all' ||
-              (el['category'] && filtering.category == el['category']['id']))
+              (el['category'] && filtering.category == el['category']))
         )"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, task['id'])"
@@ -206,8 +206,8 @@
             style="width: 1rem; border-right: 1px solid lightgrey"
           />
           <q-icon
-            :name="task.category ? task.category['icon'] : ''"
-            :color="task.category ? task.category['color'] : ''"
+            :name="task.category ? findCategory(task.category)['icon'] : ''"
+            :color="task.category ? findCategory(task.category)['color'] : ''"
           />
         </q-item-section>
         <q-item-section>
@@ -294,7 +294,7 @@
             (filtering.priority == 'all' ||
               filtering.priority == el['priority']) &&
             (filtering.category == 'all' ||
-              (el['category'] && filtering.category == el['category']['id']))
+              (el['category'] && filtering.category == el['category']))
         )"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, task['id'])"
@@ -304,8 +304,8 @@
       >
         <q-item-section thumbnail class="q-px-sm">
           <q-icon
-            :name="task.category ? task.category['icon'] : ''"
-            :color="task.category ? task.category['color'] : ''"
+            :name="task.category ? findCategory(task.category)['icon'] : ''"
+            :color="task.category ? findCategory(task.category)['color'] : ''"
           />
         </q-item-section>
         <q-item-section class="text-weight-bolder">
@@ -431,10 +431,18 @@
             <p class="text-center no-margin">Category</p>
             <q-btn flat dense>
               <q-icon
-                :name="holdedTask.category ? holdedTask.category['icon'] : ''"
-                :color="holdedTask.category ? holdedTask.category['color'] : ''"
+                :name="
+                  holdedTask.category
+                    ? findCategory(holdedTask.category)['icon']
+                    : ''
+                "
+                :color="
+                  holdedTask.category
+                    ? findCategory(holdedTask.category)['color']
+                    : ''
+                "
               />
-              {{ holdedTask.category?.title || 'None' }}
+              {{ findCategory(holdedTask.category)['title'] || 'None' }}
               <q-icon name="expand_more" />
               <q-menu anchor="bottom left" self="top left">
                 <p class="text-center text-subtitle1 no-margin">Categories</p>
@@ -455,7 +463,7 @@
                     :key="categoryIndex"
                     clickable
                     class="full-width text-subtitle1"
-                    @click="changeCategory(category, holdedTask['id'])"
+                    @click="changeCategory(category.id, holdedTask['id'])"
                   >
                     <div class="full-width">
                       <q-icon
@@ -579,7 +587,7 @@ export default {
               (element) => element['id'] == task['category']['id']
             ))
         ) {
-          freeTasksCategories.push(task['category'])
+          freeTasksCategories.push(this.findCategory(task['category']))
         }
       }
       return freeTasksCategories
@@ -680,6 +688,14 @@ export default {
       this.$q.dialog({
         component: AddCategoryForm
       })
+    },
+    findCategory(id) {
+      const vuexCategories = this.$store.getters['users/categories']
+      if (id) {
+        return vuexCategories[`id-${id}`] || {}
+      } else {
+        return {}
+      }
     },
     sortByTitle() {
       this.sorting.priority = 'none'

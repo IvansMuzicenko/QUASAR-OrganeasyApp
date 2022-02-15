@@ -44,8 +44,8 @@
           <q-item-section thumbnail class="q-pr-none">
             <q-btn flat dense>
               <q-icon
-                :name="note.category ? note.category['icon'] : ''"
-                :color="note.category ? note.category['color'] : ''"
+                :name="note.category ? selectedCategory['icon'] : ''"
+                :color="note.category ? selectedCategory['color'] : ''"
               />
               <q-icon name="expand_more" />
               <q-menu anchor="bottom left" self="top left">
@@ -67,7 +67,7 @@
                     :key="categoryIndex"
                     clickable
                     class="full-width text-subtitle1"
-                    @click="changeCategory(category)"
+                    @click="changeCategory(category['id'])"
                   >
                     <div class="full-width">
                       <q-icon
@@ -121,10 +121,10 @@
         <br />
         <q-btn v-if="editState" flat dense>
           <q-icon
-            :name="note.category ? note.category['icon'] : ''"
-            :color="note.category ? note.category['color'] : ''"
+            :name="note.category ? selectedCategory['icon'] : ''"
+            :color="note.category ? selectedCategory['color'] : ''"
           />
-          {{ note.category?.title || 'Uncategorized' }}
+          {{ selectedCategory['title'] || 'Uncategorized' }}
           <q-icon name="expand_more" />
           <q-menu anchor="bottom left" self="top left">
             <p class="text-center text-subtitle1 no-margin">Categories</p>
@@ -145,7 +145,7 @@
                 :key="categoryIndex"
                 clickable
                 class="full-width text-subtitle1"
-                @click="note.category = category"
+                @click="note.category = category['id']"
               >
                 <div class="full-width">
                   <q-icon
@@ -282,6 +282,14 @@ export default {
         categories.push(vuexCategories[category])
       }
       return categories
+    },
+    selectedCategory() {
+      const vuexCategories = this.$store.getters['users/categories']
+      if (this.note.category) {
+        return vuexCategories[`id-${this.note.category}`] || {}
+      } else {
+        return {}
+      }
     }
   },
   watch: {
