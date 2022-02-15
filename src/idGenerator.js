@@ -1,7 +1,7 @@
 const symbols = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-const id = function (customLength) {
-  let length = customLength || 30
+const generateId = function (customLength) {
+  let length = customLength || 32
   let result = ''
 
   for (let i = 0; i < length; i++) {
@@ -10,4 +10,4 @@ const id = function (customLength) {
   }
   return result
 }
-export default id
+export default generateId
