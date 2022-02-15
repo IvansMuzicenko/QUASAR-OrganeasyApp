@@ -171,6 +171,7 @@ export default {
           `${this.$store.getters['users/userId']}/categories/id-${this.selectedCategory.id}`
         )
       )
+      this.deleteExists(this.selectedCategory.id)
       this.deleteDialogHide()
       this.$q.notify({
         position: 'top',
@@ -178,6 +179,33 @@ export default {
         color: 'red',
         timeout: 1000
       })
+    },
+    deleteExists(id) {
+      const vuexFreeTasks = this.$store.getters['users/freeTasks']
+      for (const vuexFreeTask in vuexFreeTasks) {
+        const freeTask = vuexFreeTasks[vuexFreeTask]
+        if (freeTask.category && freeTask.category == id) {
+          remove(
+            ref(
+              db,
+              `${this.$store.getters['users/userId']}/freeTasks/id-${freeTask['id']}/category`
+            )
+          )
+        }
+      }
+
+      const vuexNotes = this.$store.getters['users/notes']
+      for (const vuexNote in vuexNotes) {
+        const note = vuexNotes[vuexNote]
+        if (note.category && note.category == id) {
+          remove(
+            ref(
+              db,
+              `${this.$store.getters['users/userId']}/notes/id-${note['id']}/category`
+            )
+          )
+        }
+      }
     }
   }
 }
