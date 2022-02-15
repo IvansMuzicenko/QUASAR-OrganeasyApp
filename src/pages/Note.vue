@@ -439,15 +439,23 @@ export default {
         const freeTask = vuexFreeTasks[vuexFreeTask]
         if (freeTask.notes?.attachedNotes) {
           const attachedNotes = freeTask.notes.attachedNotes
-          for (const attachedNote of Object.keys(attachedNotes)) {
-            if (attachedNotes[attachedNote]['id'] == noteId) {
-              remove(
-                ref(
-                  db,
-                  `${this.$store.getters['users/userId']}/freeTasks/id-${freeTask.id}/notes/attachedNotes/${attachedNote}`
-                )
-              )
-            }
+          if (attachedNotes.find((el) => el.id == noteId)) {
+            let notesArray = []
+            attachedNotes.forEach((el) => notesArray.push(el))
+
+            notesArray.splice(
+              notesArray.indexOf(attachedNotes.find((el) => el.id == noteId)),
+              1
+            )
+            update(
+              ref(
+                db,
+                `${this.$store.getters['users/userId']}/freeTasks/id-${freeTask.id}/notes`
+              ),
+              {
+                attachedNotes: notesArray
+              }
+            )
           }
         }
       }
