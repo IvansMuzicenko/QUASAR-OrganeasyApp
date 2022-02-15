@@ -131,6 +131,7 @@
 <script>
 import { getDatabase, ref, set } from 'firebase/database'
 import AddCategoryForm from 'src/components/AddCategoryForm.vue'
+import generateId from 'src/idGenerator.js'
 
 export default {
   emits: ['ok', 'hide'],
@@ -172,20 +173,18 @@ export default {
     },
 
     onOKClick() {
-      let noteId = this.noteTitle
       if (!this.noteTitle) {
         let titleText = this.noteText
           .replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '')
           .slice(0, 31)
 
-        noteId = titleText.trim()
         if (this.noteText.length > 30) titleText += '...'
 
         this.noteTitle = titleText
       }
 
       const newNote = {
-        id: noteId.replaceAll(' ', '-'),
+        id: generateId(),
         title: this.noteTitle,
         text: this.noteText,
         favorite: this.favorite,

@@ -12,6 +12,7 @@
 import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
 import TaskForm from 'src/components/TaskForm.vue'
+import generateId from 'src/idGenerator.js'
 
 const db = getDatabase()
 
@@ -78,7 +79,7 @@ export default {
         }
 
         const newTodo = {
-          id: form.todoTitle.replaceAll(' ', '-'),
+          id: generateId(),
           title: form.todoTitle,
           progress: form.progress,
           time: eventDate,

@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import generateId from 'src/idGenerator.js'
 export default {
   props: {
     editCategory: {
@@ -141,7 +142,7 @@ export default {
       this.$refs['colorPicker'].hide()
     },
     onOKClick() {
-      this.form.id = this.form.title.replace(' ', '-')
+      this.form.id = generateId()
       this.$emit('OKEvent', this.form)
     },
     onSaveClick() {

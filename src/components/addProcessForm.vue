@@ -48,6 +48,8 @@
 
 <script>
 import { getDatabase, ref, set } from 'firebase/database'
+import generateId from 'src/idGenerator.js'
+
 export default {
   props: {},
 
@@ -79,7 +81,7 @@ export default {
 
     onOKClick() {
       const newProcess = {
-        id: this.processTitle.replaceAll(' ', '-'),
+        id: generateId(),
         title: this.processTitle,
         time: this.processTime
       }

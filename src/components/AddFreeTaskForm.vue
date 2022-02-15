@@ -8,6 +8,7 @@
 import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
 import FreeTaskForm from 'src/components/FreeTaskForm.vue'
+import generateId from 'src/idGenerator.js'
 
 const db = getDatabase()
 
@@ -33,7 +34,7 @@ export default {
 
     onOKClick(form) {
       const newTodo = {
-        id: form.todoTitle.replaceAll(' ', '-'),
+        id: generateId(),
         title: form.todoTitle,
         priority: form.priority,
         progress: form.progress,
