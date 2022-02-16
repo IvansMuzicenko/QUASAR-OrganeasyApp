@@ -131,13 +131,31 @@
               <q-item
                 v-for="note of task.notes.attachedNotes"
                 :key="note"
+                class="q-pl-xs"
                 :to="`/notes/${note['id']}`"
               >
-                <q-icon
-                  color="yellow"
-                  :name="isNoteFavorite(note['id']) ? 'star' : ''"
-                />
-                {{ note['title'] }}
+                <q-item-label>
+                  <q-icon
+                    :name="isNoteFavorite(note['id']) ? 'star' : 'star_outline'"
+                    :color="isNoteFavorite(note['id']) ? 'yellow' : ''"
+                    size="sm"
+                  />
+                  <q-icon
+                    :name="
+                      findCategory(note['id'])
+                        ? findCategory(note['id'])['icon']
+                        : ''
+                    "
+                    :color="
+                      findCategory(note['id'])
+                        ? findCategory(note['id'])['color']
+                        : ''
+                    "
+                    size="sm"
+                  />
+
+                  {{ note['title'] }}
+                </q-item-label>
               </q-item>
             </q-list>
             <q-separator spaced="sm" />
@@ -418,6 +436,17 @@ export default {
         return note['favorite']
       }
       return false
+    },
+    findCategory(id) {
+      const note = this.$store.getters['users/notes'][`id-${id}`]
+      if (note) {
+        const categoryId = note['category']
+        if (categoryId) {
+          const vuexCategories = this.$store.getters['users/categories']
+          return vuexCategories[`id-${categoryId}`] || {}
+        }
+      }
+      return {}
     },
     routerBack() {
       return this.$router.push(`/?date=${this.taskDate}`)
