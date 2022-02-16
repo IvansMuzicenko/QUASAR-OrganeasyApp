@@ -138,7 +138,60 @@
           "
           emit-value
           map-options
-        />
+        >
+          <template #selected-item="scope">
+            <q-chip
+              removable
+              dense
+              :tabindex="scope.tabindex"
+              class="q-ma-none"
+              @remove="scope.removeAtIndex(scope.index)"
+            >
+              <q-icon
+                v-if="isNoteFavorite(scope.opt['id'])"
+                name="star"
+                color="yellow"
+                size="xs"
+              />
+              <q-icon
+                v-if="noteCategory(scope.opt['id'], 'icon')"
+                :name="noteCategory(scope.opt['id'], 'icon')"
+                :color="noteCategory(scope.opt['id'], 'color')"
+                size="xs"
+              />
+              {{ scope.opt.title }}
+            </q-chip>
+          </template>
+          <template #option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section>
+                <q-item-label>
+                  <q-icon
+                    v-if="isNoteFavorite(scope.opt['id'])"
+                    name="star"
+                    color="yellow"
+                    size="sm"
+                    class="q-pa-none q-ma-none q-pr-xs"
+                  />
+                  <q-icon
+                    v-else
+                    name="star_outline"
+                    size="sm"
+                    class="q-pa-none q-ma-none q-pr-xs"
+                  />
+                  <q-icon
+                    :name="noteCategory(scope.opt['id'], 'icon')"
+                    :color="noteCategory(scope.opt['id'], 'color')"
+                    size="sm"
+                    class="q-pa-none q-ma-none q-pr-xs"
+                  />
+                  {{ scope.opt.title }}
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+
         <q-editor
           v-model="form.notes.text"
           dense
@@ -531,6 +584,24 @@ export default {
         return note['favorite']
       }
       return false
+    },
+    noteCategory(id, type) {
+      const note = this.$store.getters['users/notes'][`id-${id}`]
+      if (note) {
+        const categoryId = note['category']
+        if (categoryId) {
+          const category =
+            this.$store.getters['users/categories'][`id-${categoryId}`]
+          if (category) {
+            if (type == 'icon') {
+              return category['icon']
+            } else if (type == 'color') {
+              return category['color']
+            }
+          }
+        }
+      }
+      return ''
     },
 
     addSubtask(newSubtask) {
