@@ -46,6 +46,7 @@ export default {
     onOKClick(form) {
       let eventDate = form.eventDate
       let eventEndingDate = form.eventEndingDate
+      const relationId = JSON.parse(JSON.stringify(generateId()))
 
       for (
         let i = 0;
@@ -80,6 +81,7 @@ export default {
 
         const newTodo = {
           id: generateId(),
+          relationId: relationId,
           title: form.todoTitle,
           progress: form.progress,
           time: eventDate,
@@ -95,20 +97,6 @@ export default {
           processes: form.toggleProcesses ? form.processesModel : null,
           processesTime: form.toggleProcesses ? form.processesTime : null,
           subtasks: form.toggleSubtasks ? form.subtasks : null,
-          repeat: form.toggleRepeat
-            ? {
-                repeatNumber: form.repeat.repeatNumber - i,
-                months: form.repeat.monthsModel
-                  ? form.repeat.monthsModel
-                  : null,
-                weeks: form.repeat.weeksModel ? form.repeat.weeksModel : null,
-                days: form.repeat.daysModel ? form.repeat.daysModel : null,
-                hours: form.repeat.hoursModel ? form.repeat.hoursModel : null,
-                minutes: form.repeat.minutesModel
-                  ? form.repeat.minutesModel
-                  : null
-              }
-            : null,
           dateModified: Date.now(),
           finishedDate: form.progress ? Date.now() : null
         }

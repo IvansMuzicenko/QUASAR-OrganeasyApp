@@ -273,32 +273,6 @@
           </q-item-section>
         </q-item-section>
       </q-item>
-
-      <q-item v-if="task.repeat">
-        <q-item-section avatar class="taskInfo">Repeat</q-item-section>
-        <q-separator vertical spaced="md" />
-        <q-item-section>
-          <q-item-section>
-            Repeat number: {{ task.repeat.repeatNumber }}
-          </q-item-section>
-
-          <q-item-section v-if="task.repeat.months">
-            Months:{{ task.repeat.months }}
-          </q-item-section>
-          <q-item-section v-if="task.repeat.weeks">
-            Weeks:{{ task.repeat.weeks }}
-          </q-item-section>
-          <q-item-section v-if="task.repeat.days">
-            Days:{{ task.repeat.days }}
-          </q-item-section>
-          <q-item-section v-if="task.repeat.hours">
-            Hours:{{ task.repeat.hours }}
-          </q-item-section>
-          <q-item-section v-if="task.repeat.minutes">
-            Minutes:{{ task.repeat.minutes }}
-          </q-item-section>
-        </q-item-section>
-      </q-item>
     </q-list>
 
     <task-form
@@ -331,6 +305,7 @@
 import { getDatabase, ref, set, update, remove } from 'firebase/database'
 import { date } from 'quasar'
 import TaskForm from 'src/components/TaskForm.vue'
+import generateId from 'src/idGenerator.js'
 
 const db = getDatabase()
 
@@ -343,6 +318,7 @@ export default {
     return {
       task: {
         id: '',
+        relationId: '',
         title: '',
         progress: false,
         finishedDate: '',
@@ -480,6 +456,25 @@ export default {
     onEditClick(form) {
       let eventDate = form.eventDate
       let eventEndingDate = form.eventEndingDate
+      const mainTaskDate = form.eventDate
+      const taskTime = this.task.time
+
+      if (
+        taskTime.slice(0, taskTime.indexOf(' ')) !=
+        eventDate.slice(0, eventDate.indexOf(' '))
+      ) {
+        remove(
+          ref(
+            db,
+            `${
+              this.$store.getters['users/userId']
+            }/tasks/date-${this.task.time.slice(
+              0,
+              this.task.time.indexOf(' ')
+            )}/id-${form.id}/`
+          )
+        )
+      }
       for (
         let i = 0;
         i <= (form.toggleRepeat ? form.repeat.repeatNumber : 0);
@@ -511,7 +506,8 @@ export default {
           }
         }
         const updateTodo = {
-          id: form.id,
+          id: i == 0 ? form.id : generateId(),
+          relationId: this.task.relationId,
           title: form.todoTitle,
           progress: form.progress,
           time: eventDate,
@@ -540,20 +536,6 @@ export default {
           processes: form.toggleProcesses ? form.processesModel : null,
           processesTime: form.toggleProcesses ? form.processesTime : null,
           subtasks: form.toggleSubtasks ? form.subtasks : null,
-          repeat: form.toggleRepeat
-            ? {
-                repeatNumber: form.repeat.repeatNumber - i,
-                months: form.repeat.monthsModel
-                  ? form.repeat.monthsModel
-                  : null,
-                weeks: form.repeat.weeksModel ? form.repeat.weeksModel : null,
-                days: form.repeat.daysModel ? form.repeat.daysModel : null,
-                hours: form.repeat.hoursModel ? form.repeat.hoursModel : null,
-                minutes: form.repeat.minutesModel
-                  ? form.repeat.minutesModel
-                  : null
-              }
-            : null,
           dateModified: Date.now(),
           finishedDate:
             form.progress &&
@@ -575,8 +557,9 @@ export default {
           updateTodo
         )
       }
-      this.updateTaskData()
-      this.$router.push(this.path)
+      this.$router.push(
+        `/${mainTaskDate.slice(0, mainTaskDate.indexOf(' '))}/${form.id}`
+      )
 
       this.$q.notify({
         position: 'top',
@@ -584,6 +567,14 @@ export default {
         color: 'blue',
         timeout: 1000
       })
+      if (form.toggleRepeat) {
+        this.$q.notify({
+          position: 'top',
+          message: 'Repeatable tasks created',
+          color: 'green',
+          timeout: 2000
+        })
+      }
     },
     continuousStart() {
       update(
