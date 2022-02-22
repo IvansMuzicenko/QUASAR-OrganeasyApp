@@ -273,12 +273,12 @@
           </q-item-section>
         </q-item-section>
       </q-item>
-      <q-item v-if="relativeItems > 0">
+      <q-item v-if="relativeItems.length - 1 > 0">
         <q-item-section avatar class="taskInfo">
-          Relative tasks count
+          Related tasks count
         </q-item-section>
         <q-separator vertical spaced="md" />
-        <q-item-section>{{ relativeItems }}</q-item-section>
+        <q-item-section>{{ relativeItems.length - 1 }}</q-item-section>
       </q-item>
     </q-list>
 
@@ -301,6 +301,11 @@
             color="negative"
             label="Delete"
             @click="onConfirmDeleteClick"
+          />
+          <q-btn
+            color="negative"
+            :label="`Delete all related(${relativeItems.length})`"
+            @click="onConfirmDeleteClick('all')"
           />
         </q-card-actions>
       </q-card>
@@ -389,7 +394,6 @@ export default {
     relativeItems() {
       const relationId = this.task.relationId
       let relationArray = []
-      let relationsCount = 0
       const vuexTasks = this.$store.getters['users/tasks']
       for (const vuexDate in vuexTasks) {
         for (const vuexTask in vuexTasks[vuexDate]) {
@@ -399,8 +403,7 @@ export default {
           }
         }
       }
-      relationsCount = relationArray.length - 1
-      return relationsCount
+      return relationArray
     }
   },
   watch: {
@@ -642,22 +645,44 @@ export default {
     onCancelClick() {
       this.$router.push(this.path)
     },
-    onConfirmDeleteClick() {
+    onConfirmDeleteClick(type) {
       const notifsToRemove = []
-      if (this.task.notificationsId) {
-        for (const notif of this.task.notificationsId) {
-          notifsToRemove.push({ id: notif.id })
+      if (type == 'all') {
+        for (const item of this.relativeItems) {
+          console.log(item)
+          if (item.notificationsId) {
+            for (const notif of item.notificationsId) {
+              notifsToRemove.push({ id: notif.id })
+            }
+          }
+          remove(
+            ref(
+              db,
+              `${
+                this.$store.getters['users/userId']
+              }/tasks/date-${item.time.slice(0, item.time.indexOf(' '))}/id-${
+                item.id
+              }`
+            )
+          )
         }
-        // if (this.$q.platform.is.capacitor) {
-        this.$store.dispatch('notification/removeNotifications', notifsToRemove)
-        // }
-      }
-      remove(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
+      } else {
+        if (this.task.notificationsId) {
+          for (const notif of this.task.notificationsId) {
+            notifsToRemove.push({ id: notif.id })
+          }
+        }
+        remove(
+          ref(
+            db,
+            `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
+          )
         )
-      )
+      }
+      if (notifsToRemove.length) {
+        this.$store.dispatch('notification/removeNotifications', notifsToRemove)
+      }
+
       this.$router.push('/')
 
       this.$q.notify({
