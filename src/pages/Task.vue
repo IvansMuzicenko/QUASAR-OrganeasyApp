@@ -39,6 +39,16 @@
       </q-btn>
       <q-btn
         v-if="!editState"
+        icon="content_copy"
+        color="secondary"
+        flat
+        class="zindex-high"
+        @click="copyTask()"
+      >
+        Copy
+      </q-btn>
+      <q-btn
+        v-if="!editState"
         icon="edit"
         color="secondary"
         flat
@@ -318,6 +328,7 @@ import { getDatabase, ref, set, update, remove } from 'firebase/database'
 import { date } from 'quasar'
 import TaskForm from 'src/components/TaskForm.vue'
 import generateId from 'src/idGenerator.js'
+import AddTaskForm from 'src/components/AddTaskForm.vue'
 
 const db = getDatabase()
 
@@ -459,6 +470,14 @@ export default {
     callEditClick() {
       this.$refs.taskForm.onEditClick()
     },
+    copyTask() {
+      this.$q.dialog({
+        component: AddTaskForm,
+        componentProps: {
+          copy: this.task
+        }
+      })
+    },
     changeSubtaskProgress(index, progress) {
       update(
         ref(
@@ -586,6 +605,7 @@ export default {
       this.$router.push(
         `/${mainTaskDate.slice(0, mainTaskDate.indexOf(' '))}/${form.id}`
       )
+      this.updateTaskData()
 
       this.$q.notify({
         position: 'top',
@@ -596,7 +616,7 @@ export default {
       if (form.toggleRepeat) {
         this.$q.notify({
           position: 'top',
-          message: 'Repeatable tasks created',
+          message: 'Related tasks created',
           color: 'green',
           timeout: 2000
         })

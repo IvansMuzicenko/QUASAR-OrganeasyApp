@@ -2,6 +2,7 @@
   <q-dialog ref="dialog" @hide="onDialogHide">
     <task-form
       :exact-date="exactDate"
+      :copy="copy"
       @OKEvent="onOKClick"
       @cancelEvent="onCancelClick"
     />
@@ -25,6 +26,11 @@ export default {
       type: String,
       required: false,
       default: ''
+    },
+    copy: {
+      type: Object,
+      required: false,
+      default: null
     }
   },
 
@@ -124,6 +130,14 @@ export default {
         color: 'green',
         timeout: 1000
       })
+      if (form.toggleRepeat) {
+        this.$q.notify({
+          position: 'top',
+          message: 'Related tasks created',
+          color: 'green',
+          timeout: 2000
+        })
+      }
     },
 
     onCancelClick() {

@@ -692,6 +692,11 @@ export default {
       type: String,
       required: false,
       default: ''
+    },
+    copy: {
+      type: Object,
+      required: false,
+      default: null
     }
   },
   emits: ['OKEvent', 'cancelEvent', 'editEvent', 'subtaskEvent'],
@@ -936,28 +941,46 @@ export default {
           ? this.editTask.notificationsId
           : []
         this.form.toggleDefaultNotif = this.editTask.toggleDefaultNotif
+      }
+      if (this.copy) {
+        this.form.todoTitle = this.copy.title
+        this.form.progress = this.copy.progress
+        this.form.eventDate = this.copy.time
+        this.form.continuousState = this.copy.continuous
 
-        this.form.toggleRepeat = this.editTask.repeat ? true : false
-        if (this.editTask.repeat) {
-          this.form.repeat.repeatNumber = this.editTask.repeat.repeatNumber
-            ? this.editTask.repeat.repeatNumber
-            : 0
-          this.form.repeat.monthsModel = this.editTask.repeat.months
-            ? this.editTask.repeat.months
-            : 0
-          this.form.repeat.weeksModel = this.editTask.repeat.weeks
-            ? this.editTask.repeat.weeks
-            : 0
-          this.form.repeat.daysModel = this.editTask.repeat.days
-            ? this.editTask.repeat.days
-            : 0
-          this.form.repeat.hoursModel = this.editTask.repeat.hours
-            ? this.editTask.repeat.hours
-            : 0
-          this.form.repeat.minutesModel = this.editTask.repeat.minutes
-            ? this.editTask.repeat.minutes
-            : 0
-        }
+        this.form.toggleEventEnd = this.copy.endingTime ? true : false
+        this.form.eventEndingDate = this.copy.endingTime
+          ? this.copy.endingTime
+          : this.form.eventDate
+
+        this.form.toggleLocation = this.copy.location ? true : false
+        this.form.eventLocation = this.copy.location ? this.copy.location : ''
+
+        this.form.toggleNotes = this.copy.notes ? true : false
+        this.form.notes.attachedNotes =
+          this.copy.notes && this.copy.notes.attachedNotes
+            ? this.copy.notes.attachedNotes
+            : []
+        this.form.notes.text =
+          this.copy.notes && this.copy.notes.text ? this.copy.notes.text : ''
+
+        this.form.toggleProcesses = this.copy.processes ? true : false
+        this.form.processesModel = this.copy.processes
+          ? this.copy.processes
+          : []
+        this.form.processesTime = this.processesTimeCalc
+
+        this.form.toggleSubtasks = this.copy.subtasks ? true : false
+        this.form.subtasks = this.copy.subtasks ? this.copy.subtasks : []
+
+        this.form.toggleNotifications = this.copy.notifications ? true : false
+        this.form.notificationForm = this.copy.notifications
+          ? this.copy.notifications
+          : []
+        this.form.notificationsId = this.copy.notificationsId
+          ? this.copy.notificationsId
+          : []
+        this.form.toggleDefaultNotif = this.copy.toggleDefaultNotif
       }
     },
     async addNotifsId() {
