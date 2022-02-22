@@ -232,6 +232,29 @@
 
     <q-card-section>
       <q-checkbox
+        v-if="!form.toggleLocation"
+        v-model="form.toggleLocation"
+        label="Add event location"
+      />
+      <q-card-section v-if="form.toggleLocation" class="row no-padding">
+        <q-input
+          v-model="form.eventLocation"
+          bottom-slots
+          label="Location"
+          class="col"
+        />
+        <q-icon
+          class="col-1 cursor-pointer float-right"
+          color="red"
+          name="close"
+          size="md"
+          @click="form.toggleLocation = !form.toggleLocation"
+        />
+      </q-card-section>
+    </q-card-section>
+
+    <q-card-section>
+      <q-checkbox
         v-if="!form.toggleSubtasks"
         v-model="form.toggleSubtasks"
         label="Add subtasks"
@@ -459,6 +482,9 @@ export default {
           attachedNotes: []
         },
 
+        toggleLocation: false,
+        eventLocation: '',
+
         toggleSubtasks: false,
         subtasks: []
       },
@@ -552,7 +578,10 @@ export default {
           this.editTask.notes && this.editTask.notes.text
             ? this.editTask.notes.text
             : ''
-
+        this.form.toggleLocation = this.editTask.location ? true : false
+        this.form.eventLocation = this.editTask.location
+          ? this.editTask.location
+          : ''
         this.form.toggleSubtasks = this.editTask.subtasks ? true : false
         this.form.subtasks = this.editTask.subtasks
           ? this.editTask.subtasks

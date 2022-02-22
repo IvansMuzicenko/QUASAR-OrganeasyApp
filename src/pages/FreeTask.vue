@@ -232,6 +232,19 @@
         </q-item-section>
       </q-item>
 
+      <q-item v-if="task.location">
+        <q-item-section avatar class="taskInfo">Location</q-item-section>
+        <q-separator vertical spaced="md" />
+        <a
+          :href="`https://www.google.com/maps/search/${task.location.replace(
+            ' ',
+            '+'
+          )}`"
+        >
+          {{ task.location }}
+        </a>
+      </q-item>
+
       <q-item v-if="task.subtasks">
         <q-item-section avatar class="taskInfo">Subtasks</q-item-section>
         <q-separator vertical spaced="md" />
@@ -332,6 +345,8 @@ export default {
           text: '',
           attachedNotes: []
         },
+
+        location: '',
 
         subtasks: []
       }
@@ -471,6 +486,7 @@ export default {
           (form.notes.text || form.notes.attachedNotes.length)
             ? form.notes
             : null,
+        location: form.toggleLocation ? form.eventLocation : null,
         category: form.category || null,
         continuous: form.continuousState,
         continuousStarted:

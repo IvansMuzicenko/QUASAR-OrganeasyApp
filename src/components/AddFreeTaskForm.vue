@@ -40,6 +40,7 @@ export default {
         progress: form.progress,
         continuous: form.continuousState,
         notes: form.toggleNotes ? form.notes : null,
+        location: form.toggleLocation ? form.eventLocation : null,
         subtasks: form.toggleSubtasks ? form.subtasks : null,
         category: form.category || null,
         dateModified: Date.now(),
