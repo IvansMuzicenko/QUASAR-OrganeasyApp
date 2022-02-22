@@ -287,22 +287,46 @@
       <q-checkbox
         v-if="!form.toggleLocation"
         v-model="form.toggleLocation"
-        label="Add event location"
+        label="Add locations"
       />
-      <q-card-section v-if="form.toggleLocation" class="row no-padding">
-        <q-input
-          v-model="form.eventLocation"
-          bottom-slots
-          label="Location"
-          class="col"
-        />
-        <q-icon
-          class="col-1 cursor-pointer float-right"
-          color="red"
-          name="close"
-          size="md"
-          @click="form.toggleLocation = !form.toggleLocation"
-        />
+      <q-card-section v-if="form.toggleLocation" class="no-padding">
+        <p class="q-mb-none">
+          Locations
+          <q-btn flat @click="addLocation">+</q-btn>
+          <q-icon
+            class="col-1 cursor-pointer float-right"
+            color="red"
+            name="close"
+            size="md"
+            @click="form.toggleLocation = !form.toggleLocation"
+          />
+        </p>
+        <q-card-section
+          v-for="(location, index) in form.eventLocation"
+          :key="index"
+          class="row"
+        >
+          <q-input
+            v-model="form.eventLocation[index]['address']"
+            dense
+            outlined
+            label="Address"
+            class="col"
+          />
+          <q-input
+            v-model="form.eventLocation[index]['description']"
+            dense
+            outlined
+            label="Description"
+            class="col"
+          />
+          <q-icon
+            class="cursor-pointer"
+            name="close"
+            size="xs"
+            @click="deleteLocation(index)"
+          />
+        </q-card-section>
       </q-card-section>
     </q-card-section>
 
@@ -517,7 +541,7 @@
         label="Add notifications"
       />
       <q-card-section v-if="form.toggleNotifications" class="no-padding">
-        <p>
+        <p class="q-mb-none">
           Notifications
           <q-btn flat @click="addNotification()">+</q-btn>
           <q-icon
@@ -722,7 +746,7 @@ export default {
         },
 
         toggleLocation: false,
-        eventLocation: '',
+        eventLocation: [{ address: '', description: '' }],
 
         continuousState: false,
 
@@ -908,7 +932,7 @@ export default {
         this.form.toggleLocation = this.editTask.location ? true : false
         this.form.eventLocation = this.editTask.location
           ? this.editTask.location
-          : ''
+          : []
 
         this.form.toggleNotes = this.editTask.notes ? true : false
         this.form.notes.attachedNotes =
@@ -954,7 +978,7 @@ export default {
           : this.form.eventDate
 
         this.form.toggleLocation = this.copy.location ? true : false
-        this.form.eventLocation = this.copy.location ? this.copy.location : ''
+        this.form.eventLocation = this.copy.location ? this.copy.location : []
 
         this.form.toggleNotes = this.copy.notes ? true : false
         this.form.notes.attachedNotes =
@@ -1159,6 +1183,9 @@ export default {
         notificationPointModel: 'start time'
       })
     },
+    addLocation() {
+      this.form.eventLocation.push({ address: '', description: '' })
+    },
     hideProcess() {
       this.$refs.processPopup.hide()
     },
@@ -1169,6 +1196,9 @@ export default {
     },
     deleteNotification(index) {
       this.form.notificationForm.splice(index, 1)
+    },
+    deleteLocation(index) {
+      this.form.eventLocation.splice(index, 1)
     },
     addSubtask(newSubtask) {
       this.form.subtasks.push({ title: newSubtask, progress: false })

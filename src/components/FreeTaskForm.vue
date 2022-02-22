@@ -234,22 +234,46 @@
       <q-checkbox
         v-if="!form.toggleLocation"
         v-model="form.toggleLocation"
-        label="Add event location"
+        label="Add locations"
       />
-      <q-card-section v-if="form.toggleLocation" class="row no-padding">
-        <q-input
-          v-model="form.eventLocation"
-          bottom-slots
-          label="Location"
-          class="col"
-        />
-        <q-icon
-          class="col-1 cursor-pointer float-right"
-          color="red"
-          name="close"
-          size="md"
-          @click="form.toggleLocation = !form.toggleLocation"
-        />
+      <q-card-section v-if="form.toggleLocation" class="no-padding">
+        <p class="q-mb-none">
+          Locations
+          <q-btn flat @click="addLocation">+</q-btn>
+          <q-icon
+            class="col-1 cursor-pointer float-right"
+            color="red"
+            name="close"
+            size="md"
+            @click="form.toggleLocation = !form.toggleLocation"
+          />
+        </p>
+        <q-card-section
+          v-for="(location, index) in form.eventLocation"
+          :key="index"
+          class="row"
+        >
+          <q-input
+            v-model="form.eventLocation[index]['address']"
+            dense
+            outlined
+            label="Address"
+            class="col"
+          />
+          <q-input
+            v-model="form.eventLocation[index]['description']"
+            dense
+            outlined
+            label="Description"
+            class="col"
+          />
+          <q-icon
+            class="cursor-pointer"
+            name="close"
+            size="xs"
+            @click="deleteLocation(index)"
+          />
+        </q-card-section>
       </q-card-section>
     </q-card-section>
 
@@ -483,7 +507,7 @@ export default {
         },
 
         toggleLocation: false,
-        eventLocation: '',
+        eventLocation: [{ address: '', description: '' }],
 
         toggleSubtasks: false,
         subtasks: []
@@ -581,7 +605,7 @@ export default {
         this.form.toggleLocation = this.editTask.location ? true : false
         this.form.eventLocation = this.editTask.location
           ? this.editTask.location
-          : ''
+          : []
         this.form.toggleSubtasks = this.editTask.subtasks ? true : false
         this.form.subtasks = this.editTask.subtasks
           ? this.editTask.subtasks
@@ -666,6 +690,12 @@ export default {
       this.$q.dialog({
         component: AddCategoryForm
       })
+    },
+    addLocation() {
+      this.form.eventLocation.push({ address: '', description: '' })
+    },
+    deleteLocation(index) {
+      this.form.eventLocation.splice(index, 1)
     },
     addErrorMessage(message) {
       if (!this.errorMessages.includes(message)) {

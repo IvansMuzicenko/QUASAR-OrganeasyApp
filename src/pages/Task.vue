@@ -179,17 +179,25 @@
         </q-item-section>
       </q-item>
 
-      <q-item v-if="task.location">
+      <q-item v-if="task.location && task.location.length">
         <q-item-section avatar class="taskInfo">Location</q-item-section>
         <q-separator vertical spaced="md" />
-        <a
-          :href="`https://www.google.com/maps/search/${task.location.replace(
-            ' ',
-            '+'
-          )}`"
-        >
-          {{ task.location }}
-        </a>
+        <q-item-section>
+          <q-item-section
+            v-for="(location, index) of task.location"
+            :key="index"
+            class="q-ml-sm"
+          >
+            <a
+              :href="`https://www.google.com/maps/search/${location.address.replace(
+                ' ',
+                '+'
+              )}`"
+            >
+              {{ location['description'] }}: {{ location['address'] }}
+            </a>
+          </q-item-section>
+        </q-item-section>
       </q-item>
 
       <q-item v-if="task.notificationsId">
@@ -351,7 +359,7 @@ export default {
           text: '',
           attachedNotes: []
         },
-        location: '',
+        location: [],
         notifications: [
           {
             notificationPeriodModel: '',
