@@ -649,7 +649,6 @@ export default {
       const notifsToRemove = []
       if (type == 'all') {
         for (const item of this.relativeItems) {
-          console.log(item)
           if (item.notificationsId) {
             for (const notif of item.notificationsId) {
               notifsToRemove.push({ id: notif.id })
