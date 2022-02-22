@@ -405,12 +405,14 @@ export default {
     relativeItems() {
       const relationId = this.task.relationId
       let relationArray = []
-      const vuexTasks = this.$store.getters['users/tasks']
-      for (const vuexDate in vuexTasks) {
-        for (const vuexTask in vuexTasks[vuexDate]) {
-          const task = vuexTasks[vuexDate][vuexTask]
-          if (task && task.relationId && task.relationId == relationId) {
-            relationArray.push(task)
+      if (relationId) {
+        const vuexTasks = this.$store.getters['users/tasks']
+        for (const vuexDate in vuexTasks) {
+          for (const vuexTask in vuexTasks[vuexDate]) {
+            const task = vuexTasks[vuexDate][vuexTask]
+            if (task && task.relationId && task.relationId == relationId) {
+              relationArray.push(task)
+            }
           }
         }
       }
@@ -552,7 +554,7 @@ export default {
         }
         const updateTodo = {
           id: i == 0 ? form.id : generateId(),
-          relationId: this.task.relationId,
+          relationId: this.task.relationId || generateId(),
           title: form.todoTitle,
           progress: form.progress,
           time: eventDate,
