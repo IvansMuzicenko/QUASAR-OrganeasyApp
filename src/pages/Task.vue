@@ -273,6 +273,13 @@
           </q-item-section>
         </q-item-section>
       </q-item>
+      <q-item v-if="relativeItems > 0">
+        <q-item-section avatar class="taskInfo">
+          Relative tasks count
+        </q-item-section>
+        <q-separator vertical spaced="md" />
+        <q-item-section>{{ relativeItems }}</q-item-section>
+      </q-item>
     </q-list>
 
     <task-form
@@ -378,6 +385,22 @@ export default {
         return timeSpent
       }
       return 0
+    },
+    relativeItems() {
+      const relationId = this.task.relationId
+      let relationArray = []
+      let relationsCount = 0
+      const vuexTasks = this.$store.getters['users/tasks']
+      for (const vuexDate in vuexTasks) {
+        for (const vuexTask in vuexTasks[vuexDate]) {
+          const task = vuexTasks[vuexDate][vuexTask]
+          if (task && task.relationId && task.relationId == relationId) {
+            relationArray.push(task)
+          }
+        }
+      }
+      relationsCount = relationArray.length - 1
+      return relationsCount
     }
   },
   watch: {
