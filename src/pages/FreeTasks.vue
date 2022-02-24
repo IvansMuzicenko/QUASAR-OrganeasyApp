@@ -489,6 +489,31 @@
             </q-btn>
           </q-card-section>
         </q-card>
+        <q-dialog ref="progressCheck" @hide="onProgressCheckHide">
+          <q-card class="q-dialog-plugin">
+            <q-card-section>
+              You have uncompleted subtasks. Do you want to complete all
+              subtasks too?
+            </q-card-section>
+            <q-card-actions align="right">
+              <q-btn
+                color="positive"
+                label="Done all"
+                @click="onDoneAllClick(holdedTask)"
+              />
+              <q-btn
+                color="secondary"
+                label="Done task only"
+                @click="changeProgress(holdedTask, true)"
+              />
+              <q-btn
+                color="primary"
+                label="Cancel"
+                @click="onProgressCheckHide"
+              />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
       </q-popup-proxy>
     </q-list>
     <div class="text-center q-my-md">
@@ -604,8 +629,47 @@ export default {
         component: AddFreeTaskForm
       })
     },
+    changeProgress(task, strictMode) {
+      const subtasks = task.subtasks
 
-    changeProgress(task) {
+      if (
+        !task.progress &&
+        strictMode != true &&
+        subtasks &&
+        subtasks.length &&
+        subtasks.some(
+          (el) =>
+            !el['progress'] ||
+            (el['subtasks'] &&
+              el['subtasks'].some((subEl) => !subEl['progress']))
+        )
+      ) {
+        this.$refs['progressCheck'].show()
+      } else {
+        update(
+          ref(
+            db,
+            `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}`
+          ),
+          {
+            progress: !task.progress,
+            finishedDate: !task.progress ? Date.now() : null
+          }
+        )
+        this.onProgressCheckHide()
+      }
+    },
+    onDoneAllClick(task) {
+      let subtasks = []
+      for (const subtask in JSON.parse(JSON.stringify(task.subtasks))) {
+        subtasks.push(JSON.parse(JSON.stringify(task.subtasks))[subtask])
+      }
+      subtasks.forEach((subtask) => {
+        subtask.progress = true
+        if (subtask.subtasks && subtask.subtasks.length) {
+          subtask.subtasks.forEach((subSubtask) => (subSubtask.progress = true))
+        }
+      })
       update(
         ref(
           db,
@@ -613,9 +677,14 @@ export default {
         ),
         {
           progress: !task.progress,
-          finishedDate: !task.progress ? Date.now() : null
+          finishedDate: !task.progress ? Date.now() : null,
+          subtasks: subtasks
         }
       )
+      this.onProgressCheckHide()
+    },
+    onProgressCheckHide() {
+      this.$refs['progressCheck'].hide()
     },
     continuousStart(task) {
       update(
