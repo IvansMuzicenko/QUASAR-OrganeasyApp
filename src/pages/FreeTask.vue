@@ -319,6 +319,24 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <q-dialog ref="progressCheck" @hide="onProgressCheckHide">
+      <q-card class="q-dialog-plugin">
+        <q-card-section>
+          You have uncompleted subtasks. Do you want to complete all subtasks
+          too?
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn color="positive" label="Done all" @click="onDoneAllClick" />
+          <q-btn
+            color="secondary"
+            label="Done task only"
+            @click="changeProgress(true)"
+          />
+          <q-btn color="primary" label="Cancel" @click="onProgressCheckHide" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -555,7 +573,45 @@ export default {
       )
       this.updateTaskData()
     },
-    changeProgress() {
+    changeProgress(strictMode) {
+      const subtasks = this.task.subtasks
+
+      if (
+        !this.task.progress &&
+        strictMode != true &&
+        subtasks &&
+        subtasks.length &&
+        subtasks.some(
+          (el) =>
+            !el['progress'] ||
+            (el['subtasks'] &&
+              el['subtasks'].some((subEl) => !subEl['progress']))
+        )
+      ) {
+        this.$refs['progressCheck'].show()
+      } else {
+        update(
+          ref(
+            db,
+            `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
+          ),
+          {
+            progress: !this.task.progress,
+            finishedDate: !this.task.progress ? Date.now() : null
+          }
+        )
+        this.onProgressCheckHide()
+        this.updateTaskData()
+      }
+    },
+    onDoneAllClick() {
+      const subtasks = this.task.subtasks
+      subtasks.forEach((subtask) => {
+        subtask.progress = true
+        if (subtask.subtasks && subtask.subtasks.length) {
+          subtask.subtasks.forEach((subSubtask) => (subSubtask.progress = true))
+        }
+      })
       update(
         ref(
           db,
@@ -563,10 +619,15 @@ export default {
         ),
         {
           progress: !this.task.progress,
-          finishedDate: !this.task.progress ? Date.now() : null
+          finishedDate: !this.task.progress ? Date.now() : null,
+          subtasks: subtasks
         }
       )
+      this.onProgressCheckHide()
       this.updateTaskData()
+    },
+    onProgressCheckHide() {
+      this.$refs['progressCheck'].hide()
     },
     onDeleteClick() {
       this.$refs.confirmDialog.show()
