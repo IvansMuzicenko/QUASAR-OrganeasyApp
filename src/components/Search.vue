@@ -1,6 +1,11 @@
 <template>
-  <q-dialog ref="dialog" @hide="onDialogHide">
-    <q-card class="q-dialog-plugin">
+  <q-dialog
+    ref="dialog"
+    transition-show="fade"
+    transition-hide="fade"
+    @hide="onDialogHide"
+  >
+    <q-card class="q-dialog-plugin absolute-top q-mx-auto q-mt-md">
       <q-input v-model="searchQuery" outlined type="search" label="Search">
         <template #prepend>
           <q-icon name="search" />
