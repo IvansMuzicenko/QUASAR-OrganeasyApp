@@ -311,6 +311,9 @@ export default {
       this.note = JSON.parse(JSON.stringify(note))
     },
     routerBack() {
+      if (this.editState) {
+        return this.$router.push(this.$route.path)
+      }
       return this.$router.push('/notes')
     },
     toggleEdit() {

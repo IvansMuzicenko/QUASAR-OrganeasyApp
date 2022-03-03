@@ -485,6 +485,9 @@ export default {
       return false
     },
     routerBack() {
+      if (this.editState) {
+        return this.$router.push(this.$route.path)
+      }
       return this.$router.push('/free-tasks')
     },
     toggleEdit() {

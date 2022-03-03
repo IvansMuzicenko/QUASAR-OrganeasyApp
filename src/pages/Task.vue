@@ -489,6 +489,9 @@ export default {
       return {}
     },
     routerBack() {
+      if (this.editState) {
+        return this.$router.push(this.$route.path)
+      }
       return this.$router.push(`/?date=${this.taskDate}`)
     },
     toggleEdit() {
