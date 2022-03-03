@@ -90,19 +90,48 @@
       <q-item>
         <q-item-section avatar class="taskInfo">Priority</q-item-section>
         <q-separator vertical spaced="md" />
-        <q-icon
-          name="fiber_manual_record"
-          :color="
-            task.priority === 1
-              ? 'green'
-              : task.priority === 2
-              ? 'yellow'
-              : 'red-11'
-          "
-        />
-        {{
-          task.priority == 1 ? 'High' : task.priority == 2 ? 'Medium' : 'Low'
-        }}
+        <q-btn flat dense>
+          <q-icon
+            name="fiber_manual_record"
+            :color="
+              task.priority === 1
+                ? 'green'
+                : task.priority === 2
+                ? 'yellow'
+                : 'red-11'
+            "
+          />
+          {{
+            task['priority'] == 1
+              ? 'High'
+              : task['priority'] == 2
+              ? 'Medium'
+              : 'Low'
+          }}
+          <q-icon name="expand_more" />
+          <q-menu anchor="bottom left" self="top left" auto-close>
+            <q-list separator>
+              <q-item clickable @click="changePriority(1)">
+                <div class="full-width">
+                  <q-icon name="fiber_manual_record" color="green" />
+                  High
+                </div>
+              </q-item>
+              <q-item clickable @click="changePriority(2)">
+                <div class="full-width">
+                  <q-icon name="fiber_manual_record" color="yellow" />
+                  Medium
+                </div>
+              </q-item>
+              <q-item clickable @click="changePriority(3)">
+                <div class="full-width">
+                  <q-icon name="fiber_manual_record" color="red" />
+                  Low
+                </div>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-item>
 
       <q-item>
@@ -115,7 +144,7 @@
           />
           {{ selectedCategory['title'] || 'None' }}
           <q-icon name="expand_more" />
-          <q-menu anchor="bottom left" self="top left">
+          <q-menu anchor="bottom left" self="top left" auto-close>
             <p class="text-center text-subtitle1 no-margin">Categories</p>
             <q-list separator>
               <q-separator />
@@ -452,6 +481,16 @@ export default {
     },
     callEditClick() {
       this.$refs.freeTaskForm.onEditClick()
+    },
+    changePriority(priority) {
+      update(
+        ref(
+          db,
+          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
+        ),
+        { priority: priority }
+      )
+      this.updateTaskData()
     },
     changeCategory(category) {
       update(
