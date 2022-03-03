@@ -319,7 +319,6 @@
               class="q-pa-none"
             >
               <q-btn
-                v-if="editTask && editTask.subtasks"
                 dense
                 flat
                 :color="subtask['progress'] ? 'negative' : 'positive'"
@@ -338,7 +337,7 @@
 
                   <span class="float-right">
                     <q-btn
-                      v-if="editTask && subtaskEdit != index"
+                      v-if="subtaskEdit != index"
                       icon="edit"
                       flat
                       class="q-px-sm"
@@ -356,7 +355,7 @@
                 <q-input v-if="subtaskEdit == index" v-model="subtask['title']">
                   <template #append>
                     <q-btn
-                      v-if="editTask && subtaskEdit == index"
+                      v-if="subtaskEdit == index"
                       icon="save"
                       flat
                       class="q-px-sm"
@@ -378,22 +377,6 @@
                 <q-separator
                   v-if="subtask['subtasks'] && subtask['subtasks'].length"
                 />
-                <q-input
-                  v-if="subtaskEdit == index"
-                  v-model="subSubtaskInput"
-                  dense
-                  label="Add subSubtask"
-                >
-                  <template #append>
-                    <q-btn
-                      round
-                      dense
-                      flat
-                      icon="add"
-                      @click="addSubSubtask(subSubtaskInput, index)"
-                    />
-                  </template>
-                </q-input>
                 <q-list separator bordered>
                   <q-item
                     v-for="(subSubtask, subIndex) of subtask['subtasks']"
@@ -402,7 +385,6 @@
                     class="q-px-none"
                   >
                     <q-btn
-                      v-if="editTask"
                       dense
                       flat
                       :color="subSubtask['progress'] ? 'negative' : 'positive'"
@@ -437,6 +419,22 @@
                     />
                   </q-item>
                 </q-list>
+                <q-input
+                  v-if="subtaskEdit == index"
+                  v-model="subSubtaskInput"
+                  dense
+                  label="Add subSubtask"
+                >
+                  <template #append>
+                    <q-btn
+                      round
+                      dense
+                      flat
+                      icon="add"
+                      @click="addSubSubtask(subSubtaskInput, index)"
+                    />
+                  </template>
+                </q-input>
               </q-item-section>
             </q-item>
           </q-list>
@@ -639,11 +637,9 @@ export default {
 
     onSubtaskClick(index, progress) {
       this.form.subtasks[index]['progress'] = !progress
-      this.updateData()
     },
     onSubSubtaskClick(index, subIndex, progress) {
       this.form.subtasks[index]['subtasks'][subIndex]['progress'] = !progress
-      this.updateData()
     },
     async onOKClick() {
       this.$emit('OKEvent', this.form)
