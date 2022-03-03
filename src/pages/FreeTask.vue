@@ -40,6 +40,16 @@
       </q-btn>
       <q-btn
         v-if="!editState"
+        icon="content_copy"
+        color="secondary"
+        flat
+        class="zindex-high"
+        @click="copyTask()"
+      >
+        Copy
+      </q-btn>
+      <q-btn
+        v-if="!editState"
         class="zindex-high"
         icon="edit"
         color="secondary"
@@ -374,6 +384,7 @@ import { getDatabase, ref, set, update, remove } from 'firebase/database'
 import { date } from 'quasar'
 import FreeTaskForm from 'src/components/FreeTaskForm.vue'
 import AddCategoryForm from 'src/components/AddCategoryForm.vue'
+import AddFreeTaskForm from 'src/components/AddFreeTaskForm.vue'
 
 const db = getDatabase()
 
@@ -481,6 +492,14 @@ export default {
     },
     callEditClick() {
       this.$refs.freeTaskForm.onEditClick()
+    },
+    copyTask() {
+      this.$q.dialog({
+        component: AddFreeTaskForm,
+        componentProps: {
+          copy: this.task
+        }
+      })
     },
     changePriority(priority) {
       update(

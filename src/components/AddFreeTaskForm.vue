@@ -1,6 +1,10 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <free-task-form @OKEvent="onOKClick" @cancelEvent="onCancelClick" />
+    <free-task-form
+      :copy="copy"
+      @OKEvent="onOKClick"
+      @cancelEvent="onCancelClick"
+    />
   </q-dialog>
 </template>
 
@@ -15,6 +19,13 @@ const db = getDatabase()
 export default {
   components: {
     FreeTaskForm
+  },
+  props: {
+    copy: {
+      type: Object,
+      required: false,
+      default: null
+    }
   },
 
   emits: ['ok', 'hide'],

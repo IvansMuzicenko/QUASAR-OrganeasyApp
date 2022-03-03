@@ -486,6 +486,11 @@ export default {
       type: Object,
       required: false,
       default: null
+    },
+    copy: {
+      type: Object,
+      required: false,
+      default: null
     }
   },
   emits: ['OKEvent', 'cancelEvent', 'editEvent', 'subtaskEvent'],
@@ -610,6 +615,25 @@ export default {
         this.form.subtasks = this.editTask.subtasks
           ? this.editTask.subtasks
           : []
+      }
+      if (this.copy) {
+        this.form.todoTitle = this.copy.title
+        this.form.progress = this.copy.progress
+        this.form.priority = this.copy.priority ? this.copy.priority : 3
+        this.form.continuousState = this.copy.continuous
+        this.form.category = this.copy.category
+
+        this.form.toggleNotes = this.copy.notes ? true : false
+        this.form.notes.attachedNotes =
+          this.copy.notes && this.copy.notes.attachedNotes
+            ? this.copy.notes.attachedNotes
+            : []
+        this.form.notes.text =
+          this.copy.notes && this.copy.notes.text ? this.copy.notes.text : ''
+        this.form.toggleLocation = this.copy.location ? true : false
+        this.form.eventLocation = this.copy.location ? this.copy.location : []
+        this.form.toggleSubtasks = this.copy.subtasks ? true : false
+        this.form.subtasks = this.copy.subtasks ? this.copy.subtasks : []
       }
     },
 
