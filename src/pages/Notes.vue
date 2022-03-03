@@ -249,7 +249,7 @@
               />
               {{ findCategory(holdedNote.category)['title'] || 'None' }}
               <q-icon name="expand_more" />
-              <q-menu anchor="bottom left" self="top left">
+              <q-menu anchor="bottom left" self="top left" auto-close>
                 <p class="text-center text-subtitle1 no-margin">Categories</p>
                 <q-list separator>
                   <q-separator />

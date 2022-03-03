@@ -403,7 +403,7 @@
                   : 'Low'
               }}
               <q-icon name="expand_more" />
-              <q-menu anchor="bottom left" self="top left">
+              <q-menu anchor="bottom left" self="top left" auto-close>
                 <q-list separator>
                   <q-item clickable @click="changePriority(holdedTask, 1)">
                     <div class="full-width">
@@ -444,7 +444,7 @@
               />
               {{ findCategory(holdedTask.category)['title'] || 'None' }}
               <q-icon name="expand_more" />
-              <q-menu anchor="bottom left" self="top left">
+              <q-menu anchor="bottom left" self="top left" auto-close>
                 <p class="text-center text-subtitle1 no-margin">Categories</p>
                 <q-list separator>
                   <q-separator />
