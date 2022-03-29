@@ -76,40 +76,8 @@
             </q-menu>
           </q-btn>
         </q-card-section>
-        <q-editor
-          v-model="noteText"
-          dense
-          :toolbar="[
-            ['undo', 'redo'],
-            [
-              'bold',
-              'italic',
-              'strike',
-              'underline',
-              'subscript',
-              'superscript'
-            ],
-            ['hr', 'link', 'code'],
-            ['unordered', 'ordered', 'outdent', 'indent'],
-            [
-              {
-                label: $q.lang.editor.fontSize,
-                icon: $q.iconSet.editor.fontSize,
-                fixedLabel: true,
-                fixedIcon: true,
-                list: 'no-icons',
-                options: ['size-1', 'size-2', 'size-3', 'size-4', 'size-5']
-              },
-              {
-                label: $q.lang.editor.align,
-                icon: $q.iconSet.editor.align,
-                fixedLabel: true,
-                list: 'only-icons',
-                options: ['left', 'center', 'right', 'justify']
-              }
-            ]
-          ]"
-        />
+
+        <editor v-model="noteText" />
       </q-card-section>
       <q-card-section v-if="error">
         <p class="text-negative">Title or text is required</p>
@@ -130,10 +98,12 @@
 
 <script>
 import { getDatabase, ref, set } from 'firebase/database'
+import Editor from 'src/components/common/form/Editor.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import generateId from 'src/idGenerator.js'
 
 export default {
+  components: { Editor },
   emits: ['ok', 'hide'],
   data() {
     return {

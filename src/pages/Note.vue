@@ -180,41 +180,9 @@
         <q-separator v-if="!editState" color="black" />
 
         <p v-if="!editState" v-html="note.text" />
-        <q-editor
-          v-if="editState"
-          v-model="note.text"
-          dense
-          :toolbar="[
-            ['undo', 'redo'],
-            [
-              'bold',
-              'italic',
-              'strike',
-              'underline',
-              'subscript',
-              'superscript'
-            ],
-            ['hr', 'link', 'code'],
-            ['unordered', 'ordered', 'outdent', 'indent'],
-            [
-              {
-                label: $q.lang.editor.fontSize,
-                icon: $q.iconSet.editor.fontSize,
-                fixedLabel: true,
-                fixedIcon: true,
-                list: 'no-icons',
-                options: ['size-1', 'size-2', 'size-3', 'size-4', 'size-5']
-              },
-              {
-                label: $q.lang.editor.align,
-                icon: $q.iconSet.editor.align,
-                fixedLabel: true,
-                list: 'only-icons',
-                options: ['left', 'center', 'right', 'justify']
-              }
-            ]
-          ]"
-        />
+
+        <editor v-if="editState" v-model="note.text" />
+
         <q-card-section v-if="error">
           <p class="text-negative">Title or text is required</p>
         </q-card-section>
@@ -245,10 +213,13 @@
 
 <script>
 import { getDatabase, ref, update, remove } from 'firebase/database'
+
+import Editor from 'src/components/common/form/Editor.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 const db = getDatabase()
 
 export default {
+  components: { Editor },
   emits: ['hide'],
   data() {
     return {
