@@ -326,8 +326,8 @@
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, update } from 'firebase/database'
-import AddTaskForm from 'src/components/AddTaskForm.vue'
-import Search from 'src/components/Search.vue'
+import AddTask from 'src/components/common/dialogs/AddTask.vue'
+import Search from 'src/components/common/dialogs/Search.vue'
 
 const db = getDatabase()
 
@@ -442,7 +442,7 @@ export default {
   methods: {
     addTask() {
       this.$q.dialog({
-        component: AddTaskForm,
+        component: AddTask,
         componentProps: {
           exactDate: this.queryDate
         }

@@ -305,9 +305,9 @@
 
 <script>
 import { getDatabase, ref, update } from 'firebase/database'
-import AddNoteForm from 'src/components/AddNoteForm.vue'
-import AddCategoryForm from 'src/components/AddCategoryForm.vue'
-import Search from 'src/components/Search.vue'
+import AddNote from 'src/components/common/dialogs/AddNote.vue'
+import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
+import Search from 'src/components/common/dialogs/Search.vue'
 
 const db = getDatabase()
 
@@ -391,7 +391,7 @@ export default {
   methods: {
     addNote() {
       this.$q.dialog({
-        component: AddNoteForm
+        component: AddNote
       })
     },
     taskHold(event, id) {
@@ -435,7 +435,7 @@ export default {
     },
     addCategory() {
       this.$q.dialog({
-        component: AddCategoryForm
+        component: AddCategory
       })
     }
   }

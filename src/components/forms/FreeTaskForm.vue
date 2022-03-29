@@ -476,7 +476,7 @@
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
-import AddCategoryForm from 'src/components/AddCategoryForm.vue'
+import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 
 export default {
   props: {
@@ -708,7 +708,7 @@ export default {
 
     addCategory() {
       this.$q.dialog({
-        component: AddCategoryForm
+        component: AddCategory
       })
     },
     addLocation() {

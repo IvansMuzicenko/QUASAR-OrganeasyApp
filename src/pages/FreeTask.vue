@@ -382,9 +382,9 @@
 <script>
 import { getDatabase, ref, set, update, remove } from 'firebase/database'
 import { date } from 'quasar'
-import FreeTaskForm from 'src/components/FreeTaskForm.vue'
-import AddCategoryForm from 'src/components/AddCategoryForm.vue'
-import AddFreeTaskForm from 'src/components/AddFreeTaskForm.vue'
+import FreeTaskForm from 'src/components/forms/FreeTaskForm.vue'
+import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
+import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
 
 const db = getDatabase()
 
@@ -498,7 +498,7 @@ export default {
     },
     copyTask() {
       this.$q.dialog({
-        component: AddFreeTaskForm,
+        component: AddFreeTask,
         componentProps: {
           copy: this.task
         }
@@ -526,7 +526,7 @@ export default {
     },
     addCategory() {
       this.$q.dialog({
-        component: AddCategoryForm
+        component: AddCategory
       })
     },
     findCategory(id) {

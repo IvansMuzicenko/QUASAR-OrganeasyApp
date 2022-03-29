@@ -6,7 +6,7 @@
 
 <script>
 import { getDatabase, ref, set } from 'firebase/database'
-import CategoryForm from 'src/components/CategoryForm.vue'
+import CategoryForm from 'src/components/forms/CategoryForm.vue'
 const db = getDatabase()
 
 export default {

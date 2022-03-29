@@ -50,8 +50,8 @@
           </q-btn>
         </q-item>
 
-        <essential-link
-          v-for="link in email ? essentialLinks : unauthLinks"
+        <list-link
+          v-for="link in email ? links : unauthLinks"
           :key="link.title"
           :class="
             parentPath == (link['link'].replace('/', '') || 'tasks')
@@ -322,26 +322,25 @@
 
 <script>
 import { date } from 'quasar'
-import EssentialLink from 'src/components/EssentialLink.vue'
-import AddTaskForm from 'src/components/AddTaskForm.vue'
-import AddFreeTaskForm from 'src/components/AddFreeTaskForm.vue'
-import AddProcessForm from 'src/components/AddProcessForm.vue'
-import AddNoteForm from 'src/components/AddNoteForm.vue'
-import AddCategoryForm from 'src/components/AddCategoryForm.vue'
-import Search from 'src/components/Search.vue'
+import AddTask from 'src/components/common/dialogs/AddTask.vue'
+import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
+import AddProcess from 'src/components/common/dialogs/AddProcess.vue'
+import AddNote from 'src/components/common/dialogs/AddNote.vue'
+import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
+import ListLink from 'src/components/common/ListLink.vue'
+import Search from 'src/components/common/dialogs/Search.vue'
 
 export default {
   components: {
-    EssentialLink
+    ListLink
   },
-
   data() {
     const timeStamp = Date.now()
     const formattedDate = date.formatDate(timeStamp, 'dddd, D MMMM YYYY')
 
     return {
       leftDrawerOpen: false,
-      essentialLinks: [
+      links: [
         {
           title: 'Diary',
           caption: '',
@@ -411,27 +410,27 @@ export default {
     },
     addTask() {
       this.$q.dialog({
-        component: AddTaskForm
+        component: AddTask
       })
     },
     addFreeTask() {
       this.$q.dialog({
-        component: AddFreeTaskForm
+        component: AddFreeTask
       })
     },
     addNote() {
       this.$q.dialog({
-        component: AddNoteForm
+        component: AddNote
       })
     },
     addProcess() {
       this.$q.dialog({
-        component: AddProcessForm
+        component: AddProcess
       })
     },
     addCategory() {
       this.$q.dialog({
-        component: AddCategoryForm
+        component: AddCategory
       })
     },
     openSearch() {

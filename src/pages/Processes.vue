@@ -132,7 +132,7 @@
 </template>
 
 <script>
-import addProcessForm from 'src/components/AddProcessForm.vue'
+import AddProcess from 'src/components/common/dialogs/AddProcess.vue'
 import { getDatabase, ref, update, remove } from 'firebase/database'
 
 const db = getDatabase()
@@ -190,7 +190,7 @@ export default {
   methods: {
     addProcess() {
       this.$q.dialog({
-        component: addProcessForm
+        component: AddProcess
       })
     },
     editProcess(process) {

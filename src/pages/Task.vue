@@ -351,9 +351,9 @@
 <script>
 import { getDatabase, ref, set, update, remove } from 'firebase/database'
 import { date } from 'quasar'
-import TaskForm from 'src/components/TaskForm.vue'
+import TaskForm from 'src/components/forms/TaskForm.vue'
+import AddTask from 'src/components/common/dialogs/AddTask.vue'
 import generateId from 'src/idGenerator.js'
-import AddTaskForm from 'src/components/AddTaskForm.vue'
 
 const db = getDatabase()
 
@@ -502,7 +502,7 @@ export default {
     },
     copyTask() {
       this.$q.dialog({
-        component: AddTaskForm,
+        component: AddTask,
         componentProps: {
           copy: this.task
         }

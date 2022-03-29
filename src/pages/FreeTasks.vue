@@ -526,9 +526,9 @@
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, update } from 'firebase/database'
-import AddFreeTaskForm from 'src/components/AddFreeTaskForm.vue'
-import AddCategoryForm from 'src/components/AddCategoryForm.vue'
-import Search from 'src/components/Search.vue'
+import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
+import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
+import Search from 'src/components/common/dialogs/Search.vue'
 const db = getDatabase()
 
 export default {
@@ -626,7 +626,7 @@ export default {
   methods: {
     addFreeTask() {
       this.$q.dialog({
-        component: AddFreeTaskForm
+        component: AddFreeTask
       })
     },
     changeProgress(task, strictMode) {
@@ -755,7 +755,7 @@ export default {
     },
     addCategory() {
       this.$q.dialog({
-        component: AddCategoryForm
+        component: AddCategory
       })
     },
     findCategory(id) {

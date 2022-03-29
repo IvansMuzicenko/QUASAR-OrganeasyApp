@@ -245,7 +245,7 @@
 
 <script>
 import { getDatabase, ref, update, remove } from 'firebase/database'
-import AddCategoryForm from 'src/components/AddCategoryForm.vue'
+import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 const db = getDatabase()
 
 export default {
@@ -400,7 +400,7 @@ export default {
     },
     addCategory() {
       this.$q.dialog({
-        component: AddCategoryForm
+        component: AddCategory
       })
     },
     deleteExists(noteId) {

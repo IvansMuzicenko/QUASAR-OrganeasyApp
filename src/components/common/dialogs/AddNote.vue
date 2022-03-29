@@ -130,7 +130,7 @@
 
 <script>
 import { getDatabase, ref, set } from 'firebase/database'
-import AddCategoryForm from 'src/components/AddCategoryForm.vue'
+import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import generateId from 'src/idGenerator.js'
 
 export default {
@@ -225,7 +225,7 @@ export default {
     },
     addCategory() {
       this.$q.dialog({
-        component: AddCategoryForm
+        component: AddCategory
       })
     }
   }

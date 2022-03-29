@@ -701,7 +701,7 @@
 import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
 
-import AddProcessForm from 'src/components/AddProcessForm.vue'
+import AddProcess from 'src/components/common/dialogs/AddProcess.vue'
 
 export default {
   props: {
@@ -1187,7 +1187,7 @@ export default {
     },
     addProcess() {
       this.$q.dialog({
-        component: AddProcessForm
+        component: AddProcess
       })
     },
     deleteNotification(index) {
