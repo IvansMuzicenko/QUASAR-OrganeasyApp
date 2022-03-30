@@ -43,7 +43,7 @@
 
           <q-item class="col-2 justify-center no-padding" clickable>
             <q-avatar round color="orange" text-color="white" icon="add" />
-            <app-menu />
+            <items-creation-menu />
           </q-item>
 
           <q-item
@@ -160,11 +160,11 @@
 </template>
 
 <script>
-import AppMenu from 'src/components/common/layout/AppMenu.vue'
+import ItemsCreationMenu from 'src/components/common/layout/parts/ItemsCreationMenu.vue'
 
 export default {
   components: {
-    AppMenu
+    ItemsCreationMenu
   },
   computed: {
     email() {

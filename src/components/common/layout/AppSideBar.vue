@@ -43,7 +43,7 @@
       <div v-if="email" class="text-center">
         <q-btn color="primary" rounded icon="add">
           Add...
-          <app-menu />
+          <items-creation-menu />
         </q-btn>
       </div>
     </q-list>
@@ -53,14 +53,14 @@
 <script>
 import { date } from 'quasar'
 
-import ListLink from 'src/components/common/ListLink.vue'
+import ListLink from 'src/components/common/layout/parts/ListLink.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
-import AppMenu from 'src/components/common/layout/AppMenu.vue'
+import ItemsCreationMenu from 'src/components/common/layout/parts/ItemsCreationMenu.vue'
 
 export default {
   components: {
     ListLink,
-    AppMenu
+    ItemsCreationMenu
   },
   props: {
     leftDrawerOpen: {
