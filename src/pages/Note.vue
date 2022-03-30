@@ -10,7 +10,7 @@
         class="zindex-high"
         :disable="error"
         color="positive"
-        @click="saveEdit()"
+        @click="callEditClick()"
       >
         Save
       </q-btn>
@@ -36,10 +36,13 @@
         Delete
       </q-btn>
     </q-card>
-    <q-card bordered>
+    <q-card :bordered="!editState">
       <q-separator color="black" />
 
-      <q-card-section class="text-h6" @dblclick="toggleEdit()">
+      <q-card-section
+        :class="editState ? 'no-padding' : 'text-h6'"
+        @dblclick="toggleEdit()"
+      >
         <q-item v-if="!editState" class="no-padding">
           <q-item-section thumbnail class="q-pr-none">
             <q-btn flat dense>
@@ -106,86 +109,19 @@
             />
           </q-item-section>
         </q-item>
-        <q-btn
-          v-if="editState"
-          dense
-          flat
-          @click="note.favorite = !note.favorite"
-        >
-          <q-icon
-            :name="note['favorite'] ? 'star' : 'star_outline'"
-            :color="note['favorite'] ? 'yellow' : ''"
-          />
-          Favorite
-        </q-btn>
-        <br />
-        <q-btn v-if="editState" flat dense>
-          <q-icon
-            :name="note.category ? selectedCategory['icon'] : ''"
-            :color="note.category ? selectedCategory['color'] : ''"
-          />
-          {{ selectedCategory['title'] || 'Uncategorized' }}
-          <q-icon name="expand_more" />
-          <q-menu anchor="bottom left" self="top left" auto-close>
-            <p class="text-center text-subtitle1 no-margin">Categories</p>
-            <q-list separator>
-              <q-separator />
-              <q-item
-                clickable
-                class="full-width text-subtitle1"
-                @click="note.category = null"
-              >
-                <div>
-                  <q-icon />
-                  None
-                </div>
-              </q-item>
-              <q-item
-                v-for="(category, categoryIndex) of categories"
-                :key="categoryIndex"
-                clickable
-                class="full-width text-subtitle1"
-                @click="note.category = category['id']"
-              >
-                <div class="full-width">
-                  <q-icon
-                    :name="category['icon']"
-                    :color="category['color']"
-                    size="sm"
-                  />
-                  {{ category['title'] }}
-                </div>
-              </q-item>
-              <q-item
-                clickable
-                class="full-width text-subtitle1"
-                @click="addCategory"
-              >
-                <div>
-                  <q-icon name="add" />
-                  Add new
-                </div>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
-
-        <q-input
-          v-if="editState"
-          v-model="note.title"
-          outlined
-          class="text-h6"
-        />
 
         <q-separator v-if="!editState" color="black" />
 
         <p v-if="!editState" v-html="note.text" />
 
-        <editor v-if="editState" v-model="note.text" />
-
-        <q-card-section v-if="error">
-          <p class="text-negative">Title or text is required</p>
-        </q-card-section>
+        <note-form
+          v-if="editState"
+          ref="noteForm"
+          :edit-note="note"
+          @editEvent="onEditClick"
+          @cancelEvent="onCancelClick"
+          @error="errorCheck"
+        />
 
         <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
           <q-card class="q-dialog-plugin">
@@ -213,13 +149,12 @@
 
 <script>
 import { getDatabase, ref, update, remove } from 'firebase/database'
-
-import Editor from 'src/components/common/form/Editor.vue'
+import NoteForm from 'src/components/forms/NoteForm.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 const db = getDatabase()
 
 export default {
-  components: { Editor },
+  components: { NoteForm },
   emits: ['hide'],
   data() {
     return {
@@ -230,18 +165,16 @@ export default {
         favorite: false,
         category: null,
         dateModified: Date.now()
-      }
+      },
+      error: false
     }
   },
   computed: {
+    path() {
+      return this.$route.path
+    },
     noteId() {
       return this.$route.params.id
-    },
-    error() {
-      return (
-        !this.note.text.replace('<br>', '') &&
-        !this.note.title.replace('<br>', '')
-      )
     },
     editState() {
       return this.$route.query.edit ? true : false
@@ -264,7 +197,7 @@ export default {
     }
   },
   watch: {
-    noteId: {
+    path: {
       handler: function () {
         this.updateNoteData()
       },
@@ -315,27 +248,28 @@ export default {
       )
       this.updateNoteData()
     },
-
-    saveEdit() {
-      if (!this.note.title) {
-        let titleText = this.note.text
+    callEditClick() {
+      this.$refs.noteForm.onEditClick()
+    },
+    onEditClick(form) {
+      if (!form.title) {
+        let titleText = form.text
           .replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '')
           .slice(0, 31)
 
-        if (this.note.text.length > 30) titleText += '...'
+        if (form.text.length > 30) titleText += '...'
 
-        this.note.title = titleText
+        form.title = titleText
       }
-      this.note.dateModified = Date.now()
+      form.dateModified = Date.now()
       update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/notes/id-${this.noteId}`
-        ),
-        this.note
+        ref(db, `${this.$store.getters['users/userId']}/notes/id-${form.id}`),
+        form
       )
 
-      this.$router.push(this.$route.path)
+      this.$router.push(this.path)
+
+      this.updateNoteData()
 
       this.$q.notify({
         position: 'top',
@@ -343,6 +277,10 @@ export default {
         color: 'blue',
         timeout: 1000
       })
+    },
+
+    onCancelClick() {
+      this.$router.push(this.path)
     },
 
     onConfirmDialogHide() {
@@ -373,6 +311,9 @@ export default {
       this.$q.dialog({
         component: AddCategory
       })
+    },
+    errorCheck(errorState) {
+      this.error = errorState
     },
     deleteExists(noteId) {
       const vuexTasks = this.$store.getters['users/tasks']

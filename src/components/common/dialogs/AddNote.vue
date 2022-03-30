@@ -1,142 +1,18 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <q-card class="q-dialog-plugin">
-      <p class="text-center text-subtitle1 no-margin">
-        New note
-        <q-btn
-          icon="close"
-          class="absolute-top-right"
-          flat
-          dense
-          @click="onCancelClick"
-        />
-      </p>
-
-      <q-card-section>
-        <q-input
-          v-model="noteTitle"
-          bottom-slots
-          label="Title"
-          lazy-rules
-          :dense="false"
-        />
-        <q-checkbox v-model="favorite" label="Favorite" />
-
-        <q-card-section>
-          Category:
-          <q-btn flat dense>
-            <q-icon
-              :name="category ? selectedCategory['icon'] : ''"
-              :color="category ? selectedCategory['color'] : ''"
-            />
-            {{ selectedCategory['title'] || 'Uncategorized' }}
-            <q-icon name="expand_more" />
-            <q-menu anchor="bottom left" self="top left">
-              <p class="text-center text-subtitle1 no-margin">Categories</p>
-              <q-list separator>
-                <q-separator />
-                <q-item
-                  clickable
-                  class="full-width text-subtitle1"
-                  @click="category = null"
-                >
-                  <div>
-                    <q-icon />
-                    None
-                  </div>
-                </q-item>
-                <q-item
-                  v-for="(listCategory, categoryIndex) of categories"
-                  :key="categoryIndex"
-                  clickable
-                  class="full-width text-subtitle1"
-                  @click="category = listCategory['id']"
-                >
-                  <div class="full-width">
-                    <q-icon
-                      :name="listCategory['icon']"
-                      :color="listCategory['color']"
-                      size="sm"
-                    />
-                    {{ listCategory['title'] }}
-                  </div>
-                </q-item>
-
-                <q-item
-                  clickable
-                  class="full-width text-subtitle1"
-                  @click="addCategory"
-                >
-                  <div>
-                    <q-icon name="add" />
-                    Add new
-                  </div>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
-        </q-card-section>
-
-        <editor v-model="noteText" />
-      </q-card-section>
-      <q-card-section v-if="error">
-        <p class="text-negative">Title or text is required</p>
-      </q-card-section>
-
-      <q-card-actions align="right">
-        <q-btn
-          color="primary"
-          :disable="error"
-          label="Add"
-          @click="onOKClick"
-        />
-        <q-btn color="negative" label="Cancel" @click="onCancelClick" />
-      </q-card-actions>
-    </q-card>
+    <note-form @OKEvent="onOKClick" @cancelEvent="onCancelClick" />
   </q-dialog>
 </template>
 
 <script>
 import { getDatabase, ref, set } from 'firebase/database'
-import Editor from 'src/components/common/form/Editor.vue'
-import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
+
+import NoteForm from 'src/components/forms/NoteForm.vue'
 import generateId from 'src/idGenerator.js'
 
 export default {
-  components: { Editor },
+  components: { NoteForm },
   emits: ['ok', 'hide'],
-  data() {
-    return {
-      noteTitle: '',
-      noteText: '',
-      favorite: false,
-      category: null
-    }
-  },
-  computed: {
-    error() {
-      return (
-        !this.noteText.replace('<br>', '') &&
-        !this.noteTitle.replace('<br>', '')
-      )
-    },
-    categories() {
-      const vuexCategories = this.$store.getters['users/categories']
-      let categories = []
-      for (const category in vuexCategories) {
-        categories.push(vuexCategories[category])
-      }
-      return categories
-    },
-    selectedCategory() {
-      const vuexCategories = this.$store.getters['users/categories']
-      if (this.category) {
-        return vuexCategories[`id-${this.category}`] || {}
-      } else {
-        return {}
-      }
-    }
-  },
   methods: {
     show() {
       this.$refs.dialog.show()
@@ -150,23 +26,23 @@ export default {
       this.$emit('hide')
     },
 
-    onOKClick() {
-      if (!this.noteTitle) {
-        let titleText = this.noteText
+    onOKClick(form) {
+      if (!form.title) {
+        let titleText = form.text
           .replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '')
           .slice(0, 31)
 
-        if (this.noteText.length > 30) titleText += '...'
+        if (form.text.length > 30) titleText += '...'
 
-        this.noteTitle = titleText
+        form.title = titleText
       }
 
       const newNote = {
         id: generateId(),
-        title: this.noteTitle,
-        text: this.noteText,
-        favorite: this.favorite,
-        category: this.category,
+        title: form.title,
+        text: form.text,
+        favorite: form.favorite,
+        category: form.category,
         dateModified: Date.now()
       }
 
@@ -192,11 +68,6 @@ export default {
 
     onCancelClick() {
       this.hide()
-    },
-    addCategory() {
-      this.$q.dialog({
-        component: AddCategory
-      })
     }
   }
 }
