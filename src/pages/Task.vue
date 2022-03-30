@@ -306,7 +306,6 @@
       :edit-task="task"
       @editEvent="onEditClick"
       @cancelEvent="onCancelClick"
-      @subtaskEvent="changeSubtaskProgress"
     />
     <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
       <q-card class="q-dialog-plugin">

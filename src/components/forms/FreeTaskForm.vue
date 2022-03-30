@@ -457,7 +457,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'editEvent', 'subtaskEvent'],
+  emits: ['OKEvent', 'cancelEvent', 'editEvent'],
 
   data() {
     return {
