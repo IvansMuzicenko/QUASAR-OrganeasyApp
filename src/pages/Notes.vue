@@ -154,6 +154,8 @@
         </q-item-section>
       </q-item>
 
+      <q-separator size="5px" />
+
       <q-item
         v-for="(note, index) in notes.filter(
           (el) =>
@@ -376,12 +378,15 @@ export default {
     notesCategories() {
       let notesCategories = []
       for (const note in this.notes) {
+        const exactNote = this.notes[note]
         if (
-          !notesCategories.some(
-            (element) => element['id'] == this.notes[note]['category']['id']
-          )
+          exactNote['category'] &&
+          (!notesCategories.length ||
+            !notesCategories.some(
+              (element) => element['id'] == exactNote['category']
+            ))
         ) {
-          notesCategories.push(this.findCategory(this.notes[note]['category']))
+          notesCategories.push(this.findCategory(exactNote['category']))
         }
       }
       return notesCategories
