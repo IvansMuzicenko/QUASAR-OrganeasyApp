@@ -1,65 +1,22 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <q-card class="q-dialog-plugin">
-      <p class="text-center text-subtitle1 no-margin">
-        New process
-        <q-btn
-          icon="close"
-          class="absolute-top-right"
-          flat
-          dense
-          @click="onCancelClick"
-        />
-      </p>
-      <q-card-section>
-        <q-input
-          v-model="processTitle"
-          bottom-slots
-          label="Title"
-          :dense="false"
-        />
-        <q-input
-          v-model.number="processTime"
-          bottom-slots
-          type="number"
-          label="Time"
-          suffix="Minutes"
-          min="1"
-          :dense="false"
-        />
-      </q-card-section>
-      <q-card-section v-if="error">
-        <p class="text-negative">
-          Title must not be empty and time must be greater than 0
-        </p>
-      </q-card-section>
-      <q-card-actions align="right">
-        <q-btn
-          color="positive"
-          :disable="error"
-          label="OK"
-          @click="onOKClick"
-        />
-        <q-btn color="primary" label="Cancel" @click="onCancelClick" />
-      </q-card-actions>
-    </q-card>
+    <process-form @OKEvent="onOKClick" @cancelEvent="onCancelClick" />
   </q-dialog>
 </template>
 
 <script>
 import { getDatabase, ref, set } from 'firebase/database'
+
 import generateId from 'src/idGenerator.js'
+import ProcessForm from 'src/components/forms/ProcessForm.vue'
+
+const db = getDatabase()
 
 export default {
-  props: {},
-
-  emits: ['ok', 'hide'],
-  data() {
-    return {
-      processTitle: '',
-      processTime: 1
-    }
+  components: {
+    ProcessForm
   },
+  emits: ['ok', 'hide'],
   computed: {
     error() {
       return !this.processTitle || this.processTime <= 0
@@ -71,21 +28,16 @@ export default {
       this.$refs.dialog.show()
     },
 
-    hide() {
-      this.$refs.dialog.hide()
-    },
-
     onDialogHide() {
       this.$emit('hide')
     },
 
-    onOKClick() {
+    onOKClick(form) {
       const newProcess = {
         id: generateId(),
-        title: this.processTitle,
-        time: this.processTime
+        title: form.title,
+        time: form.time
       }
-      const db = getDatabase()
       set(
         ref(
           db,
@@ -95,7 +47,7 @@ export default {
       )
       this.$emit('ok')
 
-      this.hide()
+      this.onDialogHide()
       this.$q.notify({
         position: 'top',
         message: 'Process added',
@@ -105,7 +57,7 @@ export default {
     },
 
     onCancelClick() {
-      this.hide()
+      this.onDialogHide()
     }
   }
 }

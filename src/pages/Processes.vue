@@ -74,71 +74,27 @@
     </div>
 
     <q-dialog ref="dialog" @hide="onDialogHide">
-      <q-card class="q-dialog-plugin">
-        <q-card-section>
-          <q-input
-            v-model="selectedProcess.title"
-            bottom-slots
-            label="Title"
-            :dense="false"
-          />
-          <q-input
-            v-model.number="selectedProcess.time"
-            bottom-slots
-            type="number"
-            label="Time"
-            suffix="Minutes"
-            min="1"
-            :dense="false"
-          />
-        </q-card-section>
-        <q-card-section v-if="error">
-          <p class="text-negative">
-            Title must not be empty and time must be greater than 0
-          </p>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn
-            color="positive"
-            icon="save"
-            :disable="error"
-            label="Save"
-            @click="onOKClick"
-          />
-          <q-btn color="primary" label="Cancel" @click="onCancelClick" />
-          <q-btn color="negative" label="Delete" @click="onDeleteClick" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
-      <q-card class="q-dialog-plugin">
-        <q-card-section>
-          Are you sure to premanently remove '{{ selectedProcess.title }}'
-          process?
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn color="primary" label="Cancel" @click="onConfirmCancelClick" />
-          <q-btn
-            color="negative"
-            icon="delete"
-            label="Delete"
-            @click="onConfirmDeleteClick"
-          />
-        </q-card-actions>
-      </q-card>
+      <process-form
+        :edit-process="selectedProcess"
+        @cancelEvent="onCancelClick"
+        @editEvent="onOKClick"
+        @deleteEvent="onDeleteClick"
+      />
     </q-dialog>
   </q-page>
 </template>
 
 <script>
-import AddProcess from 'src/components/common/dialogs/AddProcess.vue'
 import { getDatabase, ref, update, remove } from 'firebase/database'
+import AddProcess from 'src/components/common/dialogs/AddProcess.vue'
+import ProcessForm from 'src/components/forms/ProcessForm.vue'
 
 const db = getDatabase()
 
 export default {
-  emits: ['ok', 'hide'],
+  components: {
+    ProcessForm
+  },
   data() {
     return {
       selectedProcess: {
@@ -153,9 +109,6 @@ export default {
     }
   },
   computed: {
-    error() {
-      return !this.selectedProcess.title || this.selectedProcess.time <= 0
-    },
     processes() {
       const vuexProcesses = this.$store.getters['users/processes']
       let processes = []
@@ -195,43 +148,31 @@ export default {
     },
     editProcess(process) {
       this.selectedProcess = JSON.parse(JSON.stringify(process))
-      this.show()
-    },
-    show() {
       this.$refs.dialog.show()
     },
 
-    hide() {
+    onDialogHide() {
       this.$refs.dialog.hide()
     },
 
-    onDialogHide() {
-      this.$emit('hide')
-    },
-    onConfirmDialogHide() {
-      this.$emit('hide')
-    },
-
-    onOKClick() {
+    onOKClick(form) {
       const processChanges = {
-        id: this.selectedProcess.id,
-        title: this.selectedProcess.title,
-        time: this.selectedProcess.time
+        id: form.id,
+        title: form.title,
+        time: form.time
       }
 
       update(
         ref(
           db,
-          `${this.$store.getters['users/userId']}/processes/id-${this.selectedProcess.id}`
+          `${this.$store.getters['users/userId']}/processes/id-${form.id}`
         ),
         processChanges
       )
 
-      this.recalculatePreparationTime(this.selectedProcess.id)
+      this.recalculatePreparationTime(form.id)
 
-      this.$emit('ok')
-
-      this.hide()
+      this.onDialogHide()
 
       this.$q.notify({
         position: 'top',
@@ -242,14 +183,9 @@ export default {
     },
 
     onCancelClick() {
-      this.hide()
+      this.onDialogHide()
     },
-    onConfirmCancelClick() {
-      this.$refs.confirmDialog.hide()
-    },
-    onDeleteClick() {
-      this.$refs.confirmDialog.show()
-    },
+
     sortByTitle() {
       this.sorting.time = 'none'
       this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
@@ -258,16 +194,12 @@ export default {
       this.sorting.title = 'none'
       this.sorting.time = this.sorting.time == 'asc' ? 'desc' : 'asc'
     },
-    onConfirmDeleteClick() {
-      this.deleteExists(this.selectedProcess.id)
+    onDeleteClick(id) {
+      this.deleteExists(id)
       remove(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/processes/id-${this.selectedProcess.id}`
-        )
+        ref(db, `${this.$store.getters['users/userId']}/processes/id-${id}`)
       )
-      this.$refs.confirmDialog.hide()
-      this.hide()
+      this.onDialogHide()
       this.$q.notify({
         position: 'top',
         message: 'Process removed',
