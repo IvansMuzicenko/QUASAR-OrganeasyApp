@@ -1,8 +1,7 @@
 <template>
   <q-page>
     <q-card class="flex justify-between no-padding">
-      <q-btn icon="arrow_back" flat class="zindex-high" @click="routerBack()" />
-
+      <back-button />
       <q-btn
         v-if="!editState && task['continuous'] && !task['continuousStarted']"
         icon="play_arrow"
@@ -381,15 +380,19 @@
 <script>
 import { getDatabase, ref, set, update, remove } from 'firebase/database'
 import { date } from 'quasar'
+
 import FreeTaskForm from 'src/components/forms/FreeTaskForm.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
+
+import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 
 const db = getDatabase()
 
 export default {
   components: {
-    FreeTaskForm
+    FreeTaskForm,
+    BackButton
   },
   emits: ['hide'],
   data() {
@@ -482,12 +485,6 @@ export default {
         return note['favorite']
       }
       return false
-    },
-    routerBack() {
-      if (this.editState) {
-        return this.$router.push(this.$route.path)
-      }
-      return this.$router.push('/free-tasks')
     },
     toggleEdit() {
       this.$router.push(this.path + '?edit=true')

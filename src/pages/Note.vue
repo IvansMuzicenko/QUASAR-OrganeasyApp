@@ -1,7 +1,8 @@
 <template>
   <q-page>
     <q-card class="flex justify-between no-padding">
-      <q-btn icon="arrow_back" class="zindex-high" flat @click="routerBack()" />
+      <back-button />
+
       <q-btn
         v-if="editState"
         icon="save"
@@ -149,12 +150,16 @@
 
 <script>
 import { getDatabase, ref, update, remove } from 'firebase/database'
+
 import NoteForm from 'src/components/forms/NoteForm.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
+
+import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
+
 const db = getDatabase()
 
 export default {
-  components: { NoteForm },
+  components: { NoteForm, BackButton },
   emits: ['hide'],
   data() {
     return {
@@ -213,12 +218,6 @@ export default {
         return this.$router.push('/notes')
       }
       this.note = JSON.parse(JSON.stringify(note))
-    },
-    routerBack() {
-      if (this.editState) {
-        return this.$router.push(this.$route.path)
-      }
-      return this.$router.push('/notes')
     },
     toggleEdit() {
       this.$router.push(this.$route.path + '?edit=true')

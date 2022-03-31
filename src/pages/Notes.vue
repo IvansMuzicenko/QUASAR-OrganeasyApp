@@ -4,12 +4,7 @@
       <p class="text-center text-h6 full-width no-margin">Notes</p>
       <q-card-section class="flex justify-between no-padding">
         <q-card-section class="no-padding">
-          <q-btn
-            icon="arrow_back"
-            flat
-            class="absolute zindex-high"
-            @click="$router.push('/')"
-          />
+          <back-button />
         </q-card-section>
 
         <q-card-section class="no-padding">
@@ -311,9 +306,12 @@ import AddNote from 'src/components/common/dialogs/AddNote.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
 
+import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
+
 const db = getDatabase()
 
 export default {
+  components: { BackButton },
   data() {
     return {
       holdedNoteId: '',
