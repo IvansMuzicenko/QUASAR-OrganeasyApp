@@ -15,16 +15,9 @@
       >
         Save
       </q-btn>
-      <q-btn
-        v-if="!editState"
-        icon="edit"
-        class="zindex-high"
-        color="secondary"
-        flat
-        @click="toggleEdit()"
-      >
-        Edit
-      </q-btn>
+
+      <edit-button v-if="!editState" ref="editButton" flat z-index />
+
       <q-btn
         v-if="editState"
         icon="delete"
@@ -42,7 +35,7 @@
 
       <q-card-section
         :class="editState ? 'no-padding' : 'text-h6'"
-        @dblclick="toggleEdit()"
+        @dblclick="$refs.editButton.toggleEdit()"
       >
         <q-item v-if="!editState" class="no-padding">
           <q-item-section thumbnail class="q-pr-none">
@@ -155,11 +148,12 @@ import NoteForm from 'src/components/forms/NoteForm.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
+import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 
 const db = getDatabase()
 
 export default {
-  components: { NoteForm, BackButton },
+  components: { NoteForm, BackButton, EditButton },
   emits: ['hide'],
   data() {
     return {
@@ -218,9 +212,6 @@ export default {
         return this.$router.push('/notes')
       }
       this.note = JSON.parse(JSON.stringify(note))
-    },
-    toggleEdit() {
-      this.$router.push(this.$route.path + '?edit=true')
     },
     deleteNote() {
       this.$refs.confirmDialog.show()

@@ -212,13 +212,7 @@
             </q-btn>
           </q-card-section>
           <q-card-section class="text-center">
-            <q-btn
-              color="secondary"
-              icon="edit"
-              :to="`/notes/${holdedNote['id']}?edit=true`"
-            >
-              Edit
-            </q-btn>
+            <edit-button :path="`/notes/${holdedNote['id']}`" />
           </q-card-section>
           <q-card-section class="text-center">
             <q-btn
@@ -307,11 +301,12 @@ import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
+import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 
 const db = getDatabase()
 
 export default {
-  components: { BackButton },
+  components: { BackButton, EditButton },
   data() {
     return {
       holdedNoteId: '',

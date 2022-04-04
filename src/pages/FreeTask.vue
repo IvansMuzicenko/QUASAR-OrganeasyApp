@@ -47,16 +47,8 @@
       >
         Copy
       </q-btn>
-      <q-btn
-        v-if="!editState"
-        class="zindex-high"
-        icon="edit"
-        color="secondary"
-        flat
-        @click="toggleEdit()"
-      >
-        Edit
-      </q-btn>
+
+      <edit-button v-if="!editState" flat z-index />
 
       <q-btn
         v-if="editState"
@@ -386,13 +378,15 @@ import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
+import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 
 const db = getDatabase()
 
 export default {
   components: {
     FreeTaskForm,
-    BackButton
+    BackButton,
+    EditButton
   },
   emits: ['hide'],
   data() {
@@ -485,9 +479,6 @@ export default {
         return note['favorite']
       }
       return false
-    },
-    toggleEdit() {
-      this.$router.push(this.path + '?edit=true')
     },
     callEditClick() {
       this.$refs.freeTaskForm.onEditClick()

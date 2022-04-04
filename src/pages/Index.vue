@@ -245,13 +245,11 @@
                 </q-btn>
               </q-card-section>
               <q-card-section class="text-center">
-                <q-btn
-                  color="secondary"
-                  icon="edit"
-                  @click="openTask(task, true)"
-                >
-                  Edit
-                </q-btn>
+                <edit-button
+                  :path="`/${task.time.slice(0, task.time.indexOf(' '))}/${
+                    task.id
+                  }`"
+                />
               </q-card-section>
               <q-card-section class="text-center">
                 <q-btn
@@ -326,12 +324,18 @@
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, update } from 'firebase/database'
+
 import AddTask from 'src/components/common/dialogs/AddTask.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
+
+import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 
 const db = getDatabase()
 
 export default {
+  components: {
+    EditButton
+  },
   data() {
     return {
       timeStamp: Date.now(),
@@ -497,13 +501,10 @@ export default {
       this.sorting.dateModified =
         this.sorting.dateModified == 'asc' ? 'desc' : 'asc'
     },
-    openTask(task, edit) {
+    openTask(task) {
       const taskDate = task.time.slice(0, task.time.indexOf(' '))
-      if (!edit) {
-        this.$router.push(`/${taskDate}/${task.id}`)
-      } else {
-        this.$router.push(`/${taskDate}/${task.id}?edit=true`)
-      }
+
+      this.$router.push(`/${taskDate}/${task.id}`)
     },
 
     changeProgress(task, strictMode) {

@@ -47,16 +47,8 @@
       >
         Copy
       </q-btn>
-      <q-btn
-        v-if="!editState"
-        icon="edit"
-        color="secondary"
-        flat
-        class="zindex-high"
-        @click="toggleEdit()"
-      >
-        Edit
-      </q-btn>
+
+      <edit-button v-if="!editState" flat z-index />
 
       <q-btn
         v-if="editState"
@@ -357,13 +349,15 @@ import TaskForm from 'src/components/forms/TaskForm.vue'
 import AddTask from 'src/components/common/dialogs/AddTask.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
+import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 
 const db = getDatabase()
 
 export default {
   components: {
     TaskForm,
-    BackButton
+    BackButton,
+    EditButton
   },
   emits: ['hide'],
   data() {
@@ -491,9 +485,6 @@ export default {
         }
       }
       return {}
-    },
-    toggleEdit() {
-      this.$router.push(this.path + '?edit=true')
     },
     callEditClick() {
       this.$refs.taskForm.onEditClick()
