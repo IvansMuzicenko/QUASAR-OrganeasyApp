@@ -3,6 +3,7 @@
     :class="zIndex ? 'zindex-high' : ''"
     icon="edit"
     color="secondary"
+    :dense="dense"
     :flat="flat"
     @click="toggleEdit()"
   >
@@ -13,6 +14,11 @@
 <script>
 export default {
   props: {
+    dense: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     flat: {
       type: Boolean,
       required: false,

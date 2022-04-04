@@ -3,7 +3,7 @@
     icon="content_copy"
     color="secondary"
     :dense="dense"
-    :flat="dense"
+    :flat="flat"
     :class="zIndex ? 'zindex-high' : ''"
     @click="copyTask()"
   >

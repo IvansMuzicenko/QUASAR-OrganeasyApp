@@ -42,7 +42,7 @@
         type="free-task"
       />
 
-      <edit-button v-if="!editState" flat z-index />
+      <edit-button v-if="!editState" dense flat z-index />
 
       <save-button
         v-if="editState"

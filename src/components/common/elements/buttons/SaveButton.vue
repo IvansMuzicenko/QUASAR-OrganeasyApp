@@ -1,11 +1,11 @@
 <template>
   <q-btn
-    icon="save"
-    :dense="dense"
-    :flat="dense"
     :class="zIndex ? 'zindex-high' : ''"
-    :disable="error"
+    icon="save"
     color="positive"
+    :dense="dense"
+    :flat="flat"
+    :disable="error"
     @click="saveClick()"
   >
     Save
