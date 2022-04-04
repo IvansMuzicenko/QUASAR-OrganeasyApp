@@ -5,9 +5,7 @@
 
       <start-continuous-button
         v-if="!editState && task['continuous'] && !task['continuousStarted']"
-        dense
-        flat
-        z-index
+        top-bar
         :path="`tasks/date-${taskDate}/id-${taskId}`"
         @updateData="updateTaskData()"
       />
@@ -18,9 +16,7 @@
           task['continuousStarted'] &&
           !task['continuousEnded']
         "
-        dense
-        flat
-        z-index
+        top-bar
         :path="`tasks/date-${taskDate}/id-${taskId}`"
         @updateData="updateTaskData()"
       />
@@ -34,22 +30,13 @@
       >
         {{ task['progress'] ? 'Undone' : 'Done' }}
       </q-btn>
-      <copy-button
-        v-if="!editState"
-        dense
-        flat
-        z-index
-        :task="task"
-        type="task"
-      />
+      <copy-button v-if="!editState" top-bar :task="task" type="task" />
 
-      <edit-button v-if="!editState" dense flat z-index />
+      <edit-button v-if="!editState" top-bar />
 
       <save-button
         v-if="editState"
-        dense
-        flat
-        z-index
+        top-bar
         :error="error"
         @saveEvent="$refs.taskForm.onSaveClick()"
       />

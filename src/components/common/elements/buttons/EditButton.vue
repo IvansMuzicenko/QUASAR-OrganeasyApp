@@ -1,10 +1,10 @@
 <template>
   <q-btn
-    :class="zIndex ? 'zindex-high' : ''"
     icon="edit"
     color="secondary"
-    :dense="dense"
-    :flat="flat"
+    :dense="dense || topBar"
+    :flat="flat || topBar"
+    :class="zIndex || topBar ? 'zindex-high' : ''"
     @click="toggleEdit()"
   >
     Edit
@@ -14,6 +14,11 @@
 <script>
 export default {
   props: {
+    topBar: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     dense: {
       type: Boolean,
       required: false,

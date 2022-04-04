@@ -2,9 +2,9 @@
   <q-btn
     icon="content_copy"
     color="secondary"
-    :dense="dense"
-    :flat="flat"
-    :class="zIndex ? 'zindex-high' : ''"
+    :dense="dense || topBar"
+    :flat="flat || topBar"
+    :class="zIndex || topBar ? 'zindex-high' : ''"
     @click="copyTask()"
   >
     Copy
@@ -23,6 +23,11 @@ export default {
     type: {
       type: String,
       required: true
+    },
+    topBar: {
+      type: Boolean,
+      required: false,
+      default: false
     },
     dense: {
       type: Boolean,

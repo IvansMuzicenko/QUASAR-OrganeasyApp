@@ -1,10 +1,10 @@
 <template>
   <q-btn
-    :class="zIndex ? 'zindex-high' : ''"
     icon="play_arrow"
     color="green"
-    :dense="dense"
-    :flat="flat"
+    :dense="dense || topBar"
+    :flat="flat || topBar"
+    :class="zIndex || topBar ? 'zindex-high' : ''"
     @click="continuousStart"
   >
     Start
@@ -21,6 +21,11 @@ export default {
       required: true
     },
     flat: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    topBar: {
       type: Boolean,
       required: false,
       default: false

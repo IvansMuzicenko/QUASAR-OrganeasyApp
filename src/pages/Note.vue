@@ -5,14 +5,12 @@
 
       <save-button
         v-if="editState"
-        dense
-        flat
-        z-index
+        top-bar
         :error="error"
         @saveEvent="$refs.noteForm.onSaveClick()"
       />
 
-      <edit-button v-if="!editState" ref="editButton" dense flat z-index />
+      <edit-button v-if="!editState" ref="editButton" top-bar />
 
       <q-btn
         v-if="editState"
