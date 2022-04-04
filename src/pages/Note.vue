@@ -35,7 +35,7 @@
 
       <q-card-section
         :class="editState ? 'no-padding' : 'text-h6'"
-        @dblclick="$refs.editButton.toggleEdit()"
+        @dblclick="$refs.editButton ? $refs.editButton.toggleEdit() : null"
       >
         <q-item v-if="!editState" class="no-padding">
           <q-item-section thumbnail class="q-pr-none">
