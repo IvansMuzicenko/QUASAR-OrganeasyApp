@@ -50,16 +50,14 @@
 
       <edit-button v-if="!editState" flat z-index />
 
-      <q-btn
+      <save-button
         v-if="editState"
-        icon="save"
-        color="positive"
+        dense
         flat
-        class="zindex-high"
-        @click="callEditClick"
-      >
-        Save
-      </q-btn>
+        z-index
+        :error="error"
+        @saveEvent="$refs.taskForm.onSaveClick()"
+      />
       <q-btn
         v-if="editState"
         icon="delete"
@@ -296,8 +294,9 @@
       v-if="editState"
       ref="taskForm"
       :edit-task="task"
-      @editEvent="onEditClick"
+      @saveEvent="onSaveClick"
       @cancelEvent="onCancelClick"
+      @error="errorCheck"
     />
     <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
       <q-card class="q-dialog-plugin">
@@ -350,6 +349,7 @@ import AddTask from 'src/components/common/dialogs/AddTask.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
+import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
 
 const db = getDatabase()
 
@@ -357,7 +357,8 @@ export default {
   components: {
     TaskForm,
     BackButton,
-    EditButton
+    EditButton,
+    SaveButton
   },
   emits: ['hide'],
   data() {
@@ -398,7 +399,8 @@ export default {
           hours: 0,
           minutes: 0
         }
-      }
+      },
+      error: false
     }
   },
   computed: {
@@ -468,6 +470,9 @@ export default {
       }
       this.task = JSON.parse(JSON.stringify(task))
     },
+    errorCheck(errorState) {
+      this.error = errorState
+    },
     isNoteFavorite(id) {
       const note = this.$store.getters['users/notes'][`id-${id}`]
       if (note) {
@@ -485,9 +490,6 @@ export default {
         }
       }
       return {}
-    },
-    callEditClick() {
-      this.$refs.taskForm.onEditClick()
     },
     copyTask() {
       this.$q.dialog({
@@ -517,7 +519,7 @@ export default {
       )
       this.updateTaskData()
     },
-    onEditClick(form) {
+    onSaveClick(form) {
       let eventDate = form.eventDate
       let eventEndingDate = form.eventEndingDate
       const mainTaskDate = form.eventDate

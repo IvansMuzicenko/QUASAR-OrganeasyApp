@@ -643,14 +643,7 @@
     </q-card-section>
 
     <q-card-actions align="right">
-      <q-btn
-        v-if="editTask"
-        icon="save"
-        color="positive"
-        label="Save"
-        :disable="error"
-        @click="onEditClick"
-      />
+      <save-button v-if="editTask" :error="error" @saveEvent="onSaveClick" />
       <q-btn
         v-else
         color="positive"
@@ -669,8 +662,10 @@ import { date } from 'quasar'
 import Editor from 'src/components/common/form/Editor.vue'
 import AddProcess from 'src/components/common/dialogs/AddProcess.vue'
 
+import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+
 export default {
-  components: { Editor },
+  components: { Editor, SaveButton },
   props: {
     editTask: {
       type: Object,
@@ -688,7 +683,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'editEvent'],
+  emits: ['OKEvent', 'cancelEvent', 'saveEvent', 'error'],
 
   data() {
     return {
@@ -872,6 +867,9 @@ export default {
       if (this.form.toggleEventEnd) {
         this.$refs['endingDatePicked']?.hide()
       }
+    },
+    error() {
+      this.$emit('error', this.error)
     }
   },
   mounted() {
@@ -1133,9 +1131,9 @@ export default {
     onCancelClick() {
       this.$emit('cancelEvent')
     },
-    async onEditClick() {
+    async onSaveClick() {
       await this.addNotifsId()
-      this.$emit('editEvent', this.form)
+      this.$emit('saveEvent', this.form)
     },
 
     addNotification() {

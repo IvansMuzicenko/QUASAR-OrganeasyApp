@@ -3,18 +3,14 @@
     <q-card class="flex justify-between no-padding">
       <back-button />
 
-      <q-btn
+      <save-button
         v-if="editState"
-        icon="save"
         dense
         flat
-        class="zindex-high"
-        :disable="error"
-        color="positive"
-        @click="callEditClick()"
-      >
-        Save
-      </q-btn>
+        z-index
+        :error="error"
+        @saveEvent="$refs.noteForm.onSaveClick()"
+      />
 
       <edit-button v-if="!editState" ref="editButton" flat z-index />
 
@@ -112,7 +108,7 @@
           v-if="editState"
           ref="noteForm"
           :edit-note="note"
-          @editEvent="onEditClick"
+          @saveEvent="onSaveClick"
           @cancelEvent="onCancelClick"
           @error="errorCheck"
         />
@@ -149,11 +145,12 @@ import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
+import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
 
 const db = getDatabase()
 
 export default {
-  components: { NoteForm, BackButton, EditButton },
+  components: { NoteForm, BackButton, EditButton, SaveButton },
   emits: ['hide'],
   data() {
     return {
@@ -238,10 +235,7 @@ export default {
       )
       this.updateNoteData()
     },
-    callEditClick() {
-      this.$refs.noteForm.onEditClick()
-    },
-    onEditClick(form) {
+    onSaveClick(form) {
       if (!form.title) {
         let titleText = form.text
           .replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '')

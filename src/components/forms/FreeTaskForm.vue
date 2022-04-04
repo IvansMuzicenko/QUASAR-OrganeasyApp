@@ -419,14 +419,7 @@
     </q-card-section>
 
     <q-card-actions align="right">
-      <q-btn
-        v-if="editTask"
-        icon="save"
-        color="positive"
-        label="Save"
-        :disable="error"
-        @click="onEditClick"
-      />
+      <save-button v-if="editTask" :error="error" @saveEvent="onSaveClick" />
       <q-btn
         v-else
         color="positive"
@@ -443,8 +436,10 @@
 import Editor from 'src/components/common/form/Editor.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 
+import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+
 export default {
-  components: { Editor },
+  components: { Editor, SaveButton },
   props: {
     editTask: {
       type: Object,
@@ -457,7 +452,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'editEvent'],
+  emits: ['OKEvent', 'cancelEvent', 'saveEvent', 'error'],
 
   data() {
     return {
@@ -549,6 +544,11 @@ export default {
       }
     }
   },
+  watch: {
+    error() {
+      this.$emit('error', this.error)
+    }
+  },
   mounted() {
     this.updateData()
   },
@@ -613,8 +613,8 @@ export default {
     onCancelClick() {
       this.$emit('cancelEvent')
     },
-    async onEditClick() {
-      this.$emit('editEvent', this.form)
+    async onSaveClick() {
+      this.$emit('saveEvent', this.form)
     },
 
     isNoteFavorite(id) {

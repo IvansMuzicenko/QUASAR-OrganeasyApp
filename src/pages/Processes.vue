@@ -72,7 +72,7 @@
       <process-form
         :edit-process="selectedProcess"
         @cancelEvent="onCancelClick"
-        @editEvent="onOKClick"
+        @saveEvent="onOKClick"
         @deleteEvent="onDeleteClick"
       />
     </q-dialog>

@@ -50,16 +50,14 @@
 
       <edit-button v-if="!editState" flat z-index />
 
-      <q-btn
+      <save-button
         v-if="editState"
-        class="zindex-high"
-        icon="save"
-        color="positive"
+        dense
         flat
-        @click="callEditClick"
-      >
-        Save
-      </q-btn>
+        z-index
+        :error="error"
+        @saveEvent="$refs.freeTaskForm.onSaveClick()"
+      />
       <q-btn
         v-if="editState"
         class="zindex-high"
@@ -330,8 +328,9 @@
       v-if="editState"
       ref="freeTaskForm"
       :edit-task="task"
-      @editEvent="onEditClick"
+      @saveEvent="onSaveClick"
       @cancelEvent="onCancelClick"
+      @error="errorCheck"
     />
     <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
       <q-card class="q-dialog-plugin">
@@ -379,6 +378,7 @@ import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
+import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
 
 const db = getDatabase()
 
@@ -386,7 +386,8 @@ export default {
   components: {
     FreeTaskForm,
     BackButton,
-    EditButton
+    EditButton,
+    SaveButton
   },
   emits: ['hide'],
   data() {
@@ -410,7 +411,8 @@ export default {
         location: [],
 
         subtasks: []
-      }
+      },
+      error: false
     }
   },
   computed: {
@@ -473,15 +475,15 @@ export default {
       }
       this.task = JSON.parse(JSON.stringify(freeTask))
     },
+    errorCheck(errorState) {
+      this.error = errorState
+    },
     isNoteFavorite(id) {
       const note = this.$store.getters['users/notes'][`id-${id}`]
       if (note) {
         return note['favorite']
       }
       return false
-    },
-    callEditClick() {
-      this.$refs.freeTaskForm.onEditClick()
     },
     copyTask() {
       this.$q.dialog({
@@ -547,7 +549,7 @@ export default {
       )
       this.updateTaskData()
     },
-    onEditClick(form) {
+    onSaveClick(form) {
       const updateTodo = {
         id: form.id,
         title: form.todoTitle,

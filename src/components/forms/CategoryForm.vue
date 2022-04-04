@@ -70,7 +70,7 @@
         label="Add"
         @click="onOKClick"
       />
-      <q-btn v-else color="positive" label="Save" @click="onSaveClick" />
+      <save-button v-else @saveEvent="onSaveClick" />
       <q-btn color="secondary" label="Cancel" @click="onCancelClick" />
     </q-card-actions>
   </q-card>
@@ -78,7 +78,10 @@
 
 <script>
 import generateId from 'src/idGenerator.js'
+
+import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
 export default {
+  components: { SaveButton },
   props: {
     editCategory: {
       type: Object,

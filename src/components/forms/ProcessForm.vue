@@ -28,14 +28,7 @@
       </p>
     </q-card-section>
     <q-card-actions align="right">
-      <q-btn
-        v-if="editProcess"
-        color="positive"
-        icon="save"
-        :disable="error"
-        label="Save"
-        @click="onEditClick"
-      />
+      <save-button v-if="editProcess" :error="error" @saveEvent="onSaveClick" />
       <q-btn
         v-if="!editProcess"
         color="positive"
@@ -72,7 +65,9 @@
 </template>
 
 <script>
+import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
 export default {
+  components: { SaveButton },
   props: {
     editProcess: {
       type: Object,
@@ -80,7 +75,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'editEvent', 'deleteEvent'],
+  emits: ['OKEvent', 'cancelEvent', 'saveEvent', 'deleteEvent'],
   data() {
     return {
       form: {
@@ -109,8 +104,8 @@ export default {
     onOKClick() {
       this.$emit('OKEvent', this.form)
     },
-    onEditClick() {
-      this.$emit('editEvent', this.form)
+    onSaveClick() {
+      this.$emit('saveEvent', this.form)
     },
     onCancelClick() {
       this.$emit('cancelEvent')

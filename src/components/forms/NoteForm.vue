@@ -89,14 +89,7 @@
     </q-card-section>
 
     <q-card-actions align="right">
-      <q-btn
-        v-if="editNote"
-        icon="save"
-        color="positive"
-        label="Save"
-        :disable="error"
-        @click="onEditClick"
-      />
+      <save-button v-if="editNote" :error="error" @saveEvent="onSaveClick" />
       <q-btn
         v-if="!editNote"
         color="primary"
@@ -112,8 +105,10 @@
 import Editor from 'src/components/common/form/Editor.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 
+import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+
 export default {
-  components: { Editor },
+  components: { Editor, SaveButton },
   props: {
     editNote: {
       type: Object,
@@ -121,7 +116,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'editEvent', 'error'],
+  emits: ['OKEvent', 'cancelEvent', 'saveEvent', 'error'],
   data() {
     return {
       form: {
@@ -183,8 +178,8 @@ export default {
     onOKClick() {
       this.$emit('OKEvent', this.form)
     },
-    onEditClick() {
-      this.$emit('editEvent', this.form)
+    onSaveClick() {
+      this.$emit('saveEvent', this.form)
     },
     onCancelClick() {
       this.$emit('cancelEvent')
