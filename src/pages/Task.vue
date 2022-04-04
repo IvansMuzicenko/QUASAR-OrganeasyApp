@@ -636,12 +636,12 @@ export default {
       }
     },
 
-    changeProgress(strictMode) {
+    changeProgress(strictMode = false) {
       const subtasks = this.task.subtasks
 
       if (
         !this.task.progress &&
-        strictMode != true &&
+        strictMode &&
         subtasks &&
         subtasks.length &&
         subtasks.some(

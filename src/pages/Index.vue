@@ -518,12 +518,12 @@ export default {
       this.$router.push(`/${taskDate}/${task.id}`)
     },
 
-    changeProgress(task, strictMode) {
+    changeProgress(task, strictMode = false) {
       const subtasks = task.subtasks
 
       if (
         !task.progress &&
-        strictMode != true &&
+        strictMode &&
         subtasks &&
         subtasks.length &&
         subtasks.some(
