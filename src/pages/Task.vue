@@ -34,16 +34,14 @@
       >
         {{ task['progress'] ? 'Undone' : 'Done' }}
       </q-btn>
-      <q-btn
+      <copy-button
         v-if="!editState"
-        icon="content_copy"
-        color="secondary"
+        dense
         flat
-        class="zindex-high"
-        @click="copyTask()"
-      >
-        Copy
-      </q-btn>
+        z-index
+        :task="task"
+        type="task"
+      />
 
       <edit-button v-if="!editState" flat z-index />
 
@@ -342,11 +340,11 @@ import { date } from 'quasar'
 import generateId from 'src/idGenerator.js'
 
 import TaskForm from 'src/components/forms/TaskForm.vue'
-import AddTask from 'src/components/common/dialogs/AddTask.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+import CopyButton from 'src/components/common/elements/buttons/CopyButton.vue'
 import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
 import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
 
@@ -358,6 +356,7 @@ export default {
     BackButton,
     EditButton,
     SaveButton,
+    CopyButton,
     StartContinuousButton,
     StopContinuousButton
   },
@@ -491,14 +490,6 @@ export default {
         }
       }
       return {}
-    },
-    copyTask() {
-      this.$q.dialog({
-        component: AddTask,
-        componentProps: {
-          copy: this.task
-        }
-      })
     },
     changeSubtaskProgress(index, progress) {
       update(

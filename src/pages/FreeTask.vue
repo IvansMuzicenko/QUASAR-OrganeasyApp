@@ -33,16 +33,14 @@
       >
         {{ task['progress'] ? 'Undone' : 'Done' }}
       </q-btn>
-      <q-btn
+      <copy-button
         v-if="!editState"
-        icon="content_copy"
-        color="secondary"
+        dense
         flat
-        class="zindex-high"
-        @click="copyTask()"
-      >
-        Copy
-      </q-btn>
+        z-index
+        :task="task"
+        type="free-task"
+      />
 
       <edit-button v-if="!editState" flat z-index />
 
@@ -370,11 +368,11 @@ import { date } from 'quasar'
 
 import FreeTaskForm from 'src/components/forms/FreeTaskForm.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
-import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+import CopyButton from 'src/components/common/elements/buttons/CopyButton.vue'
 import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
 import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
 
@@ -386,6 +384,7 @@ export default {
     BackButton,
     EditButton,
     SaveButton,
+    CopyButton,
     StartContinuousButton,
     StopContinuousButton
   },
@@ -484,14 +483,6 @@ export default {
         return note['favorite']
       }
       return false
-    },
-    copyTask() {
-      this.$q.dialog({
-        component: AddFreeTask,
-        componentProps: {
-          copy: this.task
-        }
-      })
     },
     changePriority(priority) {
       update(

@@ -347,6 +347,9 @@
               {{ holdedTask['progress'] ? 'Undone' : 'Done' }}
             </q-btn>
           </q-card-section>
+          <q-card-section class="text-center">
+            <copy-button :task="holdedTask" type="free-task" />
+          </q-card-section>
           <q-card-section
             v-if="holdedTask['continuous'] && !holdedTask['continuousStarted']"
             class="text-center"
@@ -514,6 +517,8 @@ import Search from 'src/components/common/dialogs/Search.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
+import CopyButton from 'src/components/common/elements/buttons/CopyButton.vue'
+
 import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
 import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
 
@@ -523,6 +528,7 @@ export default {
   components: {
     BackButton,
     EditButton,
+    CopyButton,
     StartContinuousButton,
     StopContinuousButton
   },

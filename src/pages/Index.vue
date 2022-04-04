@@ -260,6 +260,9 @@
                   {{ task['progress'] ? 'Undone' : 'Done' }}
                 </q-btn>
               </q-card-section>
+              <q-card-section class="text-center">
+                <copy-button :task="task" type="task" />
+              </q-card-section>
               <q-card-section
                 v-if="task['continuous'] && !task['continuousStarted']"
                 class="text-center"
@@ -331,6 +334,7 @@ import AddTask from 'src/components/common/dialogs/AddTask.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
 
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
+import CopyButton from 'src/components/common/elements/buttons/CopyButton.vue'
 import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
 import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
 
@@ -339,6 +343,7 @@ const db = getDatabase()
 export default {
   components: {
     EditButton,
+    CopyButton,
     StartContinuousButton,
     StopContinuousButton
   },
