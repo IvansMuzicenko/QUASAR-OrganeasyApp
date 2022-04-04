@@ -264,13 +264,12 @@
                 v-if="task['continuous'] && !task['continuousStarted']"
                 class="text-center"
               >
-                <q-btn
-                  icon="play_arrow"
-                  color="green"
-                  @click="continuousStart(task)"
-                >
-                  Start
-                </q-btn>
+                <start-continuous-button
+                  :path="`tasks/date-${task.time.slice(
+                    0,
+                    task.time.indexOf(' ')
+                  )}/id-${task.id}`"
+                />
               </q-card-section>
               <q-card-section
                 v-if="
@@ -280,9 +279,12 @@
                 "
                 class="text-center"
               >
-                <q-btn icon="stop" color="red" @click="continuousStop(task)">
-                  Stop
-                </q-btn>
+                <stop-continuous-button
+                  :path="`tasks/date-${task.time.slice(
+                    0,
+                    task.time.indexOf(' ')
+                  )}/id-${task.id}`"
+                />
               </q-card-section>
             </q-card>
             <q-dialog ref="progressCheck" @hide="onProgressCheckHide">
@@ -329,12 +331,16 @@ import AddTask from 'src/components/common/dialogs/AddTask.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
 
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
+import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
+import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
 
 const db = getDatabase()
 
 export default {
   components: {
-    EditButton
+    EditButton,
+    StartContinuousButton,
+    StopContinuousButton
   },
   data() {
     return {
@@ -570,34 +576,6 @@ export default {
     },
     onProgressCheckHide() {
       this.$refs['progressCheck'].hide()
-    },
-    continuousStart(task) {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${task.time.slice(
-            0,
-            task.time.indexOf(' ')
-          )}/id-${task.id}`
-        ),
-        {
-          continuousStarted: Date.now()
-        }
-      )
-    },
-    continuousStop(task) {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${task.time.slice(
-            0,
-            task.time.indexOf(' ')
-          )}/id-${task.id}`
-        ),
-        {
-          continuousEnded: Date.now()
-        }
-      )
     },
     subtasksState(subtasks) {
       for (const sub of subtasks) {

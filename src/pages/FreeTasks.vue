@@ -351,13 +351,7 @@
             v-if="holdedTask['continuous'] && !holdedTask['continuousStarted']"
             class="text-center"
           >
-            <q-btn
-              icon="play_arrow"
-              color="green"
-              @click="continuousStart(holdedTask)"
-            >
-              Start
-            </q-btn>
+            <start-continuous-button :path="`freeTasks/id-${holdedTask.id}`" />
           </q-card-section>
           <q-card-section
             v-if="
@@ -367,9 +361,7 @@
             "
             class="text-center"
           >
-            <q-btn icon="stop" color="red" @click="continuousStop(holdedTask)">
-              Stop
-            </q-btn>
+            <stop-continuous-button :path="`freeTasks/id-${holdedTask.id}`" />
           </q-card-section>
           <q-card-section class="text-center border">
             <p class="text-center no-margin">Priority</p>
@@ -522,11 +514,18 @@ import Search from 'src/components/common/dialogs/Search.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
+import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
+import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
 
 const db = getDatabase()
 
 export default {
-  components: { BackButton, EditButton },
+  components: {
+    BackButton,
+    EditButton,
+    StartContinuousButton,
+    StopContinuousButton
+  },
   data() {
     return {
       holdedTaskId: '',
@@ -680,28 +679,6 @@ export default {
     },
     onProgressCheckHide() {
       this.$refs['progressCheck'].hide()
-    },
-    continuousStart(task) {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}`
-        ),
-        {
-          continuousStarted: Date.now()
-        }
-      )
-    },
-    continuousStop(task) {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}`
-        ),
-        {
-          continuousEnded: Date.now()
-        }
-      )
     },
     subtasksState(subtasks) {
       for (const sub of subtasks) {

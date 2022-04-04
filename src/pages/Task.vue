@@ -2,31 +2,28 @@
   <q-page>
     <q-card class="flex justify-between no-padding">
       <back-button />
-      <q-btn
+
+      <start-continuous-button
         v-if="!editState && task['continuous'] && !task['continuousStarted']"
-        icon="play_arrow"
-        color="green"
+        dense
         flat
-        class="zindex-high"
-        @click="continuousStart"
-      >
-        Start
-      </q-btn>
-      <q-btn
+        z-index
+        :path="`tasks/date-${taskDate}/id-${taskId}`"
+        @updateData="updateTaskData()"
+      />
+      <stop-continuous-button
         v-if="
           !editState &&
           task['continuous'] &&
           task['continuousStarted'] &&
           !task['continuousEnded']
         "
-        icon="stop"
-        color="red"
+        dense
         flat
-        class="zindex-high"
-        @click="continuousStop"
-      >
-        Stop
-      </q-btn>
+        z-index
+        :path="`tasks/date-${taskDate}/id-${taskId}`"
+        @updateData="updateTaskData()"
+      />
       <q-btn
         v-if="!editState"
         :icon="task['progress'] ? 'close' : 'check'"
@@ -350,6 +347,8 @@ import AddTask from 'src/components/common/dialogs/AddTask.vue'
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
+import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
 
 const db = getDatabase()
 
@@ -358,7 +357,9 @@ export default {
     TaskForm,
     BackButton,
     EditButton,
-    SaveButton
+    SaveButton,
+    StartContinuousButton,
+    StopContinuousButton
   },
   emits: ['hide'],
   data() {
@@ -642,30 +643,6 @@ export default {
           timeout: 2000
         })
       }
-    },
-    continuousStart() {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
-        ),
-        {
-          continuousStarted: Date.now()
-        }
-      )
-      this.updateTaskData()
-    },
-    continuousStop() {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
-        ),
-        {
-          continuousEnded: Date.now()
-        }
-      )
-      this.updateTaskData()
     },
 
     changeProgress(strictMode) {
