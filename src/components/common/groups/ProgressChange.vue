@@ -10,7 +10,7 @@
     {{ item['progress'] ? 'Undone' : 'Done' }}
   </q-btn>
 
-  <q-dialog ref="confirmationDialog" @hide="onConfirmationDialogHide">
+  <q-dialog ref="processChangeDialog" @hide="onProcessChangeDialogHide">
     <q-card class="q-dialog-plugin">
       <q-card-section>
         You have uncompleted subtasks. Do you want to complete all subtasks too?
@@ -25,7 +25,7 @@
         <q-btn
           color="primary"
           label="Cancel"
-          @click="onConfirmationDialogHide"
+          @click="onProcessChangeDialogHide"
         />
       </q-card-actions>
     </q-card>
@@ -93,13 +93,13 @@ export default {
               el['subtasks'].some((subEl) => !subEl['progress']))
         )
       ) {
-        this.$refs['confirmationDialog'].show()
+        this.$refs['processChangeDialog'].show()
       } else {
         update(ref(db, `${this.$store.getters['users/userId']}/${path}`), {
           progress: !this.item.progress,
           finishedDate: !this.item.progress ? Date.now() : null
         })
-        this.onConfirmationDialogHide()
+        this.onProcessChangeDialogHide()
         this.updateData()
       }
     },
@@ -126,11 +126,11 @@ export default {
         finishedDate: !this.item.progress ? Date.now() : null,
         subtasks: subtasks
       })
-      this.onConfirmationDialogHide()
+      this.onProcessChangeDialogHide()
       this.updateData()
     },
-    onConfirmationDialogHide() {
-      this.$refs['confirmationDialog'].hide()
+    onProcessChangeDialogHide() {
+      this.$refs['processChangeDialog'].hide()
     },
     updateData() {
       this.$emit('updateData')
