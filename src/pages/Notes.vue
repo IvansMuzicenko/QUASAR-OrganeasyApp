@@ -125,7 +125,7 @@
               filtering.category == el['category'])
         )"
         :key="index"
-        v-touch-hold:400:12:15.mouse="(event) => taskHold(event, note['id'])"
+        v-touch-hold:400:12:15.mouse="(event) => noteHold(event, note['id'])"
         clickable
         :to="`/notes/${note['id']}`"
       >
@@ -160,7 +160,7 @@
               filtering.category == el['category'])
         )"
         :key="index"
-        v-touch-hold:400:12:15.mouse="(event) => taskHold(event, note['id'])"
+        v-touch-hold:400:12:15.mouse="(event) => noteHold(event, note['id'])"
         clickable
         :to="`/notes/${note['id']}`"
       >
@@ -185,7 +185,7 @@
       </q-item>
       <q-popup-proxy
         v-if="holdedNote"
-        :ref="`noteHold`"
+        ref="noteHold"
         cover
         :breakpoint="10000"
         transition-show="scale"
@@ -284,6 +284,13 @@
               </q-menu>
             </q-btn>
           </q-card-section>
+          <q-card-section class="text-center">
+            <item-remove
+              :item="holdedNote"
+              type="note"
+              @deleteEvent="$refs[`noteHold`].hide()"
+            />
+          </q-card-section>
         </q-card>
       </q-popup-proxy>
     </q-list>
@@ -300,13 +307,15 @@ import AddNote from 'src/components/common/dialogs/AddNote.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
 
+import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
+
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 
 const db = getDatabase()
 
 export default {
-  components: { BackButton, EditButton },
+  components: { ItemRemove, BackButton, EditButton },
   data() {
     return {
       holdedNoteId: '',
@@ -392,7 +401,7 @@ export default {
         component: AddNote
       })
     },
-    taskHold(event, id) {
+    noteHold(event, id) {
       this.holdedNoteId = id
       this.$refs[`noteHold`].show()
     },

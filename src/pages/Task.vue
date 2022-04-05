@@ -38,16 +38,7 @@
         :error="error"
         @saveEvent="$refs.taskForm.onSaveClick()"
       />
-      <q-btn
-        v-if="editState"
-        icon="delete"
-        color="negative"
-        flat
-        class="zindex-high"
-        @click="onDeleteClick"
-      >
-        Delete
-      </q-btn>
+      <item-remove v-if="editState" :item="task" type="task" top-bar />
     </q-card>
     <q-list v-if="!editState" separator bordered>
       <q-item>
@@ -278,26 +269,6 @@
       @cancelEvent="$router.push(path)"
       @error="errorCheck"
     />
-    <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
-      <q-card class="q-dialog-plugin">
-        <q-card-section>
-          Are you sure to premanently remove '{{ task.title }}' task?
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn color="primary" label="Cancel" @click="onConfirmCancelClick" />
-          <q-btn
-            color="negative"
-            label="Delete"
-            @click="onConfirmDeleteClick"
-          />
-          <q-btn
-            color="negative"
-            :label="`Delete all related(${relativeItems.length})`"
-            @click="onConfirmDeleteClick('all')"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -310,6 +281,7 @@ import generateId from 'src/idGenerator.js'
 import TaskForm from 'src/components/forms/TaskForm.vue'
 
 import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
+import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
@@ -324,6 +296,7 @@ export default {
   components: {
     TaskForm,
     ProgressChange,
+    ItemRemove,
     BackButton,
     EditButton,
     SaveButton,
@@ -605,62 +578,6 @@ export default {
           timeout: 2000
         })
       }
-    },
-
-    onDeleteClick() {
-      this.$refs.confirmDialog.show()
-    },
-    onConfirmDeleteClick(type) {
-      const notifsToRemove = []
-      if (type == 'all') {
-        for (const item of this.relativeItems) {
-          if (item.notificationsId) {
-            for (const notif of item.notificationsId) {
-              notifsToRemove.push({ id: notif.id })
-            }
-          }
-          remove(
-            ref(
-              db,
-              `${
-                this.$store.getters['users/userId']
-              }/tasks/date-${item.time.slice(0, item.time.indexOf(' '))}/id-${
-                item.id
-              }`
-            )
-          )
-        }
-      } else {
-        if (this.task.notificationsId) {
-          for (const notif of this.task.notificationsId) {
-            notifsToRemove.push({ id: notif.id })
-          }
-        }
-        remove(
-          ref(
-            db,
-            `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
-          )
-        )
-      }
-      if (notifsToRemove.length) {
-        this.$store.dispatch('notification/removeNotifications', notifsToRemove)
-      }
-
-      this.$router.push('/')
-
-      this.$q.notify({
-        position: 'top',
-        message: 'Task removed',
-        color: 'red',
-        timeout: 1000
-      })
-    },
-    onConfirmDialogHide() {
-      this.$emit('hide')
-    },
-    onConfirmCancelClick() {
-      this.$refs.confirmDialog.hide()
     }
   }
 }

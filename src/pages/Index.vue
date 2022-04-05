@@ -283,6 +283,9 @@
                   )}/id-${task.id}`"
                 />
               </q-card-section>
+              <q-card-section class="text-center">
+                <item-remove :item="task" type="task" />
+              </q-card-section>
             </q-card>
           </q-popup-proxy>
         </tr>
@@ -303,6 +306,7 @@ import AddTask from 'src/components/common/dialogs/AddTask.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
 
 import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
+import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
 
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 import CopyButton from 'src/components/common/elements/buttons/CopyButton.vue'
@@ -314,6 +318,7 @@ const db = getDatabase()
 export default {
   components: {
     ProgressChange,
+    ItemRemove,
     EditButton,
     CopyButton,
     StartContinuousButton,

@@ -12,17 +12,7 @@
 
       <edit-button v-if="!editState" ref="editButton" top-bar />
 
-      <q-btn
-        v-if="editState"
-        icon="delete"
-        dense
-        flat
-        class="zindex-high"
-        color="negative"
-        @click="deleteNote()"
-      >
-        Delete
-      </q-btn>
+      <item-remove v-if="editState" :item="note" type="note" top-bar />
     </q-card>
     <q-card :bordered="!editState">
       <q-separator color="black" />
@@ -110,26 +100,6 @@
           @cancelEvent="onCancelClick"
           @error="errorCheck"
         />
-
-        <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
-          <q-card class="q-dialog-plugin">
-            <q-card-section>
-              Are you sure to premanently remove '{{ note.title }}' note?
-            </q-card-section>
-            <q-card-actions align="right">
-              <q-btn
-                color="primary"
-                label="Cancel"
-                @click="onConfirmCancelClick"
-              />
-              <q-btn
-                color="negative"
-                label="Delete"
-                @click="onConfirmDeleteClick"
-              />
-            </q-card-actions>
-          </q-card>
-        </q-dialog>
       </q-card-section>
     </q-card>
   </q-page>
@@ -141,6 +111,8 @@ import { getDatabase, ref, update, remove } from 'firebase/database'
 import NoteForm from 'src/components/forms/NoteForm.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 
+import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
+
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
@@ -148,7 +120,7 @@ import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
 const db = getDatabase()
 
 export default {
-  components: { NoteForm, BackButton, EditButton, SaveButton },
+  components: { NoteForm, ItemRemove, BackButton, EditButton, SaveButton },
   emits: ['hide'],
   data() {
     return {
@@ -208,9 +180,6 @@ export default {
       }
       this.note = JSON.parse(JSON.stringify(note))
     },
-    deleteNote() {
-      this.$refs.confirmDialog.show()
-    },
     changeCategory(category) {
       update(
         ref(
@@ -260,34 +229,8 @@ export default {
         timeout: 1000
       })
     },
-
     onCancelClick() {
       this.$router.push(this.path)
-    },
-
-    onConfirmDialogHide() {
-      this.$emit('hide')
-    },
-    onConfirmCancelClick() {
-      this.$refs.confirmDialog.hide()
-    },
-    onConfirmDeleteClick() {
-      remove(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/notes/id-${this.noteId}`
-        )
-      )
-      this.deleteExists(this.noteId)
-      this.$refs.confirmDialog.hide()
-      this.$router.push('/notes')
-
-      this.$q.notify({
-        position: 'top',
-        message: 'Note removed',
-        color: 'red',
-        timeout: 1000
-      })
     },
     addCategory() {
       this.$q.dialog({
@@ -296,66 +239,6 @@ export default {
     },
     errorCheck(errorState) {
       this.error = errorState
-    },
-    deleteExists(noteId) {
-      const vuexTasks = this.$store.getters['users/tasks']
-      for (const vuexDate in vuexTasks) {
-        for (const vuexTask in vuexTasks[vuexDate]) {
-          const task = vuexTasks[vuexDate][vuexTask]
-          if (task.notes?.attachedNotes) {
-            const attachedNotes = task.notes.attachedNotes
-            if (attachedNotes.find((el) => el.id == noteId)) {
-              let notesArray = []
-              attachedNotes.forEach((el) => notesArray.push(el))
-
-              notesArray.splice(
-                notesArray.indexOf(attachedNotes.find((el) => el.id == noteId)),
-                1
-              )
-              update(
-                ref(
-                  db,
-                  `${
-                    this.$store.getters['users/userId']
-                  }/tasks/date-${task.time.slice(
-                    0,
-                    task.time.indexOf(' ')
-                  )}/id-${task.id}/notes`
-                ),
-                {
-                  attachedNotes: notesArray
-                }
-              )
-            }
-          }
-        }
-      }
-
-      const vuexFreeTasks = this.$store.getters['users/freeTasks']
-      for (const vuexFreeTask in vuexFreeTasks) {
-        const freeTask = vuexFreeTasks[vuexFreeTask]
-        if (freeTask.notes?.attachedNotes) {
-          const attachedNotes = freeTask.notes.attachedNotes
-          if (attachedNotes.find((el) => el.id == noteId)) {
-            let notesArray = []
-            attachedNotes.forEach((el) => notesArray.push(el))
-
-            notesArray.splice(
-              notesArray.indexOf(attachedNotes.find((el) => el.id == noteId)),
-              1
-            )
-            update(
-              ref(
-                db,
-                `${this.$store.getters['users/userId']}/freeTasks/id-${freeTask.id}/notes`
-              ),
-              {
-                attachedNotes: notesArray
-              }
-            )
-          }
-        }
-      }
     }
   }
 }

@@ -309,7 +309,7 @@
       </q-item>
       <q-popup-proxy
         v-if="holdedTask"
-        :ref="`taskHold`"
+        ref="taskHold"
         cover
         :breakpoint="10000"
         transition-show="scale"
@@ -466,6 +466,13 @@
               </q-menu>
             </q-btn>
           </q-card-section>
+          <q-card-section class="text-center">
+            <item-remove
+              :item="holdedTask"
+              type="free-task"
+              @deleteEvent="$refs[`taskHold`].hide()"
+            />
+          </q-card-section>
         </q-card>
       </q-popup-proxy>
     </q-list>
@@ -484,6 +491,7 @@ import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
 
 import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
+import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
@@ -497,6 +505,7 @@ const db = getDatabase()
 export default {
   components: {
     ProgressChange,
+    ItemRemove,
     BackButton,
     EditButton,
     CopyButton,

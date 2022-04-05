@@ -37,37 +37,22 @@
         @click="onOKClick"
       />
       <q-btn color="primary" label="Cancel" @click="onCancelClick" />
-      <q-btn
+      <item-remove
         v-if="editProcess"
-        color="negative"
-        label="Delete"
-        @click="onDeleteClick"
+        :item="editProcess"
+        type="process"
+        @deleteEvent="deleteClick()"
       />
     </q-card-actions>
-
-    <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
-      <q-card class="q-dialog-plugin">
-        <q-card-section>
-          Are you sure to premanently remove '{{ form.title }}' process?
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn color="primary" label="Cancel" @click="onConfirmCancelClick" />
-          <q-btn
-            color="negative"
-            icon="delete"
-            label="Delete"
-            @click="onConfirmDeleteClick"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-card>
 </template>
 
 <script>
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
+
 export default {
-  components: { SaveButton },
+  components: { SaveButton, ItemRemove },
   props: {
     editProcess: {
       type: Object,
@@ -110,19 +95,8 @@ export default {
     onCancelClick() {
       this.$emit('cancelEvent')
     },
-    onDeleteClick() {
-      this.$refs.confirmDialog.show()
-    },
-    onConfirmDialogHide() {
-      this.$refs.confirmDialog.hide()
-    },
-    onConfirmCancelClick() {
-      this.$refs.confirmDialog.hide()
-    },
-    onConfirmDeleteClick() {
-      this.$emit('deleteEvent', this.form.id)
-      this.onConfirmDialogHide()
-      this.onCancelClick()
+    deleteClick() {
+      this.$emit('deleteEvent')
     }
   }
 }

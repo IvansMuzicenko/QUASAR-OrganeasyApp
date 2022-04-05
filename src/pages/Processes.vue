@@ -68,12 +68,12 @@
       <q-btn color="secondary" @click="addProcess()">Add process</q-btn>
     </div>
 
-    <q-dialog ref="dialog" @hide="onDialogHide">
+    <q-dialog ref="editDialog" @hide="onDialogHide">
       <process-form
         :edit-process="selectedProcess"
-        @cancelEvent="onCancelClick"
+        @cancelEvent="onDialogHide"
         @saveEvent="onOKClick"
-        @deleteEvent="onDeleteClick"
+        @deleteEvent="onDialogHide"
       />
     </q-dialog>
   </q-page>
@@ -147,11 +147,11 @@ export default {
     },
     editProcess(process) {
       this.selectedProcess = JSON.parse(JSON.stringify(process))
-      this.$refs.dialog.show()
+      this.$refs.editDialog.show()
     },
 
     onDialogHide() {
-      this.$refs.dialog.hide()
+      this.$refs.editDialog.hide()
     },
 
     onOKClick(form) {
@@ -180,11 +180,6 @@ export default {
         timeout: 1000
       })
     },
-
-    onCancelClick() {
-      this.onDialogHide()
-    },
-
     sortByTitle() {
       this.sorting.time = 'none'
       this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
@@ -192,60 +187,6 @@ export default {
     sortByTime() {
       this.sorting.title = 'none'
       this.sorting.time = this.sorting.time == 'asc' ? 'desc' : 'asc'
-    },
-    onDeleteClick(id) {
-      this.deleteExists(id)
-      remove(
-        ref(db, `${this.$store.getters['users/userId']}/processes/id-${id}`)
-      )
-      this.onDialogHide()
-      this.$q.notify({
-        position: 'top',
-        message: 'Process removed',
-        color: 'red',
-        timeout: 1000
-      })
-    },
-    deleteExists(processId) {
-      const vuexTasks = this.$store.getters['users/tasks']
-      for (const vuexDate in vuexTasks) {
-        for (const vuexTask in vuexTasks[vuexDate]) {
-          const task = vuexTasks[vuexDate][vuexTask]
-          if (task.processes) {
-            const taskProcesses = task.processes
-            if (taskProcesses.find((el) => el.id == processId)) {
-              let processesArray = []
-              taskProcesses.forEach((el) => processesArray.push(el))
-
-              processesArray.splice(
-                processesArray.indexOf(
-                  taskProcesses.find((el) => el.id == processId)
-                ),
-                1
-              )
-              update(
-                ref(
-                  db,
-                  `${
-                    this.$store.getters['users/userId']
-                  }/tasks/date-${task.time.slice(
-                    0,
-                    task.time.indexOf(' ')
-                  )}/id-${task.id}`
-                ),
-                {
-                  processes: processesArray,
-                  processesTime:
-                    task.processesTime -
-                    this.$store.getters['users/processes'][`id-${processId}`][
-                      'time'
-                    ]
-                }
-              )
-            }
-          }
-        }
-      }
     },
     recalculatePreparationTime(processId) {
       const vuexTasks = this.$store.getters['users/tasks']

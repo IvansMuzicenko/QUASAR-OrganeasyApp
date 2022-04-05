@@ -36,16 +36,8 @@
         :error="error"
         @saveEvent="$refs.freeTaskForm.onSaveClick()"
       />
-      <q-btn
-        v-if="editState"
-        class="zindex-high"
-        icon="delete"
-        color="negative"
-        flat
-        @click="onDeleteClick"
-      >
-        Delete
-      </q-btn>
+
+      <item-remove v-if="editState" :item="task" type="free-task" top-bar />
     </q-card>
     <q-list v-if="!editState" separator bordered>
       <q-item>
@@ -310,21 +302,6 @@
       @cancelEvent="onCancelClick"
       @error="errorCheck"
     />
-    <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
-      <q-card class="q-dialog-plugin">
-        <q-card-section>
-          Are you sure to premanently remove '{{ task.title }}' task?
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn color="primary" label="Cancel" @click="onConfirmCancelClick" />
-          <q-btn
-            color="negative"
-            label="Delete"
-            @click="onConfirmDeleteClick"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -336,6 +313,7 @@ import FreeTaskForm from 'src/components/forms/FreeTaskForm.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 
 import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
+import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
@@ -350,6 +328,7 @@ export default {
   components: {
     FreeTaskForm,
     ProgressChange,
+    ItemRemove,
     BackButton,
     EditButton,
     SaveButton,
@@ -559,33 +538,8 @@ export default {
         timeout: 1000
       })
     },
-    onDeleteClick() {
-      this.$refs.confirmDialog.show()
-    },
     onCancelClick() {
       this.$router.push(this.path)
-    },
-    onConfirmDeleteClick() {
-      remove(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
-        )
-      )
-      this.$router.push('/')
-
-      this.$q.notify({
-        position: 'top',
-        message: 'Task removed',
-        color: 'red',
-        timeout: 1000
-      })
-    },
-    onConfirmDialogHide() {
-      this.$emit('hide')
-    },
-    onConfirmCancelClick() {
-      this.$refs.confirmDialog.hide()
     }
   }
 }
