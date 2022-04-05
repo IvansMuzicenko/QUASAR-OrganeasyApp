@@ -339,13 +339,7 @@
             <edit-button :path="`/free-tasks/${holdedTask['id']}`" />
           </q-card-section>
           <q-card-section class="text-center">
-            <q-btn
-              :icon="holdedTask['progress'] ? 'close' : 'check'"
-              :color="holdedTask['progress'] ? 'red' : 'positive'"
-              @click="changeProgress(holdedTask)"
-            >
-              {{ holdedTask['progress'] ? 'Undone' : 'Done' }}
-            </q-btn>
+            <progress-change :item="holdedTask" type="free-task" />
           </q-card-section>
           <q-card-section class="text-center">
             <copy-button :task="holdedTask" type="free-task" />
@@ -473,31 +467,6 @@
             </q-btn>
           </q-card-section>
         </q-card>
-        <q-dialog ref="progressCheck" @hide="onProgressCheckHide">
-          <q-card class="q-dialog-plugin">
-            <q-card-section>
-              You have uncompleted subtasks. Do you want to complete all
-              subtasks too?
-            </q-card-section>
-            <q-card-actions align="right">
-              <q-btn
-                color="positive"
-                label="Done all"
-                @click="onDoneAllClick(holdedTask)"
-              />
-              <q-btn
-                color="secondary"
-                label="Done task only"
-                @click="changeProgress(holdedTask, true)"
-              />
-              <q-btn
-                color="primary"
-                label="Cancel"
-                @click="onProgressCheckHide"
-              />
-            </q-card-actions>
-          </q-card>
-        </q-dialog>
       </q-popup-proxy>
     </q-list>
     <div class="text-center q-my-md">
@@ -508,12 +477,13 @@
 </template>
 
 <script>
-import { date } from 'quasar'
 import { getDatabase, ref, update } from 'firebase/database'
 
 import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
+
+import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
@@ -526,6 +496,7 @@ const db = getDatabase()
 
 export default {
   components: {
+    ProgressChange,
     BackButton,
     EditButton,
     CopyButton,
@@ -628,63 +599,6 @@ export default {
       this.$q.dialog({
         component: AddFreeTask
       })
-    },
-    changeProgress(task, strictMode = false) {
-      const subtasks = task.subtasks
-
-      if (
-        !task.progress &&
-        strictMode &&
-        subtasks &&
-        subtasks.length &&
-        subtasks.some(
-          (el) =>
-            !el['progress'] ||
-            (el['subtasks'] &&
-              el['subtasks'].some((subEl) => !subEl['progress']))
-        )
-      ) {
-        this.$refs['progressCheck'].show()
-      } else {
-        update(
-          ref(
-            db,
-            `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}`
-          ),
-          {
-            progress: !task.progress,
-            finishedDate: !task.progress ? Date.now() : null
-          }
-        )
-        this.onProgressCheckHide()
-      }
-    },
-    onDoneAllClick(task) {
-      let subtasks = []
-      for (const subtask in JSON.parse(JSON.stringify(task.subtasks))) {
-        subtasks.push(JSON.parse(JSON.stringify(task.subtasks))[subtask])
-      }
-      subtasks.forEach((subtask) => {
-        subtask.progress = true
-        if (subtask.subtasks && subtask.subtasks.length) {
-          subtask.subtasks.forEach((subSubtask) => (subSubtask.progress = true))
-        }
-      })
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}`
-        ),
-        {
-          progress: !task.progress,
-          finishedDate: !task.progress ? Date.now() : null,
-          subtasks: subtasks
-        }
-      )
-      this.onProgressCheckHide()
-    },
-    onProgressCheckHide() {
-      this.$refs['progressCheck'].hide()
     },
     subtasksState(subtasks) {
       for (const sub of subtasks) {

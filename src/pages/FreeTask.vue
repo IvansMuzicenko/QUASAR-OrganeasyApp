@@ -19,16 +19,13 @@
         :path="`freeTasks/id-${taskId}`"
         @updateData="updateTaskData()"
       />
-      <q-btn
+      <progress-change
         v-if="!editState"
-        class="zindex-high"
-        :icon="task['progress'] ? 'close' : 'check'"
-        :color="task['progress'] ? 'red' : 'positive'"
-        flat
-        @click="changeProgress"
-      >
-        {{ task['progress'] ? 'Undone' : 'Done' }}
-      </q-btn>
+        :item="task"
+        type="free-task"
+        top-bar
+        @updateData="updateTaskData()"
+      />
       <copy-button v-if="!editState" top-bar :task="task" type="free-task" />
 
       <edit-button v-if="!editState" top-bar />
@@ -328,24 +325,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
-    <q-dialog ref="progressCheck" @hide="onProgressCheckHide">
-      <q-card class="q-dialog-plugin">
-        <q-card-section>
-          You have uncompleted subtasks. Do you want to complete all subtasks
-          too?
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn color="positive" label="Done all" @click="onDoneAllClick" />
-          <q-btn
-            color="secondary"
-            label="Done task only"
-            @click="changeProgress(true)"
-          />
-          <q-btn color="primary" label="Cancel" @click="onProgressCheckHide" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -355,6 +334,8 @@ import { date } from 'quasar'
 
 import FreeTaskForm from 'src/components/forms/FreeTaskForm.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
+
+import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
@@ -368,6 +349,7 @@ const db = getDatabase()
 export default {
   components: {
     FreeTaskForm,
+    ProgressChange,
     BackButton,
     EditButton,
     SaveButton,
@@ -576,62 +558,6 @@ export default {
         color: 'blue',
         timeout: 1000
       })
-    },
-    changeProgress(strictMode = false) {
-      const subtasks = this.task.subtasks
-
-      if (
-        !this.task.progress &&
-        strictMode &&
-        subtasks &&
-        subtasks.length &&
-        subtasks.some(
-          (el) =>
-            !el['progress'] ||
-            (el['subtasks'] &&
-              el['subtasks'].some((subEl) => !subEl['progress']))
-        )
-      ) {
-        this.$refs['progressCheck'].show()
-      } else {
-        update(
-          ref(
-            db,
-            `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
-          ),
-          {
-            progress: !this.task.progress,
-            finishedDate: !this.task.progress ? Date.now() : null
-          }
-        )
-        this.onProgressCheckHide()
-        this.updateTaskData()
-      }
-    },
-    onDoneAllClick() {
-      const subtasks = this.task.subtasks
-      subtasks.forEach((subtask) => {
-        subtask.progress = true
-        if (subtask.subtasks && subtask.subtasks.length) {
-          subtask.subtasks.forEach((subSubtask) => (subSubtask.progress = true))
-        }
-      })
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
-        ),
-        {
-          progress: !this.task.progress,
-          finishedDate: !this.task.progress ? Date.now() : null,
-          subtasks: subtasks
-        }
-      )
-      this.onProgressCheckHide()
-      this.updateTaskData()
-    },
-    onProgressCheckHide() {
-      this.$refs['progressCheck'].hide()
     },
     onDeleteClick() {
       this.$refs.confirmDialog.show()

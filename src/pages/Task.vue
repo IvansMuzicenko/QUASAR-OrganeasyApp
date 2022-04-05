@@ -20,16 +20,14 @@
         :path="`tasks/date-${taskDate}/id-${taskId}`"
         @updateData="updateTaskData()"
       />
-      <q-btn
+
+      <progress-change
         v-if="!editState"
-        :icon="task['progress'] ? 'close' : 'check'"
-        :color="task['progress'] ? 'red' : 'positive'"
-        flat
-        class="zindex-high"
-        @click="changeProgress"
-      >
-        {{ task['progress'] ? 'Undone' : 'Done' }}
-      </q-btn>
+        :item="task"
+        type="task"
+        top-bar
+        @updateData="updateTaskData()"
+      />
       <copy-button v-if="!editState" top-bar :task="task" type="task" />
 
       <edit-button v-if="!editState" top-bar />
@@ -277,7 +275,7 @@
       ref="taskForm"
       :edit-task="task"
       @saveEvent="onSaveClick"
-      @cancelEvent="onCancelClick"
+      @cancelEvent="$router.push(path)"
       @error="errorCheck"
     />
     <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
@@ -300,23 +298,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <q-dialog ref="progressCheck" @hide="onProgressCheckHide">
-      <q-card class="q-dialog-plugin">
-        <q-card-section>
-          You have uncompleted subtasks. Do you want to complete all subtasks
-          too?
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn color="positive" label="Done all" @click="onDoneAllClick" />
-          <q-btn
-            color="secondary"
-            label="Done task only"
-            @click="changeProgress(true)"
-          />
-          <q-btn color="primary" label="Cancel" @click="onProgressCheckHide" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -327,6 +308,8 @@ import { date } from 'quasar'
 import generateId from 'src/idGenerator.js'
 
 import TaskForm from 'src/components/forms/TaskForm.vue'
+
+import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
@@ -340,6 +323,7 @@ const db = getDatabase()
 export default {
   components: {
     TaskForm,
+    ProgressChange,
     BackButton,
     EditButton,
     SaveButton,
@@ -623,67 +607,8 @@ export default {
       }
     },
 
-    changeProgress(strictMode = false) {
-      const subtasks = this.task.subtasks
-
-      if (
-        !this.task.progress &&
-        strictMode &&
-        subtasks &&
-        subtasks.length &&
-        subtasks.some(
-          (el) =>
-            !el['progress'] ||
-            (el['subtasks'] &&
-              el['subtasks'].some((subEl) => !subEl['progress']))
-        )
-      ) {
-        this.$refs['progressCheck'].show()
-      } else {
-        update(
-          ref(
-            db,
-            `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
-          ),
-          {
-            progress: !this.task.progress,
-            finishedDate: !this.task.progress ? Date.now() : null
-          }
-        )
-        this.onProgressCheckHide()
-        this.updateTaskData()
-      }
-    },
-    onDoneAllClick() {
-      const subtasks = this.task.subtasks
-      subtasks.forEach((subtask) => {
-        subtask.progress = true
-        if (subtask.subtasks && subtask.subtasks.length) {
-          subtask.subtasks.forEach((subSubtask) => (subSubtask.progress = true))
-        }
-      })
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
-        ),
-        {
-          progress: !this.task.progress,
-          finishedDate: !this.task.progress ? Date.now() : null,
-          subtasks: subtasks
-        }
-      )
-      this.onProgressCheckHide()
-      this.updateTaskData()
-    },
-    onProgressCheckHide() {
-      this.$refs['progressCheck'].hide()
-    },
     onDeleteClick() {
       this.$refs.confirmDialog.show()
-    },
-    onCancelClick() {
-      this.$router.push(this.path)
     },
     onConfirmDeleteClick(type) {
       const notifsToRemove = []
