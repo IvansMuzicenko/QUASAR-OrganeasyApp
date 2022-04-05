@@ -245,6 +245,7 @@
             </q-item>
           </template>
         </q-select>
+        <p v-else class="text-secondary">You have not notes to attach</p>
         <editor v-model="form.notes.text" full-width />
       </q-card-section>
     </q-card-section>
