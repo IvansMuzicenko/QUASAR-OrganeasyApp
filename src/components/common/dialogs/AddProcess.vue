@@ -17,11 +17,6 @@ export default {
     ProcessForm
   },
   emits: ['ok', 'hide'],
-  computed: {
-    error() {
-      return !this.processTitle || this.processTime <= 0
-    }
-  },
 
   methods: {
     show() {
