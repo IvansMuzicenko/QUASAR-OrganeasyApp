@@ -7,45 +7,11 @@
           <back-button />
         </q-card-section>
         <q-card-section class="no-padding">
-          <q-btn icon="tune" class="zindex-high" flat>
-            <q-popup-proxy>
-              <q-card>
-                <q-card-section class="text-subtitle1">
-                  <q-icon name="sort" />
-                  Sort
-                </q-card-section>
-                <q-card-section>
-                  <q-btn
-                    :icon="
-                      sorting.title == 'none'
-                        ? 'last_page'
-                        : sorting.title == 'asc'
-                        ? 'vertical_align_bottom'
-                        : 'vertical_align_top'
-                    "
-                    class="full-width"
-                    @click="sortByTitle"
-                  >
-                    Title
-                  </q-btn>
-                  <q-separator />
-                  <q-btn
-                    :icon="
-                      sorting.time == 'none'
-                        ? 'last_page'
-                        : sorting.time == 'asc'
-                        ? 'vertical_align_bottom'
-                        : 'vertical_align_top'
-                    "
-                    class="full-width"
-                    @click="sortByTime"
-                  >
-                    Time
-                  </q-btn>
-                </q-card-section>
-              </q-card>
-            </q-popup-proxy>
-          </q-btn>
+          <filter-sort
+            :items="processesArray"
+            type="processes"
+            @updateData="(modifiedItems) => (processes = modifiedItems)"
+          />
         </q-card-section>
       </q-card-section>
     </q-card>
@@ -85,6 +51,8 @@ import { getDatabase, ref, update, remove } from 'firebase/database'
 import AddProcess from 'src/components/common/dialogs/AddProcess.vue'
 import ProcessForm from 'src/components/forms/ProcessForm.vue'
 
+import FilterSort from 'src/components/common/groups/FilterSort.vue'
+
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 
 const db = getDatabase()
@@ -92,23 +60,21 @@ const db = getDatabase()
 export default {
   components: {
     ProcessForm,
-    BackButton
+    BackButton,
+    FilterSort
   },
   data() {
     return {
+      processes: [],
       selectedProcess: {
         id: '',
         title: '',
         time: 1
-      },
-      sorting: {
-        title: 'none',
-        time: 'asc'
       }
     }
   },
   computed: {
-    processes() {
+    processesArray() {
       const vuexProcesses = this.$store.getters['users/processes']
       let processes = []
 
@@ -116,25 +82,6 @@ export default {
         for (const vuexProcess in vuexProcesses) {
           processes.push(vuexProcesses[vuexProcess])
         }
-        processes.sort((a, b) => {
-          if (this.sorting.title != 'none') {
-            if (this.sorting.title == 'asc') {
-              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
-              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
-              return 0
-            } else {
-              if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
-              if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
-              return 0
-            }
-          } else if (this.sorting.time != 'none') {
-            if (this.sorting.time == 'asc') {
-              return a.time - b.time
-            } else {
-              return b.time - a.time
-            }
-          }
-        })
       }
       return processes
     }
@@ -179,14 +126,6 @@ export default {
         color: 'blue',
         timeout: 1000
       })
-    },
-    sortByTitle() {
-      this.sorting.time = 'none'
-      this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
-    },
-    sortByTime() {
-      this.sorting.title = 'none'
-      this.sorting.time = this.sorting.time == 'asc' ? 'desc' : 'asc'
     },
     recalculatePreparationTime(processId) {
       const vuexTasks = this.$store.getters['users/tasks']

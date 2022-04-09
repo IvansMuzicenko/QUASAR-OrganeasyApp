@@ -15,171 +15,23 @@
             rounded
             @click="openSearch"
           />
-          <q-btn
-            icon="tune"
-            :color="
-              filtering.priority != 'all' || filtering.progress != 'all'
-                ? 'green'
-                : ''
-            "
-            class="zindex-high"
-            flat
-          >
-            <q-popup-proxy>
-              <q-card>
-                <q-card-section class="text-subtitle1 text-center">
-                  <q-icon name="filter_alt" />
-                  Filter
-                </q-card-section>
-                <q-card-section>
-                  Progress:
-                  <q-radio
-                    v-model="filtering.progress"
-                    val="all"
-                    label="All"
-                    class="full-width"
-                  />
-                  <q-radio
-                    v-model="filtering.progress"
-                    val="done"
-                    label="Done"
-                    class="full-width"
-                  />
-                  <q-radio
-                    v-model="filtering.progress"
-                    val="undone"
-                    label="Undone"
-                    class="full-width"
-                  />
-                </q-card-section>
-                <q-separator />
-                <q-card-section>
-                  Priority:
-                  <q-radio
-                    v-model="filtering.priority"
-                    val="all"
-                    label="All"
-                    class="full-width"
-                  />
-                  <q-radio
-                    v-model="filtering.priority"
-                    val="1"
-                    label="High"
-                    class="full-width"
-                  />
-                  <q-radio
-                    v-model="filtering.priority"
-                    val="2"
-                    label="Medium"
-                    class="full-width"
-                  />
-                  <q-radio
-                    v-model="filtering.priority"
-                    val="3"
-                    label="Low"
-                    class="full-width"
-                  />
-                </q-card-section>
-                <q-separator />
-                <q-card-section>
-                  Category:
-                  <q-radio
-                    v-model="filtering.category"
-                    val="all"
-                    label="All"
-                    class="full-width"
-                  />
-                  <q-radio
-                    v-for="(category, index) of freeTasksCategories"
-                    :key="index"
-                    v-model="filtering.category"
-                    :val="category['id']"
-                    class="full-width"
-                  >
-                    <q-icon
-                      :name="category['icon']"
-                      :color="category['color']"
-                      size="xs"
-                    />
-                    {{ category['title'] }}
-                  </q-radio>
-                </q-card-section>
-                <q-separator />
-
-                <q-card-section class="text-subtitle1 text-center">
-                  <q-icon name="sort" />
-                  Sort
-                </q-card-section>
-                <q-card-section>
-                  <q-btn
-                    :icon="
-                      sorting.title == 'none'
-                        ? 'last_page'
-                        : sorting.title == 'asc'
-                        ? 'vertical_align_bottom'
-                        : 'vertical_align_top'
-                    "
-                    class="full-width"
-                    @click="sortByTitle"
-                  >
-                    Title
-                  </q-btn>
-                  <q-btn
-                    :icon="
-                      sorting.priority == 'none'
-                        ? 'last_page'
-                        : sorting.priority == 'asc'
-                        ? 'vertical_align_bottom'
-                        : 'vertical_align_top'
-                    "
-                    class="full-width"
-                    @click="sortByPriority"
-                  >
-                    Priority
-                  </q-btn>
-                  <q-btn
-                    :icon="
-                      sorting.dateModified == 'none'
-                        ? 'last_page'
-                        : sorting.dateModified == 'asc'
-                        ? 'vertical_align_bottom'
-                        : 'vertical_align_top'
-                    "
-                    class="full-width"
-                    @click="sortByDateModified"
-                  >
-                    Date modified
-                  </q-btn>
-                </q-card-section>
-              </q-card>
-            </q-popup-proxy>
-          </q-btn>
+          <filter-sort
+            :items="freeTasksArray"
+            type="free-tasks"
+            @updateData="(modifiedItems) => (freeTasks = modifiedItems)"
+          />
         </q-card-section>
       </q-card-section>
     </q-card>
     <p
-      v-if="
-        Object.keys(freeTasks).length &&
-        (filtering.progress == 'all' || filtering.progress == 'undone')
-      "
+      v-if="freeTasks.some((el) => !el['progress'])"
       class="text-center text-body1"
     >
       Uncompleted tasks
     </p>
-    <q-list
-      v-if="filtering.progress == 'all' || filtering.progress == 'undone'"
-      separator
-      bordered
-    >
+    <q-list v-if="freeTasks.some((el) => !el['progress'])" separator bordered>
       <q-item
-        v-for="(task, index) of freeTasks.filter(
-          (el) =>
-            !el['progress'] &&
-            (filtering.priority == 'all' ||
-              filtering.priority == el['priority']) &&
-            (filtering.category == 'all' ||
-              (el['category'] && filtering.category == el['category']))
-        )"
+        v-for="(task, index) of freeTasks.filter((el) => !el['progress'])"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, task['id'])"
         :style="task['progress'] ? ' background: lightgrey' : ''"
@@ -263,34 +115,23 @@
       </q-item>
     </q-list>
 
-    <q-separator v-if="filtering.progress == 'all'" />
+    <q-separator
+      v-if="
+        freeTasks.some((el) => el['progress']) &&
+        freeTasks.some((el) => !el['progress'])
+      "
+    />
 
     <p
-      v-if="
-        Object.keys(freeTasks).length &&
-        (filtering.progress == 'all' || filtering.progress == 'done')
-      "
+      v-if="freeTasks.some((el) => el['progress'])"
       class="text-center text-body1"
     >
       Completed tasks
     </p>
-    <q-separator
-      v-if="filtering.progress == 'all' || filtering.progress == 'done'"
-    />
-    <q-list
-      v-if="filtering.progress == 'all' || filtering.progress == 'done'"
-      separator
-      bordered
-    >
+    <q-separator v-if="freeTasks.some((el) => el['progress'])" />
+    <q-list v-if="freeTasks.some((el) => el['progress'])" separator bordered>
       <q-item
-        v-for="(task, index) of freeTasks.filter(
-          (el) =>
-            el['progress'] &&
-            (filtering.priority == 'all' ||
-              filtering.priority == el['priority']) &&
-            (filtering.category == 'all' ||
-              (el['category'] && filtering.category == el['category']))
-        )"
+        v-for="(task, index) of freeTasks.filter((el) => el['progress'])"
         :key="index"
         v-touch-hold:400:12:15.mouse="(event) => taskHold(event, task['id'])"
         :class="task['progress'] ? 'bg-green-11' : ''"
@@ -489,6 +330,7 @@ import { getDatabase, ref, update } from 'firebase/database'
 import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
+import FilterSort from 'src/components/common/groups/FilterSort.vue'
 
 import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
 import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
@@ -504,6 +346,7 @@ const db = getDatabase()
 
 export default {
   components: {
+    FilterSort,
     ProgressChange,
     ItemRemove,
     BackButton,
@@ -514,62 +357,18 @@ export default {
   },
   data() {
     return {
-      holdedTaskId: '',
-      sorting: {
-        title: 'none',
-        priority: 'asc',
-        dateModified: 'none'
-      },
-      filtering: {
-        progress: 'all',
-        priority: 'all',
-        category: 'all'
-      }
+      freeTasks: [],
+      holdedTaskId: ''
     }
   },
   computed: {
-    freeTasks() {
+    freeTasksArray() {
       const vuexFreeTasks = this.$store.getters['users/freeTasks']
       let freeTasks = []
       if (vuexFreeTasks) {
         for (const vuexFreeTask in vuexFreeTasks) {
           freeTasks.push(vuexFreeTasks[vuexFreeTask])
         }
-        freeTasks.sort((a, b) => {
-          if (this.sorting.title != 'none') {
-            if (this.sorting.title == 'asc') {
-              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
-              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
-              return 0
-            } else {
-              if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
-              if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
-              return 0
-            }
-          } else if (this.sorting.priority != 'none') {
-            if (this.sorting.priority == 'asc') {
-              return (
-                (a.priority ? a.priority : 3) - (b.priority ? b.priority : 3)
-              )
-            } else {
-              return (
-                (b.priority ? b.priority : 3) - (a.priority ? a.priority : 3)
-              )
-            }
-          } else if (this.sorting.dateModified != 'none') {
-            if (this.sorting.dateModified == 'asc') {
-              return (
-                (a.dateModified ? a.dateModified : 0) -
-                (b.dateModified ? b.dateModified : 0)
-              )
-            } else {
-              return (
-                (b.dateModified ? b.dateModified : 0) -
-                (a.dateModified ? a.dateModified : 0)
-              )
-            }
-          }
-        })
       }
       return freeTasks
     },
@@ -580,22 +379,6 @@ export default {
         categories.push(vuexCategories[category])
       }
       return categories
-    },
-    freeTasksCategories() {
-      let freeTasksCategories = []
-      for (const freeTask in this.freeTasks) {
-        const task = this.freeTasks[freeTask]
-        if (
-          task['category'] &&
-          (!freeTasksCategories.length ||
-            !freeTasksCategories.some(
-              (element) => element['id'] == task['category']['id']
-            ))
-        ) {
-          freeTasksCategories.push(this.findCategory(task['category']))
-        }
-      }
-      return freeTasksCategories
     },
     holdedTask() {
       return (
@@ -660,28 +443,7 @@ export default {
       })
     },
     findCategory(id) {
-      const vuexCategories = this.$store.getters['users/categories']
-      if (id) {
-        return vuexCategories[`id-${id}`] || {}
-      } else {
-        return {}
-      }
-    },
-    sortByTitle() {
-      this.sorting.priority = 'none'
-      this.sorting.dateModified = 'none'
-      this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
-    },
-    sortByPriority() {
-      this.sorting.title = 'none'
-      this.sorting.dateModified = 'none'
-      this.sorting.priority = this.sorting.priority == 'asc' ? 'desc' : 'asc'
-    },
-    sortByDateModified() {
-      this.sorting.title = 'none'
-      this.sorting.priority = 'none'
-      this.sorting.dateModified =
-        this.sorting.dateModified == 'asc' ? 'desc' : 'asc'
+      return this.$store.getters['users/categories'][`id-${id}`] || {}
     },
     openSearch() {
       this.$q.dialog({

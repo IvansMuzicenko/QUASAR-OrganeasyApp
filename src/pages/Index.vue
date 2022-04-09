@@ -41,102 +41,18 @@
           class="zindex-high"
           @click="openSearch"
         />
-        <q-btn
-          icon="tune"
-          :color="filtering.progress != 'all' ? 'green' : ''"
-          class="zindex-high"
-          flat
-        >
-          <q-popup-proxy>
-            <q-card>
-              <q-card-section class="text-subtitle1 text-center">
-                <q-icon name="filter_alt" />
-                Filter
-              </q-card-section>
-              <q-card-section>
-                Progress:
-                <q-radio
-                  v-model="filtering.progress"
-                  val="all"
-                  label="All"
-                  class="full-width"
-                />
-                <q-radio
-                  v-model="filtering.progress"
-                  val="done"
-                  label="Done"
-                  class="full-width"
-                />
-                <q-radio
-                  v-model="filtering.progress"
-                  val="undone"
-                  label="Undone"
-                  class="full-width"
-                />
-              </q-card-section>
-
-              <q-separator />
-
-              <q-card-section class="text-subtitle1 text-center">
-                <q-icon name="sort" />
-                Sort
-              </q-card-section>
-              <q-card-section>
-                <q-btn
-                  :icon="
-                    sorting.time == 'none'
-                      ? 'last_page'
-                      : sorting.time == 'asc'
-                      ? 'vertical_align_bottom'
-                      : 'vertical_align_top'
-                  "
-                  class="full-width"
-                  @click="sortByTime"
-                >
-                  Time
-                </q-btn>
-                <q-btn
-                  :icon="
-                    sorting.title == 'none'
-                      ? 'last_page'
-                      : sorting.title == 'asc'
-                      ? 'vertical_align_bottom'
-                      : 'vertical_align_top'
-                  "
-                  class="full-width"
-                  @click="sortByTitle"
-                >
-                  Title
-                </q-btn>
-                <q-btn
-                  :icon="
-                    sorting.dateModified == 'none'
-                      ? 'last_page'
-                      : sorting.dateModified == 'asc'
-                      ? 'vertical_align_bottom'
-                      : 'vertical_align_top'
-                  "
-                  class="full-width"
-                  @click="sortByDateModified"
-                >
-                  Date modified
-                </q-btn>
-              </q-card-section>
-            </q-card>
-          </q-popup-proxy>
-        </q-btn>
+        <filter-sort
+          :items="dayTasksArray"
+          type="tasks"
+          @updateData="(modifiedItems) => (dayTasks = modifiedItems)"
+        />
       </q-card-section>
     </q-card>
 
     <q-markup-table wrap-cells separator="cell">
       <tbody>
         <tr
-          v-for="(task, index) of dayTasks.filter(
-            (el) =>
-              filtering.progress == 'all' ||
-              (filtering.progress == 'done' && el['progress']) ||
-              (filtering.progress == 'undone' && !el['progress'])
-          )"
+          v-for="(task, index) of dayTasks"
           :key="index"
           v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
           style="width: 60px"
@@ -304,6 +220,7 @@ import { getDatabase, ref, update } from 'firebase/database'
 
 import AddTask from 'src/components/common/dialogs/AddTask.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
+import FilterSort from 'src/components/common/groups/FilterSort.vue'
 
 import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
 import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
@@ -317,6 +234,7 @@ const db = getDatabase()
 
 export default {
   components: {
+    FilterSort,
     ProgressChange,
     ItemRemove,
     EditButton,
@@ -326,16 +244,9 @@ export default {
   },
   data() {
     return {
+      dayTasks: [],
       timeStamp: Date.now(),
-      date: date.formatDate(Date.now(), 'DD-MM-YYYY'),
-      sorting: {
-        title: 'none',
-        time: 'asc',
-        dateModified: 'none'
-      },
-      filtering: {
-        progress: 'all'
-      }
+      date: date.formatDate(Date.now(), 'DD-MM-YYYY')
     }
   },
   computed: {
@@ -358,7 +269,7 @@ export default {
         )
       )
     },
-    dayTasks() {
+    dayTasksArray() {
       if (!this.tasks) return []
       const vuexDayTasks = this.tasks[`date-${this.queryDate}`]
       let dayTasks = []
@@ -366,40 +277,6 @@ export default {
         for (const vuexDayTask in vuexDayTasks) {
           dayTasks.push(vuexDayTasks[vuexDayTask])
         }
-
-        dayTasks.sort((a, b) => {
-          if (this.sorting.time != 'none') {
-            const first = a.time.slice(a.time.indexOf(' ')).replace(':', '.')
-            const second = b.time.slice(b.time.indexOf(' ')).replace(':', '.')
-            if (this.sorting.time == 'asc') {
-              return first - second
-            } else {
-              return second - first
-            }
-          } else if (this.sorting.title != 'none') {
-            if (this.sorting.title == 'asc') {
-              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
-              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
-              return 0
-            } else {
-              if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
-              if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
-              return 0
-            }
-          } else if (this.sorting.dateModified != 'none') {
-            if (this.sorting.dateModified == 'asc') {
-              return (
-                (a.dateModified ? a.dateModified : 0) -
-                (b.dateModified ? b.dateModified : 0)
-              )
-            } else {
-              return (
-                (b.dateModified ? b.dateModified : 0) -
-                (a.dateModified ? a.dateModified : 0)
-              )
-            }
-          }
-        })
       }
       return dayTasks
     }
@@ -472,22 +349,6 @@ export default {
           searchType: 'tasks'
         }
       })
-    },
-    sortByTime() {
-      this.sorting.title = 'none'
-      this.sorting.dateModified = 'none'
-      this.sorting.time = this.sorting.time == 'asc' ? 'desc' : 'asc'
-    },
-    sortByTitle() {
-      this.sorting.time = 'none'
-      this.sorting.dateModified = 'none'
-      this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
-    },
-    sortByDateModified() {
-      this.sorting.time = 'none'
-      this.sorting.title = 'none'
-      this.sorting.dateModified =
-        this.sorting.dateModified == 'asc' ? 'desc' : 'asc'
     },
     openTask(task) {
       const taskDate = task.time.slice(0, task.time.indexOf(' '))
