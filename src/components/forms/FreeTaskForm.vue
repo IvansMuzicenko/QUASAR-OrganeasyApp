@@ -53,57 +53,12 @@
 
     <q-card-section>
       Category:
-      <q-btn flat dense>
-        <q-icon
-          :name="form.category ? selectedCategory['icon'] : ''"
-          :color="form.category ? selectedCategory['color'] : ''"
-        />
-        {{ selectedCategory['title'] || 'Uncategorized' }}
-        <q-icon name="expand_more" />
-        <q-menu anchor="bottom left" self="top left" auto-close>
-          <p class="text-center text-subtitle1 no-margin">Categories</p>
-          <q-list separator>
-            <q-separator />
-            <q-item
-              clickable
-              class="full-width text-subtitle1"
-              @click="form.category = null"
-            >
-              <div>
-                <q-icon />
-                None
-              </div>
-            </q-item>
-            <q-item
-              v-for="(listCategory, categoryIndex) of categories"
-              :key="categoryIndex"
-              clickable
-              class="full-width text-subtitle1"
-              @click="form.category = listCategory['id']"
-            >
-              <div class="full-width">
-                <q-icon
-                  :name="listCategory['icon']"
-                  :color="listCategory['color']"
-                  size="sm"
-                />
-                {{ listCategory['title'] }}
-              </div>
-            </q-item>
-
-            <q-item
-              clickable
-              class="full-width text-subtitle1"
-              @click="addCategory"
-            >
-              <div>
-                <q-icon name="add" />
-                Add new
-              </div>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
+      <category-select
+        :item-category="form.category || ''"
+        @categorySelected="
+          (selectedCategory) => (form.category = selectedCategory)
+        "
+      />
     </q-card-section>
 
     <q-card-section>
@@ -154,9 +109,9 @@
                 size="xs"
               />
               <q-icon
-                v-if="noteCategory(scope.opt['id'], 'icon')"
-                :name="noteCategory(scope.opt['id'], 'icon')"
-                :color="noteCategory(scope.opt['id'], 'color')"
+                v-if="findNoteCategory(scope.opt['id'], 'icon')"
+                :name="findNoteCategory(scope.opt['id'], 'icon')"
+                :color="findNoteCategory(scope.opt['id'], 'color')"
                 size="xs"
               />
               {{ scope.opt.title }}
@@ -180,8 +135,8 @@
                     class="q-pa-none q-ma-none q-pr-xs"
                   />
                   <q-icon
-                    :name="noteCategory(scope.opt['id'], 'icon')"
-                    :color="noteCategory(scope.opt['id'], 'color')"
+                    :name="findNoteCategory(scope.opt['id'], 'icon')"
+                    :color="findNoteCategory(scope.opt['id'], 'color')"
                     size="sm"
                     class="q-pa-none q-ma-none q-pr-xs"
                   />
@@ -435,12 +390,12 @@
 
 <script>
 import Editor from 'src/components/common/form/Editor.vue'
-import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+import CategorySelect from '../common/groups/CategorySelect.vue'
 
 export default {
-  components: { Editor, SaveButton },
+  components: { Editor, SaveButton, CategorySelect },
   props: {
     editTask: {
       type: Object,
@@ -527,22 +482,6 @@ export default {
         }
       }
       return notesArray
-    },
-    categories() {
-      const vuexCategories = this.$store.getters['users/categories']
-      let categories = []
-      for (const category in vuexCategories) {
-        categories.push(vuexCategories[category])
-      }
-      return categories
-    },
-    selectedCategory() {
-      const vuexCategories = this.$store.getters['users/categories']
-      if (this.form.category) {
-        return vuexCategories[`id-${this.form.category}`] || {}
-      } else {
-        return {}
-      }
     }
   },
   watch: {
@@ -625,7 +564,7 @@ export default {
       }
       return false
     },
-    noteCategory(id, type) {
+    findNoteCategory(id, type) {
       const note = this.$store.getters['users/notes'][`id-${id}`]
       if (note) {
         const categoryId = note['category']
@@ -673,11 +612,6 @@ export default {
       this.subSubtaskInput = ''
     },
 
-    addCategory() {
-      this.$q.dialog({
-        component: AddCategory
-      })
-    },
     addLocation() {
       this.form.eventLocation.push({ address: '', description: '' })
     },

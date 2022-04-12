@@ -23,56 +23,13 @@
       >
         <q-item v-if="!editState" class="no-padding">
           <q-item-section thumbnail class="q-pr-none">
-            <q-btn flat dense>
-              <q-icon
-                :name="note.category ? selectedCategory['icon'] : ''"
-                :color="note.category ? selectedCategory['color'] : ''"
-              />
-              <q-icon name="expand_more" />
-              <q-menu anchor="bottom left" self="top left" auto-close>
-                <p class="text-center text-subtitle1 no-margin">Categories</p>
-                <q-list separator>
-                  <q-separator />
-                  <q-item
-                    clickable
-                    class="full-width text-subtitle1"
-                    @click="changeCategory(null)"
-                  >
-                    <div>
-                      <q-icon />
-                      None
-                    </div>
-                  </q-item>
-                  <q-item
-                    v-for="(category, categoryIndex) of categories"
-                    :key="categoryIndex"
-                    clickable
-                    class="full-width text-subtitle1"
-                    @click="changeCategory(category['id'])"
-                  >
-                    <div class="full-width">
-                      <q-icon
-                        :name="category['icon']"
-                        :color="category['color']"
-                        size="sm"
-                      />
-                      {{ category['title'] }}
-                    </div>
-                  </q-item>
-
-                  <q-item
-                    clickable
-                    class="full-width text-subtitle1"
-                    @click="addCategory"
-                  >
-                    <div>
-                      <q-icon name="add" />
-                      Add new
-                    </div>
-                  </q-item>
-                </q-list>
-              </q-menu>
-            </q-btn>
+            <category-select
+              :item-category="note.category || ''"
+              rewrite
+              :item-path="`notes/id-${note.id}`"
+              icon-only
+              @categorySelected="updateNoteData()"
+            />
           </q-item-section>
           <q-item-section>
             {{ note.title }}
@@ -109,18 +66,25 @@
 import { getDatabase, ref, update, remove } from 'firebase/database'
 
 import NoteForm from 'src/components/forms/NoteForm.vue'
-import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 
 import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
 
 const db = getDatabase()
 
 export default {
-  components: { NoteForm, ItemRemove, BackButton, EditButton, SaveButton },
+  components: {
+    NoteForm,
+    ItemRemove,
+    BackButton,
+    EditButton,
+    SaveButton,
+    CategorySelect
+  },
   emits: ['hide'],
   data() {
     return {
@@ -144,22 +108,6 @@ export default {
     },
     editState() {
       return this.$route.query.edit ? true : false
-    },
-    categories() {
-      const vuexCategories = this.$store.getters['users/categories']
-      let categories = []
-      for (const category in vuexCategories) {
-        categories.push(vuexCategories[category])
-      }
-      return categories
-    },
-    selectedCategory() {
-      const vuexCategories = this.$store.getters['users/categories']
-      if (this.note.category) {
-        return vuexCategories[`id-${this.note.category}`] || {}
-      } else {
-        return {}
-      }
     }
   },
   watch: {
@@ -179,16 +127,6 @@ export default {
         return this.$router.push('/notes')
       }
       this.note = JSON.parse(JSON.stringify(note))
-    },
-    changeCategory(category) {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/notes/id-${this.noteId}`
-        ),
-        { category: category }
-      )
-      this.updateNoteData()
     },
     favoriteNote() {
       update(
@@ -231,11 +169,6 @@ export default {
     },
     onCancelClick() {
       this.$router.push(this.path)
-    },
-    addCategory() {
-      this.$q.dialog({
-        component: AddCategory
-      })
     },
     errorCheck(errorState) {
       this.error = errorState

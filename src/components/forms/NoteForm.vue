@@ -29,57 +29,12 @@
 
       <q-card-section class="q-pl-xs">
         Category:
-        <q-btn flat dense>
-          <q-icon
-            :name="form.category ? selectedCategory['icon'] : ''"
-            :color="form.category ? selectedCategory['color'] : ''"
-          />
-          {{ selectedCategory['title'] || 'Uncategorized' }}
-          <q-icon name="expand_more" />
-          <q-menu anchor="bottom left" self="top left">
-            <p class="text-center text-subtitle1 no-margin">Categories</p>
-            <q-list separator>
-              <q-separator />
-              <q-item
-                clickable
-                class="full-width text-subtitle1"
-                @click="form.category = null"
-              >
-                <div>
-                  <q-icon />
-                  None
-                </div>
-              </q-item>
-              <q-item
-                v-for="(listCategory, categoryIndex) of categories"
-                :key="categoryIndex"
-                clickable
-                class="full-width text-subtitle1"
-                @click="form.category = listCategory['id']"
-              >
-                <div class="full-width">
-                  <q-icon
-                    :name="listCategory['icon']"
-                    :color="listCategory['color']"
-                    size="sm"
-                  />
-                  {{ listCategory['title'] }}
-                </div>
-              </q-item>
-
-              <q-item
-                clickable
-                class="full-width text-subtitle1"
-                @click="addCategory"
-              >
-                <div>
-                  <q-icon name="add" />
-                  Add new
-                </div>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
+        <category-select
+          :item-category="form.category || ''"
+          @categorySelected="
+            (selectedCategory) => (form.category = selectedCategory)
+          "
+        />
       </q-card-section>
 
       <editor v-model="form.text" />
@@ -103,12 +58,12 @@
 </template>
 <script>
 import Editor from 'src/components/common/form/Editor.vue'
-import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+import CategorySelect from '../common/groups/CategorySelect.vue'
 
 export default {
-  components: { Editor, SaveButton },
+  components: { Editor, SaveButton, CategorySelect },
   props: {
     editNote: {
       type: Object,
@@ -134,22 +89,6 @@ export default {
         !this.form.text.replace('<br>', '') &&
         !this.form.title.replace('<br>', '')
       )
-    },
-    categories() {
-      const vuexCategories = this.$store.getters['users/categories']
-      let categories = []
-      for (const category in vuexCategories) {
-        categories.push(vuexCategories[category])
-      }
-      return categories
-    },
-    selectedCategory() {
-      const vuexCategories = this.$store.getters['users/categories']
-      if (this.form.category) {
-        return vuexCategories[`id-${this.form.category}`] || {}
-      } else {
-        return {}
-      }
     }
   },
   watch: {
@@ -169,11 +108,6 @@ export default {
         this.form.favorite = this.editNote.favorite
         this.form.category = this.editNote.category || null
       }
-    },
-    addCategory() {
-      this.$q.dialog({
-        component: AddCategory
-      })
     },
     onOKClick() {
       this.$emit('OKEvent', this.form)

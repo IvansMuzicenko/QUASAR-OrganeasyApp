@@ -106,56 +106,12 @@
       <q-item>
         <q-item-section avatar class="taskInfo">Category</q-item-section>
         <q-separator vertical spaced="md" />
-        <q-btn flat dense>
-          <q-icon
-            :name="task.category ? selectedCategory['icon'] : ''"
-            :color="task.category ? selectedCategory['color'] : ''"
-          />
-          {{ selectedCategory['title'] || 'None' }}
-          <q-icon name="expand_more" />
-          <q-menu anchor="bottom left" self="top left" auto-close>
-            <p class="text-center text-subtitle1 no-margin">Categories</p>
-            <q-list separator>
-              <q-separator />
-              <q-item
-                clickable
-                class="full-width text-subtitle1"
-                @click="changeCategory(null)"
-              >
-                <div>
-                  <q-icon />
-                  None
-                </div>
-              </q-item>
-              <q-item
-                v-for="(category, categoryIndex) of categories"
-                :key="categoryIndex"
-                clickable
-                class="full-width text-subtitle1"
-                @click="changeCategory(category['id'])"
-              >
-                <div class="full-width">
-                  <q-icon
-                    :name="category['icon']"
-                    :color="category['color']"
-                    size="sm"
-                  />
-                  {{ category['title'] }}
-                </div>
-              </q-item>
-              <q-item
-                clickable
-                class="full-width text-subtitle1"
-                @click="addCategory"
-              >
-                <div>
-                  <q-icon name="add" />
-                  Add new
-                </div>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
+        <category-select
+          :item-category="task.category || ''"
+          rewrite
+          :item-path="`freeTasks/id-${task.id}`"
+          @categorySelected="updateTaskData()"
+        />
       </q-item>
 
       <q-item v-if="task.continuous">
@@ -203,13 +159,13 @@
                   />
                   <q-icon
                     :name="
-                      findCategory(note['id'])
-                        ? findCategory(note['id'])['icon']
+                      findNoteCategory(note['id'])
+                        ? findNoteCategory(note['id'])['icon']
                         : ''
                     "
                     :color="
-                      findCategory(note['id'])
-                        ? findCategory(note['id'])['color']
+                      findNoteCategory(note['id'])
+                        ? findNoteCategory(note['id'])['color']
                         : ''
                     "
                     size="sm"
@@ -310,7 +266,6 @@ import { getDatabase, ref, set, update, remove } from 'firebase/database'
 import { date } from 'quasar'
 
 import FreeTaskForm from 'src/components/forms/FreeTaskForm.vue'
-import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 
 import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
 import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
@@ -321,6 +276,7 @@ import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
 import CopyButton from 'src/components/common/elements/buttons/CopyButton.vue'
 import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
 import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
+import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
 
 const db = getDatabase()
 
@@ -334,7 +290,8 @@ export default {
     SaveButton,
     CopyButton,
     StartContinuousButton,
-    StopContinuousButton
+    StopContinuousButton,
+    CategorySelect
   },
   emits: ['hide'],
   data() {
@@ -382,22 +339,6 @@ export default {
         return timeSpent
       }
       return 0
-    },
-    categories() {
-      const vuexCategories = this.$store.getters['users/categories']
-      let categories = []
-      for (const category in vuexCategories) {
-        categories.push(vuexCategories[category])
-      }
-      return categories
-    },
-    selectedCategory() {
-      const vuexCategories = this.$store.getters['users/categories']
-      if (this.task.category) {
-        return vuexCategories[`id-${this.task.category}`] || {}
-      } else {
-        return {}
-      }
     }
   },
   watch: {
@@ -442,22 +383,7 @@ export default {
       )
       this.updateTaskData()
     },
-    changeCategory(category) {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
-        ),
-        { category: category }
-      )
-      this.updateTaskData()
-    },
-    addCategory() {
-      this.$q.dialog({
-        component: AddCategory
-      })
-    },
-    findCategory(id) {
+    findNoteCategory(id) {
       const note = this.$store.getters['users/notes'][`id-${id}`]
       if (note) {
         const categoryId = note['category']

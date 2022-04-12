@@ -248,64 +248,11 @@
           </q-card-section>
           <q-card-section class="text-center">
             <p class="text-center no-margin">Category</p>
-            <q-btn flat dense>
-              <q-icon
-                :name="
-                  holdedTask.category
-                    ? findCategory(holdedTask.category)['icon']
-                    : ''
-                "
-                :color="
-                  holdedTask.category
-                    ? findCategory(holdedTask.category)['color']
-                    : ''
-                "
-              />
-              {{ findCategory(holdedTask.category)['title'] || 'None' }}
-              <q-icon name="expand_more" />
-              <q-menu anchor="bottom left" self="top left" auto-close>
-                <p class="text-center text-subtitle1 no-margin">Categories</p>
-                <q-list separator>
-                  <q-separator />
-                  <q-item
-                    clickable
-                    class="full-width text-subtitle1"
-                    @click="changeCategory(null, holdedTask['id'])"
-                  >
-                    <div>
-                      <q-icon />
-                      None
-                    </div>
-                  </q-item>
-                  <q-item
-                    v-for="(category, categoryIndex) of categories"
-                    :key="categoryIndex"
-                    clickable
-                    class="full-width text-subtitle1"
-                    @click="changeCategory(category.id, holdedTask['id'])"
-                  >
-                    <div class="full-width">
-                      <q-icon
-                        :name="category['icon']"
-                        :color="category['color']"
-                        size="sm"
-                      />
-                      {{ category['title'] }}
-                    </div>
-                  </q-item>
-                  <q-item
-                    clickable
-                    class="full-width text-subtitle1"
-                    @click="addCategory"
-                  >
-                    <div>
-                      <q-icon name="add" />
-                      Add new
-                    </div>
-                  </q-item>
-                </q-list>
-              </q-menu>
-            </q-btn>
+            <category-select
+              :item-category="holdedTask.category || ''"
+              rewrite
+              :item-path="`freeTasks/id-${holdedTask.id}`"
+            />
           </q-card-section>
           <q-card-section class="text-center">
             <item-remove
@@ -328,7 +275,6 @@
 import { getDatabase, ref, update } from 'firebase/database'
 
 import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
-import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
 import FilterSort from 'src/components/common/groups/FilterSort.vue'
 
@@ -341,6 +287,7 @@ import CopyButton from 'src/components/common/elements/buttons/CopyButton.vue'
 
 import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
 import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
+import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
 
 const db = getDatabase()
 
@@ -353,7 +300,8 @@ export default {
     EditButton,
     CopyButton,
     StartContinuousButton,
-    StopContinuousButton
+    StopContinuousButton,
+    CategorySelect
   },
   data() {
     return {
@@ -371,14 +319,6 @@ export default {
         }
       }
       return freeTasks
-    },
-    categories() {
-      const vuexCategories = this.$store.getters['users/categories']
-      let categories = []
-      for (const category in vuexCategories) {
-        categories.push(vuexCategories[category])
-      }
-      return categories
     },
     holdedTask() {
       return (
@@ -428,19 +368,6 @@ export default {
         ),
         { priority: priority }
       )
-    },
-    changeCategory(category, id) {
-      update(
-        ref(db, `${this.$store.getters['users/userId']}/freeTasks/id-${id}`),
-        {
-          category: category
-        }
-      )
-    },
-    addCategory() {
-      this.$q.dialog({
-        component: AddCategory
-      })
     },
     findCategory(id) {
       return this.$store.getters['users/categories'][`id-${id}`] || {}
