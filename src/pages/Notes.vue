@@ -80,64 +80,8 @@
           />
         </q-item-section>
       </q-item>
-      <q-popup-proxy
-        v-if="holdedNote"
-        ref="noteHold"
-        cover
-        :breakpoint="10000"
-        transition-show="scale"
-        transition-hide="scale"
-      >
-        <q-card>
-          <q-card-section class="text-center text-subtitle1">
-            <p class="no-margin">Note</p>
-            <p v-if="holdedNote['title']" class="no-margin">
-              {{
-                `${holdedNote['title'].slice(0, 10)}${
-                  holdedNote['title'].length > 10 ? '...' : ''
-                }`
-              }}
-            </p>
-          </q-card-section>
-          <q-card-section class="text-center">
-            <q-btn
-              color="primary"
-              icon="visibility"
-              :to="`/notes/${holdedNote['id']}`"
-            >
-              View
-            </q-btn>
-          </q-card-section>
-          <q-card-section class="text-center">
-            <edit-button :path="`/notes/${holdedNote['id']}`" />
-          </q-card-section>
-          <q-card-section class="text-center">
-            <q-btn
-              :color="holdedNote['favorite'] ? 'grey-6' : 'warning'"
-              :icon="holdedNote['favorite'] ? 'star_outline' : 'star'"
-              @click="favoriteNote(holdedNote['favorite'], holdedNote['id'])"
-            >
-              {{ holdedNote['favorite'] ? 'Unfavorite' : 'Favorite' }}
-            </q-btn>
-          </q-card-section>
-          <q-card-section class="text-center">
-            <p class="text-center no-margin">Category</p>
-            <category-select
-              :item-category="holdedNote.category || ''"
-              rewrite
-              :item-path="`notes/id-${holdedNote.id}`"
-            />
-          </q-card-section>
-          <q-card-section class="text-center">
-            <item-remove
-              :item="holdedNote"
-              type="note"
-              @deleteEvent="$refs[`noteHold`].hide()"
-            />
-          </q-card-section>
-        </q-card>
-      </q-popup-proxy>
     </q-list>
+    <hold-menu ref="holdMenu" :item="holdedNote" type="note" />
     <div class="text-center q-my-md">
       <p v-if="!Object.keys(notes).length">You have not notes!</p>
       <q-btn color="secondary" @click="addNote()">Add note</q-btn>
@@ -152,21 +96,17 @@ import AddNote from 'src/components/common/dialogs/AddNote.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
 import FilterSort from 'src/components/common/groups/FilterSort.vue'
 
-import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
+import HoldMenu from 'src/components/common/dialogs/HoldMenu.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
-import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
-import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
 
 const db = getDatabase()
 
 export default {
   components: {
-    ItemRemove,
     FilterSort,
-    BackButton,
-    EditButton,
-    CategorySelect
+    HoldMenu,
+    BackButton
   },
   data() {
     return {
@@ -199,7 +139,7 @@ export default {
     },
     noteHold(event, id) {
       this.holdedNoteId = id
-      this.$refs[`noteHold`].show()
+      this.$refs['holdMenu'].show()
     },
     findCategory(id) {
       return this.$store.getters['users/categories'][`id-${id}`] || {}
@@ -210,11 +150,6 @@ export default {
         componentProps: {
           searchType: 'notes'
         }
-      })
-    },
-    favoriteNote(favorite, id) {
-      update(ref(db, `${this.$store.getters['users/userId']}/notes/id-${id}`), {
-        favorite: !favorite
       })
     }
   }

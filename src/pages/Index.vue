@@ -54,7 +54,9 @@
         <tr
           v-for="(task, index) of dayTasks"
           :key="index"
-          v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
+          v-touch-hold:400:12:15.mouse="
+            (event) => holdSuccess(event, task['id'])
+          "
           style="width: 60px"
           :class="task['progress'] ? 'bg-green-11' : ''"
           @click="openTask(task)"
@@ -133,80 +135,10 @@
               </q-item>
             </q-list>
           </td>
-          <q-popup-proxy
-            :ref="`taskHold-${index}`"
-            cover
-            :breakpoint="10000"
-            transition-show="scale"
-            transition-hide="scale"
-          >
-            <q-card>
-              <q-card-section class="text-center text-subtitle1">
-                <p class="no-margin">Task</p>
-                <p class="no-margin">
-                  {{
-                    `${task['title'].slice(0, 10)}${
-                      task['title'].length > 10 ? '...' : ''
-                    }`
-                  }}
-                </p>
-              </q-card-section>
-              <q-card-section class="text-center">
-                <q-btn
-                  color="primary"
-                  icon="visibility"
-                  @click="openTask(task)"
-                >
-                  View
-                </q-btn>
-              </q-card-section>
-              <q-card-section class="text-center">
-                <edit-button
-                  :path="`/${task.time.slice(0, task.time.indexOf(' '))}/${
-                    task.id
-                  }`"
-                />
-              </q-card-section>
-              <q-card-section class="text-center">
-                <progress-change :item="task" type="task" />
-              </q-card-section>
-              <q-card-section class="text-center">
-                <copy-button :task="task" type="task" />
-              </q-card-section>
-              <q-card-section
-                v-if="task['continuous'] && !task['continuousStarted']"
-                class="text-center"
-              >
-                <start-continuous-button
-                  :path="`tasks/date-${task.time.slice(
-                    0,
-                    task.time.indexOf(' ')
-                  )}/id-${task.id}`"
-                />
-              </q-card-section>
-              <q-card-section
-                v-if="
-                  task['continuous'] &&
-                  task['continuousStarted'] &&
-                  !task['continuousEnded']
-                "
-                class="text-center"
-              >
-                <stop-continuous-button
-                  :path="`tasks/date-${task.time.slice(
-                    0,
-                    task.time.indexOf(' ')
-                  )}/id-${task.id}`"
-                />
-              </q-card-section>
-              <q-card-section class="text-center">
-                <item-remove :item="task" type="task" />
-              </q-card-section>
-            </q-card>
-          </q-popup-proxy>
         </tr>
       </tbody>
     </q-markup-table>
+    <hold-menu ref="holdMenu" :item="holdedTask" type="task" />
     <div class="text-center q-my-md">
       <p v-if="!dayTasks">You have not tasks for this day</p>
       <q-btn color="secondary" @click="addTask()">Add task</q-btn>
@@ -222,31 +154,21 @@ import AddTask from 'src/components/common/dialogs/AddTask.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
 import FilterSort from 'src/components/common/groups/FilterSort.vue'
 
-import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
-import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
-
-import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
-import CopyButton from 'src/components/common/elements/buttons/CopyButton.vue'
-import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
-import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
+import HoldMenu from 'src/components/common/dialogs/HoldMenu.vue'
 
 const db = getDatabase()
 
 export default {
   components: {
     FilterSort,
-    ProgressChange,
-    ItemRemove,
-    EditButton,
-    CopyButton,
-    StartContinuousButton,
-    StopContinuousButton
+    HoldMenu
   },
   data() {
     return {
       dayTasks: [],
       timeStamp: Date.now(),
-      date: date.formatDate(Date.now(), 'DD-MM-YYYY')
+      date: date.formatDate(Date.now(), 'DD-MM-YYYY'),
+      holdedTaskId: ''
     }
   },
   computed: {
@@ -279,6 +201,12 @@ export default {
         }
       }
       return dayTasks
+    },
+    holdedTask() {
+      if (!this.tasks || !this.tasks[`date-${this.queryDate}`]) return {}
+      return (
+        this.tasks[`date-${this.queryDate}`][`id-${this.holdedTaskId}`] || {}
+      )
     }
   },
   watch: {
@@ -350,11 +278,6 @@ export default {
         }
       })
     },
-    openTask(task) {
-      const taskDate = task.time.slice(0, task.time.indexOf(' '))
-
-      this.$router.push(`/${taskDate}/${task.id}`)
-    },
     subtasksState(subtasks) {
       for (const sub of subtasks) {
         if (!sub['progress']) return true
@@ -386,8 +309,9 @@ export default {
       )
     },
 
-    holdSuccess(event, index) {
-      this.$refs[`taskHold-${index}`].show()
+    holdSuccess(event, id) {
+      this.holdedTaskId = id
+      this.$refs['holdMenu'].show()
     }
   }
 }

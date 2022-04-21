@@ -148,122 +148,8 @@
           {{ task['title'] }}
         </q-item-section>
       </q-item>
-      <q-popup-proxy
-        v-if="holdedTask"
-        ref="taskHold"
-        cover
-        :breakpoint="10000"
-        transition-show="scale"
-        transition-hide="scale"
-      >
-        <q-card>
-          <q-card-section class="text-center text-subtitle1">
-            <p class="no-margin">Free Task</p>
-            <p v-if="holdedTask['title']" class="no-margin">
-              {{
-                `${holdedTask['title'].slice(0, 10)}${
-                  holdedTask['title'].length > 10 ? '...' : ''
-                }`
-              }}
-            </p>
-          </q-card-section>
-          <q-card-section class="text-center">
-            <q-btn
-              color="primary"
-              icon="visibility"
-              :to="`/free-tasks/${holdedTask['id']}`"
-            >
-              View
-            </q-btn>
-          </q-card-section>
-          <q-card-section class="text-center">
-            <edit-button :path="`/free-tasks/${holdedTask['id']}`" />
-          </q-card-section>
-          <q-card-section class="text-center">
-            <progress-change :item="holdedTask" type="free-task" />
-          </q-card-section>
-          <q-card-section class="text-center">
-            <copy-button :task="holdedTask" type="free-task" />
-          </q-card-section>
-          <q-card-section
-            v-if="holdedTask['continuous'] && !holdedTask['continuousStarted']"
-            class="text-center"
-          >
-            <start-continuous-button :path="`freeTasks/id-${holdedTask.id}`" />
-          </q-card-section>
-          <q-card-section
-            v-if="
-              holdedTask['continuous'] &&
-              holdedTask['continuousStarted'] &&
-              !holdedTask['continuousEnded']
-            "
-            class="text-center"
-          >
-            <stop-continuous-button :path="`freeTasks/id-${holdedTask.id}`" />
-          </q-card-section>
-          <q-card-section class="text-center border">
-            <p class="text-center no-margin">Priority</p>
-            <q-btn flat dense>
-              <q-icon
-                name="fiber_manual_record"
-                :color="
-                  holdedTask.priority === 1
-                    ? 'green'
-                    : holdedTask.priority === 2
-                    ? 'yellow'
-                    : 'red-11'
-                "
-              />
-              {{
-                holdedTask['priority'] == 1
-                  ? 'High'
-                  : holdedTask['priority'] == 2
-                  ? 'Medium'
-                  : 'Low'
-              }}
-              <q-icon name="expand_more" />
-              <q-menu anchor="bottom left" self="top left" auto-close>
-                <q-list separator>
-                  <q-item clickable @click="changePriority(holdedTask, 1)">
-                    <div class="full-width">
-                      <q-icon name="fiber_manual_record" color="green" />
-                      High
-                    </div>
-                  </q-item>
-                  <q-item clickable @click="changePriority(holdedTask, 2)">
-                    <div class="full-width">
-                      <q-icon name="fiber_manual_record" color="yellow" />
-                      Medium
-                    </div>
-                  </q-item>
-                  <q-item clickable @click="changePriority(holdedTask, 3)">
-                    <div class="full-width">
-                      <q-icon name="fiber_manual_record" color="red" />
-                      Low
-                    </div>
-                  </q-item>
-                </q-list>
-              </q-menu>
-            </q-btn>
-          </q-card-section>
-          <q-card-section class="text-center">
-            <p class="text-center no-margin">Category</p>
-            <category-select
-              :item-category="holdedTask.category || ''"
-              rewrite
-              :item-path="`freeTasks/id-${holdedTask.id}`"
-            />
-          </q-card-section>
-          <q-card-section class="text-center">
-            <item-remove
-              :item="holdedTask"
-              type="free-task"
-              @deleteEvent="$refs[`taskHold`].hide()"
-            />
-          </q-card-section>
-        </q-card>
-      </q-popup-proxy>
     </q-list>
+    <hold-menu ref="holdMenu" :item="holdedTask" type="free-task" />
     <div class="text-center q-my-md">
       <p v-if="!Object.keys(freeTasks).length">You have not free-tasks</p>
       <q-btn color="secondary" @click="addFreeTask()">Add free-task</q-btn>
@@ -278,30 +164,17 @@ import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
 import Search from 'src/components/common/dialogs/Search.vue'
 import FilterSort from 'src/components/common/groups/FilterSort.vue'
 
-import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
-import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
+import HoldMenu from 'src/components/common/dialogs/HoldMenu.vue'
 
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
-import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
-import CopyButton from 'src/components/common/elements/buttons/CopyButton.vue'
-
-import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
-import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
-import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
 
 const db = getDatabase()
 
 export default {
   components: {
     FilterSort,
-    ProgressChange,
-    ItemRemove,
-    BackButton,
-    EditButton,
-    CopyButton,
-    StartContinuousButton,
-    StopContinuousButton,
-    CategorySelect
+    HoldMenu,
+    BackButton
   },
   data() {
     return {
@@ -358,17 +231,9 @@ export default {
     },
     taskHold(event, id) {
       this.holdedTaskId = id
-      this.$refs[`taskHold`].show()
+      this.$refs['holdMenu'].show()
     },
-    changePriority(task, priority) {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${task.id}`
-        ),
-        { priority: priority }
-      )
-    },
+
     findCategory(id) {
       return this.$store.getters['users/categories'][`id-${id}`] || {}
     },
