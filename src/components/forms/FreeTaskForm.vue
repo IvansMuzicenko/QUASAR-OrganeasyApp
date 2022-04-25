@@ -36,14 +36,12 @@
     </q-card-section>
 
     <q-card-section>
-      <q-select
-        v-model="form.priority"
-        label="Priority"
-        :options="priorityOptions"
-        option-value="id"
-        option-label="desc"
-        emit-value
-        map-options
+      Priority:
+      <priority-select
+        :item-priority="form.priority || 3"
+        @prioritySelected="
+          (selectedPriority) => (form.priority = selectedPriority)
+        "
       />
     </q-card-section>
 
@@ -392,10 +390,11 @@
 import Editor from 'src/components/common/form/Editor.vue'
 
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
-import CategorySelect from '../common/groups/CategorySelect.vue'
+import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
+import PrioritySelect from '../common/groups/PrioritySelect.vue'
 
 export default {
-  components: { Editor, SaveButton, CategorySelect },
+  components: { Editor, SaveButton, CategorySelect, PrioritySelect },
   props: {
     editTask: {
       type: Object,
@@ -436,21 +435,7 @@ export default {
       subtaskInput: '',
       subSubtaskInput: '',
       errorMessages: [],
-      subtaskEdit: null,
-      priorityOptions: [
-        {
-          id: 1,
-          desc: 'High'
-        },
-        {
-          id: 2,
-          desc: 'Medium'
-        },
-        {
-          id: 3,
-          desc: 'Low'
-        }
-      ]
+      subtaskEdit: null
     }
   },
   computed: {

@@ -59,48 +59,11 @@
       <q-item>
         <q-item-section avatar class="taskInfo">Priority</q-item-section>
         <q-separator vertical spaced="md" />
-        <q-btn flat dense>
-          <q-icon
-            name="fiber_manual_record"
-            :color="
-              task.priority === 1
-                ? 'green'
-                : task.priority === 2
-                ? 'yellow'
-                : 'red-11'
-            "
-          />
-          {{
-            task['priority'] == 1
-              ? 'High'
-              : task['priority'] == 2
-              ? 'Medium'
-              : 'Low'
-          }}
-          <q-icon name="expand_more" />
-          <q-menu anchor="bottom left" self="top left" auto-close>
-            <q-list separator>
-              <q-item clickable @click="changePriority(1)">
-                <div class="full-width">
-                  <q-icon name="fiber_manual_record" color="green" />
-                  High
-                </div>
-              </q-item>
-              <q-item clickable @click="changePriority(2)">
-                <div class="full-width">
-                  <q-icon name="fiber_manual_record" color="yellow" />
-                  Medium
-                </div>
-              </q-item>
-              <q-item clickable @click="changePriority(3)">
-                <div class="full-width">
-                  <q-icon name="fiber_manual_record" color="red" />
-                  Low
-                </div>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
+        <priority-select
+          :item-priority="task.priority"
+          :item-id="task.id"
+          @prioritySelected="updateTaskData()"
+        />
       </q-item>
 
       <q-item>
@@ -277,6 +240,7 @@ import CopyButton from 'src/components/common/elements/buttons/CopyButton.vue'
 import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
 import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
 import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
+import PrioritySelect from 'src/components/common/groups/PrioritySelect.vue'
 
 const db = getDatabase()
 
@@ -289,6 +253,7 @@ export default {
     EditButton,
     SaveButton,
     CopyButton,
+    PrioritySelect,
     StartContinuousButton,
     StopContinuousButton,
     CategorySelect
@@ -372,16 +337,6 @@ export default {
         return note['favorite']
       }
       return false
-    },
-    changePriority(priority) {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${this.taskId}`
-        ),
-        { priority: priority }
-      )
-      this.updateTaskData()
     },
     findNoteCategory(id) {
       const note = this.$store.getters['users/notes'][`id-${id}`]
