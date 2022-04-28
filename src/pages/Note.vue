@@ -35,12 +35,11 @@
             {{ note.title }}
           </q-item-section>
           <q-item-section side class="q-pl-none">
-            <q-btn
-              flat
-              round
-              :icon="note['favorite'] ? 'star' : 'star_outline'"
-              :text-color="note['favorite'] ? 'yellow' : ''"
-              @click.prevent.stop="favoriteNote()"
+            <favorite-button
+              :item-favorite="note.favorite"
+              :item-id="note.id"
+              icon-only
+              @favoriteChanged="updateNoteData()"
             />
           </q-item-section>
         </q-item>
@@ -73,6 +72,7 @@ import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
 import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
+import FavoriteButton from 'src/components/common/elements/buttons/FavoriteButton.vue'
 
 const db = getDatabase()
 
@@ -83,7 +83,8 @@ export default {
     BackButton,
     EditButton,
     SaveButton,
-    CategorySelect
+    CategorySelect,
+    FavoriteButton
   },
   emits: ['hide'],
   data() {
@@ -127,18 +128,6 @@ export default {
         return this.$router.push('/notes')
       }
       this.note = JSON.parse(JSON.stringify(note))
-    },
-    favoriteNote() {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/notes/id-${this.note.id}`
-        ),
-        {
-          favorite: !this.note.favorite
-        }
-      )
-      this.updateNoteData()
     },
     onSaveClick(form) {
       if (!form.title) {

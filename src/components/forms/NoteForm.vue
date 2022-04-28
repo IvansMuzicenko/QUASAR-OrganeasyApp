@@ -19,13 +19,11 @@
         lazy-rules
         :dense="false"
       />
-      <q-btn dense flat @click="form.favorite = !form.favorite">
-        <q-icon
-          :name="form['favorite'] ? 'star' : 'star_outline'"
-          :color="form['favorite'] ? 'yellow' : ''"
-        />
-        Favorite
-      </q-btn>
+      <favorite-button
+        :item-favorite="form.favorite || false"
+        flat
+        @favoriteChanged="(favoriteState) => (form.favorite = favoriteState)"
+      />
 
       <q-card-section class="q-pl-xs">
         Category:
@@ -60,10 +58,11 @@
 import Editor from 'src/components/common/form/Editor.vue'
 
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
-import CategorySelect from '../common/groups/CategorySelect.vue'
+import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
+import FavoriteButton from 'src/components/common/elements/buttons/FavoriteButton.vue'
 
 export default {
-  components: { Editor, SaveButton, CategorySelect },
+  components: { Editor, SaveButton, CategorySelect, FavoriteButton },
   props: {
     editNote: {
       type: Object,

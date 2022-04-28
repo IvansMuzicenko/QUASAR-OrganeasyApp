@@ -69,13 +69,11 @@
         <priority-select :item-priority="item.priority" :item-id="item.id" />
       </q-card-section>
       <q-card-section v-if="type == 'note'" class="text-center">
-        <q-btn
-          :color="item['favorite'] ? 'grey-6' : 'warning'"
-          :icon="item['favorite'] ? 'star_outline' : 'star'"
-          @click="favoriteNote(item['favorite'], item['id'])"
-        >
-          {{ item['favorite'] ? 'Unfavorite' : 'Favorite' }}
-        </q-btn>
+        <favorite-button
+          :item-favorite="item.favorite"
+          :item-id="item.id"
+          hold-menu
+        />
       </q-card-section>
       <q-card-section
         v-if="type == 'free-task' || type == 'note'"
@@ -96,8 +94,6 @@
 </template>
 
 <script>
-import { getDatabase, ref, update } from 'firebase/database'
-
 import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
 import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
 import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
@@ -107,8 +103,7 @@ import StartContinuousButton from 'src/components/common/elements/buttons/StartC
 import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
 import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
 import PrioritySelect from 'src/components/common/groups/PrioritySelect.vue'
-
-const db = getDatabase()
+import FavoriteButton from 'src/components/common/elements/buttons/FavoriteButton.vue'
 
 export default {
   components: {
@@ -119,7 +114,8 @@ export default {
     StartContinuousButton,
     StopContinuousButton,
     CategorySelect,
-    PrioritySelect
+    PrioritySelect,
+    FavoriteButton
   },
   props: {
     item: {
@@ -151,11 +147,6 @@ export default {
     },
     hide() {
       this.$refs['holdMenuDialog'].hide()
-    },
-    favoriteNote(favorite, id) {
-      update(ref(db, `${this.$store.getters['users/userId']}/notes/id-${id}`), {
-        favorite: !favorite
-      })
     }
   }
 }

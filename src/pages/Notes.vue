@@ -42,12 +42,10 @@
           {{ note['title'] }}
         </q-item-section>
         <q-item-section side>
-          <q-btn
-            flat
-            round
-            :icon="note['favorite'] ? 'star' : 'star_outline'"
-            :text-color="note['favorite'] ? 'yellow' : ''"
-            @click.prevent.stop="favoriteNote(note['favorite'], note['id'])"
+          <favorite-button
+            :item-favorite="note.favorite"
+            :item-id="note.id"
+            icon-only
           />
         </q-item-section>
       </q-item>
@@ -71,12 +69,10 @@
           {{ note['title'] }}
         </q-item-section>
         <q-item-section side>
-          <q-btn
-            flat
-            round
-            :icon="note['favorite'] ? 'star' : 'star_outline'"
-            :text-color="note['favorite'] ? 'yellow' : ''"
-            @click.prevent.stop="favoriteNote(note['favorite'], note['id'])"
+          <favorite-button
+            :item-favorite="note.favorite"
+            :item-id="note.id"
+            icon-only
           />
         </q-item-section>
       </q-item>
@@ -98,6 +94,8 @@ import FilterSort from 'src/components/common/groups/FilterSort.vue'
 
 import HoldMenu from 'src/components/common/dialogs/HoldMenu.vue'
 
+import FavoriteButton from 'src/components/common/elements/buttons/FavoriteButton.vue'
+
 import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 
 const db = getDatabase()
@@ -106,6 +104,7 @@ export default {
   components: {
     FilterSort,
     HoldMenu,
+    FavoriteButton,
     BackButton
   },
   data() {
