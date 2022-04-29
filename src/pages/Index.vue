@@ -59,7 +59,11 @@
           "
           style="width: 60px"
           :class="task['progress'] ? 'bg-green-11' : ''"
-          @click="openTask(task)"
+          @click="
+            $router.push(
+              `/${task.time.slice(0, task.time.indexOf(' '))}/${task.id}`
+            )
+          "
         >
           <td
             style="width: 60px"

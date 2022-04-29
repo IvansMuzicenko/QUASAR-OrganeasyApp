@@ -320,8 +320,12 @@ export default {
     }
   },
   watch: {
-    modifiedItems() {
-      this.$emit('updateData', this.modifiedItems)
+    modifiedItems: {
+      handler: function () {
+        this.$emit('updateData', this.modifiedItems)
+      },
+      immediate: true,
+      flush: 'post'
     }
   },
   mounted() {
