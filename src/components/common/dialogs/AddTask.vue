@@ -12,7 +12,7 @@
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
-import TaskForm from 'src/components/TaskForm.vue'
+import TaskForm from 'src/components/forms/TaskForm.vue'
 import generateId from 'src/idGenerator.js'
 
 const db = getDatabase()

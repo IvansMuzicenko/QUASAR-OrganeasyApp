@@ -245,41 +245,8 @@
             </q-item>
           </template>
         </q-select>
-        <q-editor
-          v-model="form.notes.text"
-          dense
-          class="full-width"
-          :toolbar="[
-            ['undo', 'redo'],
-            [
-              'bold',
-              'italic',
-              'strike',
-              'underline',
-              'subscript',
-              'superscript'
-            ],
-            ['hr', 'link', 'code'],
-            ['unordered', 'ordered', 'outdent', 'indent'],
-            [
-              {
-                label: $q.lang.editor.fontSize,
-                icon: $q.iconSet.editor.fontSize,
-                fixedLabel: true,
-                fixedIcon: true,
-                list: 'no-icons',
-                options: ['size-1', 'size-2', 'size-3', 'size-4', 'size-5']
-              },
-              {
-                label: $q.lang.editor.align,
-                icon: $q.iconSet.editor.align,
-                fixedLabel: true,
-                list: 'only-icons',
-                options: ['left', 'center', 'right', 'justify']
-              }
-            ]
-          ]"
-        />
+        <p v-else class="text-secondary">You have not notes to attach</p>
+        <editor v-model="form.notes.text" full-width />
       </q-card-section>
     </q-card-section>
 
@@ -677,14 +644,7 @@
     </q-card-section>
 
     <q-card-actions align="right">
-      <q-btn
-        v-if="editTask"
-        icon="save"
-        color="positive"
-        label="Save"
-        :disable="error"
-        @click="onEditClick"
-      />
+      <save-button v-if="editTask" :error="error" @saveEvent="onSaveClick" />
       <q-btn
         v-else
         color="positive"
@@ -699,11 +659,14 @@
 
 <script>
 import { date } from 'quasar'
-import { getDatabase, ref, set } from 'firebase/database'
 
-import AddProcessForm from 'src/components/AddProcessForm.vue'
+import Editor from 'src/components/common/form/Editor.vue'
+import AddProcess from 'src/components/common/dialogs/AddProcess.vue'
+
+import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
 
 export default {
+  components: { Editor, SaveButton },
   props: {
     editTask: {
       type: Object,
@@ -721,7 +684,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'editEvent', 'subtaskEvent'],
+  emits: ['OKEvent', 'cancelEvent', 'saveEvent', 'error'],
 
   data() {
     return {
@@ -905,6 +868,9 @@ export default {
       if (this.form.toggleEventEnd) {
         this.$refs['endingDatePicked']?.hide()
       }
+    },
+    error() {
+      this.$emit('error', this.error)
     }
   },
   mounted() {
@@ -1166,9 +1132,9 @@ export default {
     onCancelClick() {
       this.$emit('cancelEvent')
     },
-    async onEditClick() {
+    async onSaveClick() {
       await this.addNotifsId()
-      this.$emit('editEvent', this.form)
+      this.$emit('saveEvent', this.form)
     },
 
     addNotification() {
@@ -1187,7 +1153,7 @@ export default {
     },
     addProcess() {
       this.$q.dialog({
-        component: AddProcessForm
+        component: AddProcess
       })
     },
     deleteNotification(index) {

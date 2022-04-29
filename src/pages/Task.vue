@@ -1,83 +1,44 @@
 <template>
   <q-page>
     <q-card class="flex justify-between no-padding">
-      <q-btn icon="arrow_back" flat class="zindex-high" @click="routerBack()" />
-      <q-btn
+      <back-button />
+
+      <start-continuous-button
         v-if="!editState && task['continuous'] && !task['continuousStarted']"
-        icon="play_arrow"
-        color="green"
-        flat
-        class="zindex-high"
-        @click="continuousStart"
-      >
-        Start
-      </q-btn>
-      <q-btn
+        top-bar
+        :path="`tasks/date-${taskDate}/id-${taskId}`"
+        @updateData="updateTaskData()"
+      />
+      <stop-continuous-button
         v-if="
           !editState &&
           task['continuous'] &&
           task['continuousStarted'] &&
           !task['continuousEnded']
         "
-        icon="stop"
-        color="red"
-        flat
-        class="zindex-high"
-        @click="continuousStop"
-      >
-        Stop
-      </q-btn>
-      <q-btn
-        v-if="!editState"
-        :icon="task['progress'] ? 'close' : 'check'"
-        :color="task['progress'] ? 'red' : 'positive'"
-        flat
-        class="zindex-high"
-        @click="changeProgress"
-      >
-        {{ task['progress'] ? 'Undone' : 'Done' }}
-      </q-btn>
-      <q-btn
-        v-if="!editState"
-        icon="content_copy"
-        color="secondary"
-        flat
-        class="zindex-high"
-        @click="copyTask()"
-      >
-        Copy
-      </q-btn>
-      <q-btn
-        v-if="!editState"
-        icon="edit"
-        color="secondary"
-        flat
-        class="zindex-high"
-        @click="toggleEdit()"
-      >
-        Edit
-      </q-btn>
+        top-bar
+        :path="`tasks/date-${taskDate}/id-${taskId}`"
+        @updateData="updateTaskData()"
+      />
 
-      <q-btn
+      <progress-change
+        v-if="!editState"
+        :item="task"
+        type="task"
+        top-bar
+        @updateData="updateTaskData()"
+      />
+      <copy-button v-if="!editState" top-bar :task="task" type="task" />
+
+      <edit-button v-if="!editState" top-bar />
+
+      <save-button
         v-if="editState"
-        icon="save"
-        color="positive"
-        flat
-        class="zindex-high"
-        @click="callEditClick"
-      >
-        Save
-      </q-btn>
-      <q-btn
-        v-if="editState"
-        icon="delete"
-        color="negative"
-        flat
-        class="zindex-high"
-        @click="onDeleteClick"
-      >
-        Delete
-      </q-btn>
+        top-bar
+        :error="error"
+        @saveEvent="$refs.taskForm.onSaveClick()"
+      />
+      <item-remove v-if="editState" :item="task" type="task" top-bar />
     </q-card>
     <q-list v-if="!editState" separator bordered>
       <q-item>
@@ -304,62 +265,44 @@
       v-if="editState"
       ref="taskForm"
       :edit-task="task"
-      @editEvent="onEditClick"
-      @cancelEvent="onCancelClick"
-      @subtaskEvent="changeSubtaskProgress"
+      @saveEvent="onSaveClick"
+      @cancelEvent="$router.push(path)"
+      @error="errorCheck"
     />
-    <q-dialog ref="confirmDialog" @hide="onConfirmDialogHide">
-      <q-card class="q-dialog-plugin">
-        <q-card-section>
-          Are you sure to premanently remove '{{ task.title }}' task?
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn color="primary" label="Cancel" @click="onConfirmCancelClick" />
-          <q-btn
-            color="negative"
-            label="Delete"
-            @click="onConfirmDeleteClick"
-          />
-          <q-btn
-            color="negative"
-            :label="`Delete all related(${relativeItems.length})`"
-            @click="onConfirmDeleteClick('all')"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-    <q-dialog ref="progressCheck" @hide="onProgressCheckHide">
-      <q-card class="q-dialog-plugin">
-        <q-card-section>
-          You have uncompleted subtasks. Do you want to complete all subtasks
-          too?
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn color="positive" label="Done all" @click="onDoneAllClick" />
-          <q-btn
-            color="secondary"
-            label="Done task only"
-            @click="changeProgress(true)"
-          />
-          <q-btn color="primary" label="Cancel" @click="onProgressCheckHide" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
 <script>
 import { getDatabase, ref, set, update, remove } from 'firebase/database'
 import { date } from 'quasar'
-import TaskForm from 'src/components/TaskForm.vue'
+
 import generateId from 'src/idGenerator.js'
-import AddTaskForm from 'src/components/AddTaskForm.vue'
+
+import TaskForm from 'src/components/forms/TaskForm.vue'
+
+import ProgressChange from 'src/components/common/groups/ProgressChange.vue'
+import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
+
+import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
+import EditButton from 'src/components/common/elements/buttons/EditButton.vue'
+import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+import CopyButton from 'src/components/common/elements/buttons/CopyButton.vue'
+import StartContinuousButton from 'src/components/common/elements/buttons/StartContinuousButton.vue'
+import StopContinuousButton from 'src/components/common/elements/buttons/StopContinuousButton.vue'
 
 const db = getDatabase()
 
 export default {
   components: {
-    TaskForm
+    TaskForm,
+    ProgressChange,
+    ItemRemove,
+    BackButton,
+    EditButton,
+    SaveButton,
+    CopyButton,
+    StartContinuousButton,
+    StopContinuousButton
   },
   emits: ['hide'],
   data() {
@@ -400,7 +343,8 @@ export default {
           hours: 0,
           minutes: 0
         }
-      }
+      },
+      error: false
     }
   },
   computed: {
@@ -470,6 +414,9 @@ export default {
       }
       this.task = JSON.parse(JSON.stringify(task))
     },
+    errorCheck(errorState) {
+      this.error = errorState
+    },
     isNoteFavorite(id) {
       const note = this.$store.getters['users/notes'][`id-${id}`]
       if (note) {
@@ -487,26 +434,6 @@ export default {
         }
       }
       return {}
-    },
-    routerBack() {
-      if (this.editState) {
-        return this.$router.push(this.$route.path)
-      }
-      return this.$router.push(`/?date=${this.taskDate}`)
-    },
-    toggleEdit() {
-      this.$router.push(this.path + '?edit=true')
-    },
-    callEditClick() {
-      this.$refs.taskForm.onEditClick()
-    },
-    copyTask() {
-      this.$q.dialog({
-        component: AddTaskForm,
-        componentProps: {
-          copy: this.task
-        }
-      })
     },
     changeSubtaskProgress(index, progress) {
       update(
@@ -528,7 +455,7 @@ export default {
       )
       this.updateTaskData()
     },
-    onEditClick(form) {
+    onSaveClick(form) {
       let eventDate = form.eventDate
       let eventEndingDate = form.eventEndingDate
       const mainTaskDate = form.eventDate
@@ -651,145 +578,6 @@ export default {
           timeout: 2000
         })
       }
-    },
-    continuousStart() {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
-        ),
-        {
-          continuousStarted: Date.now()
-        }
-      )
-      this.updateTaskData()
-    },
-    continuousStop() {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
-        ),
-        {
-          continuousEnded: Date.now()
-        }
-      )
-      this.updateTaskData()
-    },
-
-    changeProgress(strictMode) {
-      const subtasks = this.task.subtasks
-
-      if (
-        !this.task.progress &&
-        strictMode != true &&
-        subtasks &&
-        subtasks.length &&
-        subtasks.some(
-          (el) =>
-            !el['progress'] ||
-            (el['subtasks'] &&
-              el['subtasks'].some((subEl) => !subEl['progress']))
-        )
-      ) {
-        this.$refs['progressCheck'].show()
-      } else {
-        update(
-          ref(
-            db,
-            `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
-          ),
-          {
-            progress: !this.task.progress,
-            finishedDate: !this.task.progress ? Date.now() : null
-          }
-        )
-        this.onProgressCheckHide()
-        this.updateTaskData()
-      }
-    },
-    onDoneAllClick() {
-      const subtasks = this.task.subtasks
-      subtasks.forEach((subtask) => {
-        subtask.progress = true
-        if (subtask.subtasks && subtask.subtasks.length) {
-          subtask.subtasks.forEach((subSubtask) => (subSubtask.progress = true))
-        }
-      })
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
-        ),
-        {
-          progress: !this.task.progress,
-          finishedDate: !this.task.progress ? Date.now() : null,
-          subtasks: subtasks
-        }
-      )
-      this.onProgressCheckHide()
-      this.updateTaskData()
-    },
-    onProgressCheckHide() {
-      this.$refs['progressCheck'].hide()
-    },
-    onDeleteClick() {
-      this.$refs.confirmDialog.show()
-    },
-    onCancelClick() {
-      this.$router.push(this.path)
-    },
-    onConfirmDeleteClick(type) {
-      const notifsToRemove = []
-      if (type == 'all') {
-        for (const item of this.relativeItems) {
-          if (item.notificationsId) {
-            for (const notif of item.notificationsId) {
-              notifsToRemove.push({ id: notif.id })
-            }
-          }
-          remove(
-            ref(
-              db,
-              `${
-                this.$store.getters['users/userId']
-              }/tasks/date-${item.time.slice(0, item.time.indexOf(' '))}/id-${
-                item.id
-              }`
-            )
-          )
-        }
-      } else {
-        if (this.task.notificationsId) {
-          for (const notif of this.task.notificationsId) {
-            notifsToRemove.push({ id: notif.id })
-          }
-        }
-        remove(
-          ref(
-            db,
-            `${this.$store.getters['users/userId']}/tasks/date-${this.taskDate}/id-${this.taskId}`
-          )
-        )
-      }
-      if (notifsToRemove.length) {
-        this.$store.dispatch('notification/removeNotifications', notifsToRemove)
-      }
-
-      this.$router.push('/')
-
-      this.$q.notify({
-        position: 'top',
-        message: 'Task removed',
-        color: 'red',
-        timeout: 1000
-      })
-    },
-    onConfirmDialogHide() {
-      this.$emit('hide')
-    },
-    onConfirmCancelClick() {
-      this.$refs.confirmDialog.hide()
     }
   }
 }

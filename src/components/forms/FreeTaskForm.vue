@@ -36,14 +36,12 @@
     </q-card-section>
 
     <q-card-section>
-      <q-select
-        v-model="form.priority"
-        label="Priority"
-        :options="priorityOptions"
-        option-value="id"
-        option-label="desc"
-        emit-value
-        map-options
+      Priority:
+      <priority-select
+        :item-priority="form.priority || 3"
+        @prioritySelected="
+          (selectedPriority) => (form.priority = selectedPriority)
+        "
       />
     </q-card-section>
 
@@ -53,57 +51,12 @@
 
     <q-card-section>
       Category:
-      <q-btn flat dense>
-        <q-icon
-          :name="form.category ? selectedCategory['icon'] : ''"
-          :color="form.category ? selectedCategory['color'] : ''"
-        />
-        {{ selectedCategory['title'] || 'Uncategorized' }}
-        <q-icon name="expand_more" />
-        <q-menu anchor="bottom left" self="top left" auto-close>
-          <p class="text-center text-subtitle1 no-margin">Categories</p>
-          <q-list separator>
-            <q-separator />
-            <q-item
-              clickable
-              class="full-width text-subtitle1"
-              @click="form.category = null"
-            >
-              <div>
-                <q-icon />
-                None
-              </div>
-            </q-item>
-            <q-item
-              v-for="(listCategory, categoryIndex) of categories"
-              :key="categoryIndex"
-              clickable
-              class="full-width text-subtitle1"
-              @click="form.category = listCategory['id']"
-            >
-              <div class="full-width">
-                <q-icon
-                  :name="listCategory['icon']"
-                  :color="listCategory['color']"
-                  size="sm"
-                />
-                {{ listCategory['title'] }}
-              </div>
-            </q-item>
-
-            <q-item
-              clickable
-              class="full-width text-subtitle1"
-              @click="addCategory"
-            >
-              <div>
-                <q-icon name="add" />
-                Add new
-              </div>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
+      <category-select
+        :item-category="form.category || ''"
+        @categorySelected="
+          (selectedCategory) => (form.category = selectedCategory)
+        "
+      />
     </q-card-section>
 
     <q-card-section>
@@ -154,9 +107,9 @@
                 size="xs"
               />
               <q-icon
-                v-if="noteCategory(scope.opt['id'], 'icon')"
-                :name="noteCategory(scope.opt['id'], 'icon')"
-                :color="noteCategory(scope.opt['id'], 'color')"
+                v-if="findNoteCategory(scope.opt['id'], 'icon')"
+                :name="findNoteCategory(scope.opt['id'], 'icon')"
+                :color="findNoteCategory(scope.opt['id'], 'color')"
                 size="xs"
               />
               {{ scope.opt.title }}
@@ -180,8 +133,8 @@
                     class="q-pa-none q-ma-none q-pr-xs"
                   />
                   <q-icon
-                    :name="noteCategory(scope.opt['id'], 'icon')"
-                    :color="noteCategory(scope.opt['id'], 'color')"
+                    :name="findNoteCategory(scope.opt['id'], 'icon')"
+                    :color="findNoteCategory(scope.opt['id'], 'color')"
                     size="sm"
                     class="q-pa-none q-ma-none q-pr-xs"
                   />
@@ -191,42 +144,9 @@
             </q-item>
           </template>
         </q-select>
+        <p v-else class="text-secondary">You have not notes to attach</p>
 
-        <q-editor
-          v-model="form.notes.text"
-          dense
-          class="full-width"
-          :toolbar="[
-            ['undo', 'redo'],
-            [
-              'bold',
-              'italic',
-              'strike',
-              'underline',
-              'subscript',
-              'superscript'
-            ],
-            ['hr', 'link', 'code'],
-            ['unordered', 'ordered', 'outdent', 'indent'],
-            [
-              {
-                label: $q.lang.editor.fontSize,
-                icon: $q.iconSet.editor.fontSize,
-                fixedLabel: true,
-                fixedIcon: true,
-                list: 'no-icons',
-                options: ['size-1', 'size-2', 'size-3', 'size-4', 'size-5']
-              },
-              {
-                label: $q.lang.editor.align,
-                icon: $q.iconSet.editor.align,
-                fixedLabel: true,
-                list: 'only-icons',
-                options: ['left', 'center', 'right', 'justify']
-              }
-            ]
-          ]"
-        />
+        <editor v-model="form.notes.text" full-width />
       </q-card-section>
     </q-card-section>
 
@@ -453,14 +373,7 @@
     </q-card-section>
 
     <q-card-actions align="right">
-      <q-btn
-        v-if="editTask"
-        icon="save"
-        color="positive"
-        label="Save"
-        :disable="error"
-        @click="onEditClick"
-      />
+      <save-button v-if="editTask" :error="error" @saveEvent="onSaveClick" />
       <q-btn
         v-else
         color="positive"
@@ -474,11 +387,14 @@
 </template>
 
 <script>
-import { date } from 'quasar'
-import { getDatabase, ref, set } from 'firebase/database'
-import AddCategoryForm from 'src/components/AddCategoryForm.vue'
+import Editor from 'src/components/common/form/Editor.vue'
+
+import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
+import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
+import PrioritySelect from '../common/groups/PrioritySelect.vue'
 
 export default {
+  components: { Editor, SaveButton, CategorySelect, PrioritySelect },
   props: {
     editTask: {
       type: Object,
@@ -491,7 +407,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'editEvent', 'subtaskEvent'],
+  emits: ['OKEvent', 'cancelEvent', 'saveEvent', 'error'],
 
   data() {
     return {
@@ -519,21 +435,7 @@ export default {
       subtaskInput: '',
       subSubtaskInput: '',
       errorMessages: [],
-      subtaskEdit: null,
-      priorityOptions: [
-        {
-          id: 1,
-          desc: 'High'
-        },
-        {
-          id: 2,
-          desc: 'Medium'
-        },
-        {
-          id: 3,
-          desc: 'Low'
-        }
-      ]
+      subtaskEdit: null
     }
   },
   computed: {
@@ -565,22 +467,11 @@ export default {
         }
       }
       return notesArray
-    },
-    categories() {
-      const vuexCategories = this.$store.getters['users/categories']
-      let categories = []
-      for (const category in vuexCategories) {
-        categories.push(vuexCategories[category])
-      }
-      return categories
-    },
-    selectedCategory() {
-      const vuexCategories = this.$store.getters['users/categories']
-      if (this.form.category) {
-        return vuexCategories[`id-${this.form.category}`] || {}
-      } else {
-        return {}
-      }
+    }
+  },
+  watch: {
+    error() {
+      this.$emit('error', this.error)
     }
   },
   mounted() {
@@ -647,8 +538,8 @@ export default {
     onCancelClick() {
       this.$emit('cancelEvent')
     },
-    async onEditClick() {
-      this.$emit('editEvent', this.form)
+    async onSaveClick() {
+      this.$emit('saveEvent', this.form)
     },
 
     isNoteFavorite(id) {
@@ -658,7 +549,7 @@ export default {
       }
       return false
     },
-    noteCategory(id, type) {
+    findNoteCategory(id, type) {
       const note = this.$store.getters['users/notes'][`id-${id}`]
       if (note) {
         const categoryId = note['category']
@@ -706,11 +597,6 @@ export default {
       this.subSubtaskInput = ''
     },
 
-    addCategory() {
-      this.$q.dialog({
-        component: AddCategoryForm
-      })
-    },
     addLocation() {
       this.form.eventLocation.push({ address: '', description: '' })
     },

@@ -41,104 +41,22 @@
           class="zindex-high"
           @click="openSearch"
         />
-        <q-btn
-          icon="tune"
-          :color="filtering.progress != 'all' ? 'green' : ''"
-          class="zindex-high"
-          flat
-        >
-          <q-popup-proxy>
-            <q-card>
-              <q-card-section class="text-subtitle1 text-center">
-                <q-icon name="filter_alt" />
-                Filter
-              </q-card-section>
-              <q-card-section>
-                Progress:
-                <q-radio
-                  v-model="filtering.progress"
-                  val="all"
-                  label="All"
-                  class="full-width"
-                />
-                <q-radio
-                  v-model="filtering.progress"
-                  val="done"
-                  label="Done"
-                  class="full-width"
-                />
-                <q-radio
-                  v-model="filtering.progress"
-                  val="undone"
-                  label="Undone"
-                  class="full-width"
-                />
-              </q-card-section>
-
-              <q-separator />
-
-              <q-card-section class="text-subtitle1 text-center">
-                <q-icon name="sort" />
-                Sort
-              </q-card-section>
-              <q-card-section>
-                <q-btn
-                  :icon="
-                    sorting.time == 'none'
-                      ? 'last_page'
-                      : sorting.time == 'asc'
-                      ? 'vertical_align_bottom'
-                      : 'vertical_align_top'
-                  "
-                  class="full-width"
-                  @click="sortByTime"
-                >
-                  Time
-                </q-btn>
-                <q-btn
-                  :icon="
-                    sorting.title == 'none'
-                      ? 'last_page'
-                      : sorting.title == 'asc'
-                      ? 'vertical_align_bottom'
-                      : 'vertical_align_top'
-                  "
-                  class="full-width"
-                  @click="sortByTitle"
-                >
-                  Title
-                </q-btn>
-                <q-btn
-                  :icon="
-                    sorting.dateModified == 'none'
-                      ? 'last_page'
-                      : sorting.dateModified == 'asc'
-                      ? 'vertical_align_bottom'
-                      : 'vertical_align_top'
-                  "
-                  class="full-width"
-                  @click="sortByDateModified"
-                >
-                  Date modified
-                </q-btn>
-              </q-card-section>
-            </q-card>
-          </q-popup-proxy>
-        </q-btn>
+        <filter-sort
+          :items="dayTasksArray"
+          type="tasks"
+          @updateData="(modifiedItems) => (dayTasks = modifiedItems)"
+        />
       </q-card-section>
     </q-card>
 
     <q-markup-table wrap-cells separator="cell">
       <tbody>
         <tr
-          v-for="(task, index) of dayTasks.filter(
-            (el) =>
-              filtering.progress == 'all' ||
-              (filtering.progress == 'done' && el['progress']) ||
-              (filtering.progress == 'undone' && !el['progress'])
-          )"
+          v-for="(task, index) of dayTasks"
           :key="index"
-          v-touch-hold:400:12:15.mouse="(event) => holdSuccess(event, index)"
+          v-touch-hold:400:12:15.mouse="
+            (event) => holdSuccess(event, task['id'])
+          "
           style="width: 60px"
           :class="task['progress'] ? 'bg-green-11' : ''"
           @click="openTask(task)"
@@ -217,105 +135,10 @@
               </q-item>
             </q-list>
           </td>
-          <q-popup-proxy
-            :ref="`taskHold-${index}`"
-            cover
-            :breakpoint="10000"
-            transition-show="scale"
-            transition-hide="scale"
-          >
-            <q-card>
-              <q-card-section class="text-center text-subtitle1">
-                <p class="no-margin">Task</p>
-                <p class="no-margin">
-                  {{
-                    `${task['title'].slice(0, 10)}${
-                      task['title'].length > 10 ? '...' : ''
-                    }`
-                  }}
-                </p>
-              </q-card-section>
-              <q-card-section class="text-center">
-                <q-btn
-                  color="primary"
-                  icon="visibility"
-                  @click="openTask(task)"
-                >
-                  View
-                </q-btn>
-              </q-card-section>
-              <q-card-section class="text-center">
-                <q-btn
-                  color="secondary"
-                  icon="edit"
-                  @click="openTask(task, true)"
-                >
-                  Edit
-                </q-btn>
-              </q-card-section>
-              <q-card-section class="text-center">
-                <q-btn
-                  :icon="task['progress'] ? 'close' : 'check'"
-                  :color="task['progress'] ? 'red' : 'positive'"
-                  @click="changeProgress(task)"
-                >
-                  {{ task['progress'] ? 'Undone' : 'Done' }}
-                </q-btn>
-              </q-card-section>
-              <q-card-section
-                v-if="task['continuous'] && !task['continuousStarted']"
-                class="text-center"
-              >
-                <q-btn
-                  icon="play_arrow"
-                  color="green"
-                  @click="continuousStart(task)"
-                >
-                  Start
-                </q-btn>
-              </q-card-section>
-              <q-card-section
-                v-if="
-                  task['continuous'] &&
-                  task['continuousStarted'] &&
-                  !task['continuousEnded']
-                "
-                class="text-center"
-              >
-                <q-btn icon="stop" color="red" @click="continuousStop(task)">
-                  Stop
-                </q-btn>
-              </q-card-section>
-            </q-card>
-            <q-dialog ref="progressCheck" @hide="onProgressCheckHide">
-              <q-card class="q-dialog-plugin">
-                <q-card-section>
-                  You have uncompleted subtasks. Do you want to complete all
-                  subtasks too?
-                </q-card-section>
-                <q-card-actions align="right">
-                  <q-btn
-                    color="positive"
-                    label="Done all"
-                    @click="onDoneAllClick(task)"
-                  />
-                  <q-btn
-                    color="secondary"
-                    label="Done task only"
-                    @click="changeProgress(task, true)"
-                  />
-                  <q-btn
-                    color="primary"
-                    label="Cancel"
-                    @click="onProgressCheckHide"
-                  />
-                </q-card-actions>
-              </q-card>
-            </q-dialog>
-          </q-popup-proxy>
         </tr>
       </tbody>
     </q-markup-table>
+    <hold-menu ref="holdMenu" :item="holdedTask" type="task" />
     <div class="text-center q-my-md">
       <p v-if="!dayTasks">You have not tasks for this day</p>
       <q-btn color="secondary" @click="addTask()">Add task</q-btn>
@@ -326,24 +149,26 @@
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, update } from 'firebase/database'
-import AddTaskForm from 'src/components/AddTaskForm.vue'
-import Search from 'src/components/Search.vue'
+
+import AddTask from 'src/components/common/dialogs/AddTask.vue'
+import Search from 'src/components/common/dialogs/Search.vue'
+import FilterSort from 'src/components/common/groups/FilterSort.vue'
+
+import HoldMenu from 'src/components/common/dialogs/HoldMenu.vue'
 
 const db = getDatabase()
 
 export default {
+  components: {
+    FilterSort,
+    HoldMenu
+  },
   data() {
     return {
+      dayTasks: [],
       timeStamp: Date.now(),
       date: date.formatDate(Date.now(), 'DD-MM-YYYY'),
-      sorting: {
-        title: 'none',
-        time: 'asc',
-        dateModified: 'none'
-      },
-      filtering: {
-        progress: 'all'
-      }
+      holdedTaskId: ''
     }
   },
   computed: {
@@ -366,7 +191,7 @@ export default {
         )
       )
     },
-    dayTasks() {
+    dayTasksArray() {
       if (!this.tasks) return []
       const vuexDayTasks = this.tasks[`date-${this.queryDate}`]
       let dayTasks = []
@@ -374,42 +199,14 @@ export default {
         for (const vuexDayTask in vuexDayTasks) {
           dayTasks.push(vuexDayTasks[vuexDayTask])
         }
-
-        dayTasks.sort((a, b) => {
-          if (this.sorting.time != 'none') {
-            const first = a.time.slice(a.time.indexOf(' ')).replace(':', '.')
-            const second = b.time.slice(b.time.indexOf(' ')).replace(':', '.')
-            if (this.sorting.time == 'asc') {
-              return first - second
-            } else {
-              return second - first
-            }
-          } else if (this.sorting.title != 'none') {
-            if (this.sorting.title == 'asc') {
-              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
-              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
-              return 0
-            } else {
-              if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
-              if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
-              return 0
-            }
-          } else if (this.sorting.dateModified != 'none') {
-            if (this.sorting.dateModified == 'asc') {
-              return (
-                (a.dateModified ? a.dateModified : 0) -
-                (b.dateModified ? b.dateModified : 0)
-              )
-            } else {
-              return (
-                (b.dateModified ? b.dateModified : 0) -
-                (a.dateModified ? a.dateModified : 0)
-              )
-            }
-          }
-        })
       }
       return dayTasks
+    },
+    holdedTask() {
+      if (!this.tasks || !this.tasks[`date-${this.queryDate}`]) return {}
+      return (
+        this.tasks[`date-${this.queryDate}`][`id-${this.holdedTaskId}`] || {}
+      )
     }
   },
   watch: {
@@ -442,7 +239,7 @@ export default {
   methods: {
     addTask() {
       this.$q.dialog({
-        component: AddTaskForm,
+        component: AddTask,
         componentProps: {
           exactDate: this.queryDate
         }
@@ -481,123 +278,6 @@ export default {
         }
       })
     },
-    sortByTime() {
-      this.sorting.title = 'none'
-      this.sorting.dateModified = 'none'
-      this.sorting.time = this.sorting.time == 'asc' ? 'desc' : 'asc'
-    },
-    sortByTitle() {
-      this.sorting.time = 'none'
-      this.sorting.dateModified = 'none'
-      this.sorting.title = this.sorting.title == 'asc' ? 'desc' : 'asc'
-    },
-    sortByDateModified() {
-      this.sorting.time = 'none'
-      this.sorting.title = 'none'
-      this.sorting.dateModified =
-        this.sorting.dateModified == 'asc' ? 'desc' : 'asc'
-    },
-    openTask(task, edit) {
-      const taskDate = task.time.slice(0, task.time.indexOf(' '))
-      if (!edit) {
-        this.$router.push(`/${taskDate}/${task.id}`)
-      } else {
-        this.$router.push(`/${taskDate}/${task.id}?edit=true`)
-      }
-    },
-
-    changeProgress(task, strictMode) {
-      const subtasks = task.subtasks
-
-      if (
-        !task.progress &&
-        strictMode != true &&
-        subtasks &&
-        subtasks.length &&
-        subtasks.some(
-          (el) =>
-            !el['progress'] ||
-            (el['subtasks'] &&
-              el['subtasks'].some((subEl) => !subEl['progress']))
-        )
-      ) {
-        this.$refs['progressCheck'].show()
-      } else {
-        update(
-          ref(
-            db,
-            `${
-              this.$store.getters['users/userId']
-            }/tasks/date-${task.time.slice(0, task.time.indexOf(' '))}/id-${
-              task.id
-            }`
-          ),
-          {
-            progress: !task.progress,
-            finishedDate: !task.progress ? Date.now() : null
-          }
-        )
-        this.onProgressCheckHide()
-      }
-    },
-    onDoneAllClick(task) {
-      let subtasks = []
-      for (const subtask in JSON.parse(JSON.stringify(task.subtasks))) {
-        subtasks.push(JSON.parse(JSON.stringify(task.subtasks))[subtask])
-      }
-      subtasks.forEach((subtask) => {
-        subtask.progress = true
-        if (subtask.subtasks && subtask.subtasks.length) {
-          subtask.subtasks.forEach((subSubtask) => (subSubtask.progress = true))
-        }
-      })
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${task.time.slice(
-            0,
-            task.time.indexOf(' ')
-          )}/id-${task.id}`
-        ),
-        {
-          progress: !task.progress,
-          finishedDate: !task.progress ? Date.now() : null,
-          subtasks: subtasks
-        }
-      )
-      this.onProgressCheckHide()
-    },
-    onProgressCheckHide() {
-      this.$refs['progressCheck'].hide()
-    },
-    continuousStart(task) {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${task.time.slice(
-            0,
-            task.time.indexOf(' ')
-          )}/id-${task.id}`
-        ),
-        {
-          continuousStarted: Date.now()
-        }
-      )
-    },
-    continuousStop(task) {
-      update(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/tasks/date-${task.time.slice(
-            0,
-            task.time.indexOf(' ')
-          )}/id-${task.id}`
-        ),
-        {
-          continuousEnded: Date.now()
-        }
-      )
-    },
     subtasksState(subtasks) {
       for (const sub of subtasks) {
         if (!sub['progress']) return true
@@ -629,8 +309,9 @@ export default {
       )
     },
 
-    holdSuccess(event, index) {
-      this.$refs[`taskHold-${index}`].show()
+    holdSuccess(event, id) {
+      this.holdedTaskId = id
+      this.$refs['holdMenu'].show()
     }
   }
 }

@@ -1,12 +1,8 @@
 <template>
   <q-page>
     <q-card class="q-py-sm">
-      <q-btn
-        icon="arrow_back"
-        flat
-        class="absolute zindex-high"
-        @click="$router.push('/')"
-      />
+      <back-button />
+
       <p class="text-center text-h6 full-width no-margin">Categories</p>
     </q-card>
 
@@ -37,13 +33,8 @@
               color="secondary"
               @click.prevent.stop="editCategory(category)"
             />
-            <q-btn
-              flat
-              round
-              icon="delete"
-              color="red"
-              @click.prevent.stop="deleteCategory(category)"
-            />
+
+            <item-remove :item="category" type="category" small />
           </div>
         </q-item-section>
       </q-item>
@@ -60,37 +51,26 @@
         @cancelEvent="onCancelClick"
       />
     </q-dialog>
-    <q-dialog ref="deleteDialog" @hide="deleteDialogHide">
-      <q-card>
-        <q-card-section>
-          Are you sure you wand to delete
-          <q-icon
-            :name="selectedCategory['icon']"
-            :color="selectedCategory['color']"
-          />
-          {{ selectedCategory['title'] }} category?
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn icon="delete" color="red" @click="onConfirmDelete">
-            Delete
-          </q-btn>
-          <q-btn color="primary" @click="deleteDialogHide">Cancel</q-btn>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
 <script>
 import { getDatabase, ref, update, remove } from 'firebase/database'
-import AddCategoryForm from 'src/components/AddCategoryForm.vue'
-import CategoryForm from 'src/components/CategoryForm.vue'
+
+import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
+import CategoryForm from 'src/components/forms/CategoryForm.vue'
+
+import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
+
+import BackButton from 'src/components/common/elements/buttons/BackButton.vue'
 
 const db = getDatabase()
 
 export default {
   components: {
-    CategoryForm
+    CategoryForm,
+    ItemRemove,
+    BackButton
   },
   emits: ['ok', 'hide'],
   data() {
@@ -112,16 +92,12 @@ export default {
   methods: {
     addCategory() {
       this.$q.dialog({
-        component: AddCategoryForm
+        component: AddCategory
       })
     },
     editCategory(category) {
       this.selectedCategory = JSON.parse(JSON.stringify(category))
       this.show()
-    },
-    deleteCategory(category) {
-      this.selectedCategory = JSON.parse(JSON.stringify(category))
-      this.$refs['deleteDialog'].show()
     },
     show() {
       this.$refs.dialog.show()
@@ -134,10 +110,6 @@ export default {
 
     onDialogHide() {
       this.$emit('hide')
-      this.selectedCategory = {}
-    },
-    deleteDialogHide() {
-      this.$refs['deleteDialog'].hide()
       this.selectedCategory = {}
     },
     onSaveClick(form) {
@@ -163,49 +135,6 @@ export default {
 
     onCancelClick() {
       this.hide()
-    },
-    onConfirmDelete() {
-      remove(
-        ref(
-          db,
-          `${this.$store.getters['users/userId']}/categories/id-${this.selectedCategory.id}`
-        )
-      )
-      this.deleteExists(this.selectedCategory.id)
-      this.deleteDialogHide()
-      this.$q.notify({
-        position: 'top',
-        message: 'Category deleted',
-        color: 'red',
-        timeout: 1000
-      })
-    },
-    deleteExists(id) {
-      const vuexFreeTasks = this.$store.getters['users/freeTasks']
-      for (const vuexFreeTask in vuexFreeTasks) {
-        const freeTask = vuexFreeTasks[vuexFreeTask]
-        if (freeTask.category && freeTask.category == id) {
-          remove(
-            ref(
-              db,
-              `${this.$store.getters['users/userId']}/freeTasks/id-${freeTask['id']}/category`
-            )
-          )
-        }
-      }
-
-      const vuexNotes = this.$store.getters['users/notes']
-      for (const vuexNote in vuexNotes) {
-        const note = vuexNotes[vuexNote]
-        if (note.category && note.category == id) {
-          remove(
-            ref(
-              db,
-              `${this.$store.getters['users/userId']}/notes/id-${note['id']}/category`
-            )
-          )
-        }
-      }
     }
   }
 }

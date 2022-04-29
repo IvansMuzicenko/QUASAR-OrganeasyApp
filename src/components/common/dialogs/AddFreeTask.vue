@@ -11,7 +11,7 @@
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
-import FreeTaskForm from 'src/components/FreeTaskForm.vue'
+import FreeTaskForm from 'src/components/forms/FreeTaskForm.vue'
 import generateId from 'src/idGenerator.js'
 
 const db = getDatabase()
@@ -20,6 +20,7 @@ export default {
   components: {
     FreeTaskForm
   },
+
   props: {
     copy: {
       type: Object,
