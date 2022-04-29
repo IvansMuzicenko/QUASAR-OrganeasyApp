@@ -46,6 +46,7 @@
 
         <q-separator v-if="!editState" color="black" />
 
+        <p class="text-caption float-right">{{ lastModified }}</p>
         <p v-if="!editState" v-html="note.text" />
 
         <note-form
@@ -63,6 +64,7 @@
 
 <script>
 import { getDatabase, ref, update, remove } from 'firebase/database'
+import { date } from 'quasar'
 
 import NoteForm from 'src/components/forms/NoteForm.vue'
 
@@ -109,6 +111,9 @@ export default {
     },
     editState() {
       return this.$route.query.edit ? true : false
+    },
+    lastModified() {
+      return date.formatDate(this.note.dateModified, 'DD-MM-YYYY HH:mm')
     }
   },
   watch: {
