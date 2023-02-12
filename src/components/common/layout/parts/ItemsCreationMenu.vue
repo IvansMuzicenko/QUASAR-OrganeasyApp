@@ -86,7 +86,7 @@ export default {
     },
     addTimeLog() {
       this.$q.dialog({
-        component: AddCategory
+        component: 123
       })
     }
   }
