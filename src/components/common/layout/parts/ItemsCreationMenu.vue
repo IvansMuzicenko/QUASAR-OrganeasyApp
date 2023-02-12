@@ -40,6 +40,13 @@
         </q-item-section>
         <q-item-section>Category</q-item-section>
       </q-item>
+      <q-separator />
+      <q-item clickable @click="addTimeLog">
+        <q-item-section avatar>
+          <q-icon name="pending_actions" />
+        </q-item-section>
+        <q-item-section>Log time</q-item-section>
+      </q-item>
     </q-list>
   </q-menu>
 </template>
@@ -73,6 +80,11 @@ export default {
       })
     },
     addCategory() {
+      this.$q.dialog({
+        component: AddCategory
+      })
+    },
+    addTimeLog() {
       this.$q.dialog({
         component: AddCategory
       })
