@@ -1,31 +1,33 @@
 <template>
   <div class="flex full-width q-pt-lg main-logs-block">
     <div class="hours day cursor-none">
-      <div v-for="l in 97" :key="l" class="time-field relative-position">
-        <span class="hour">{{ (l - 1) % 4 ? '-' : formatField(l) }}</span>
+      <div
+        v-for="hourQuarter in dayQuartersCount"
+        :key="hourQuarter"
+        class="time-field relative-position"
+      >
+        <span class="hour">
+          {{ (hourQuarter - 1) % 4 ? '-' : formatField(hourQuarter) }}
+        </span>
         <button class="hours-add full-width">+</button>
       </div>
     </div>
     <div
-      v-for="i in 7"
-      :key="i"
+      v-for="day in 7"
+      :key="day"
       class="col day"
-      :class="{ selected: isSelected(i), today: isToday(i) }"
+      :class="{ selected: isSelected(day), today: isToday(day) }"
     >
       <div
-        v-for="l in 97"
-        :key="l"
+        v-for="hourQuarter in dayQuartersCount"
+        :key="hourQuarter"
         class="field relative-position row justify-center"
       >
-        <span
-          :ref="i + '' + l"
-          class="time absolute-top q-mx-auto text-center"
-          hidden
-        >
-          {{ formatField(l) }}
+        <span class="time absolute-top q-mx-auto text-center" hidden>
+          {{ formatField(hourQuarter) }}
         </span>
         <q-separator
-          :size="(l - 1) % 4 ? '1px' : '3px'"
+          :size="(hourQuarter - 1) % 4 ? '1px' : '3px'"
           class="absolute-top divider"
         />
       </div>
@@ -54,15 +56,20 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      dayQuartersCount: 97
+    }
+  },
   methods: {
-    formatField(l) {
-      let hours = Math.floor(((l - 1) * 15) / 60).toString()
+    formatField(hourQuarter) {
+      let hours = Math.floor(((hourQuarter - 1) * 15) / 60).toString()
       hours = (hours.length > 1 ? '' : '0') + hours
 
-      let minutes = (((l - 1) * 15) % 60).toString()
+      let minutes = (((hourQuarter - 1) * 15) % 60).toString()
       minutes = minutes + (minutes.length > 1 ? '' : '0')
 
-      return hours + ':' + minutes
+      return `${hours}:${minutes}`
     }
   }
 }

@@ -31,7 +31,7 @@
             </q-popup-proxy>
           </span>
           <span>
-            <q-btn flat @click="changeWeek(1)">&gt;</q-btn>
+            <q-btn flat @click="changeWeek()">&gt;</q-btn>
           </span>
         </div>
         <div>Total: {{ 0 }}</div>
