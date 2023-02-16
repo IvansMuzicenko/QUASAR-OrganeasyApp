@@ -49,6 +49,11 @@ const routes = [
         meta: { parentPath: 'categories' }
       },
       {
+        path: '/logs',
+        component: () => import('src/pages/TimeLog.vue'),
+        meta: { parentPath: 'time-log' }
+      },
+      {
         path: '/settings',
         component: () => import('src/pages/Settings.vue'),
         meta: { parentPath: 'settings' }

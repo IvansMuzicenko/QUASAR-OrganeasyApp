@@ -106,6 +106,12 @@ export default {
           link: '/categories'
         },
         {
+          title: 'Time Logs',
+          caption: '',
+          icon: 'pending_actions',
+          link: '/logs'
+        },
+        {
           title: 'Help',
           caption: '',
           icon: 'help',
