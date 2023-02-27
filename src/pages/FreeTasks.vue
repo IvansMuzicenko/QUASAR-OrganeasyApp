@@ -18,7 +18,7 @@
           <filter-sort
             :items="freeTasksArray"
             type="free-tasks"
-            @updateData="(modifiedItems) => (freeTasks = modifiedItems)"
+            @update-data="(modifiedItems) => (freeTasks = modifiedItems)"
           />
         </q-card-section>
       </q-card-section>

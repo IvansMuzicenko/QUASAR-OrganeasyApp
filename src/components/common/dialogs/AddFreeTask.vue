@@ -2,8 +2,8 @@
   <q-dialog ref="dialog" @hide="onDialogHide">
     <free-task-form
       :copy="copy"
-      @OKEvent="onOKClick"
-      @cancelEvent="onCancelClick"
+      @confirm-event="onOKClick"
+      @cancel-event="onCancelClick"
     />
   </q-dialog>
 </template>

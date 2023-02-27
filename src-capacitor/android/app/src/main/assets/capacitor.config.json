@@ -1,14 +1,17 @@
 {
-	"appId": "org.ivansmuzicenko.organeasy",
-	"appName": "quasar_todo",
-	"bundledWebRuntime": false,
-	"npmClient": "npm",
-	"webDir": "www",
-	"plugins": {
-		"LocalNotifications": {
-			"smallIcon": "ic_organeasy",
-			"iconColor": "#488AFF",
-			"sound": "beep.wav"
-		}
-	}
+  "appId": "org.ivansmuzicenko.organeasy",
+  "appName": "Organeasy",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_organeasy",
+      "iconColor": "#488AFF",
+      "sound": "beep.wav"
+    }
+  },
+  "server": {
+    "url": "http://192.168.0.55:8080"
+  }
 }

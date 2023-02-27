@@ -44,7 +44,7 @@
         <filter-sort
           :items="dayTasksArray"
           type="tasks"
-          @updateData="(modifiedItems) => (dayTasks = modifiedItems)"
+          @update-data="(modifiedItems) => (dayTasks = modifiedItems)"
         />
       </q-card-section>
     </q-card>

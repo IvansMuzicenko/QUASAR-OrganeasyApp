@@ -1,8 +1,8 @@
 {
-  "name": "quasar_todo",
+  "name": "organeasy",
   "version": "0.0.1",
   "description": "A Quasar Framework app",
-  "productName": "quasar_todo",
+  "productName": "Organeasy",
   "author": "Ivans Muzicenko <ivans.muzicenko@gmail.com>",
   "private": true,
   "scripts": {
@@ -12,28 +12,29 @@
     "mobile:build": "quasar build -m capacitor -T android --ide",
     "lint": "eslint --ext .js,.vue ./",
     "lint-fix": "eslint --ext .js,.vue ./ --fix",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "upgrade": "quasar upgrade"
   },
   "dependencies": {
-    "@capacitor/app": "^1.0.7",
-    "@capacitor/core": "^3.3.3",
-    "@quasar/extras": "^1.0.0",
-    "axios": "^0.21.1",
-    "core-js": "^3.6.5",
-    "dotenv": "^10.0.0",
-    "firebase": "^9.4.1",
-    "quasar": "^2.0.0",
-    "vuex": "^4.0.1"
+    "@capacitor/app": "^4.1.1",
+    "@capacitor/core": "^4.7.0",
+    "@quasar/extras": "^1.15.11",
+    "axios": "^1.3.4",
+    "core-js": "^3.29.0",
+    "dotenv": "^16.0.3",
+    "firebase": "^9.17.1",
+    "quasar": "^2.11.6",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.13.14",
-    "@quasar/app": "^3.0.0",
-    "eslint": "^7.14.0",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-vue": "^7.0.0",
-    "eslint-webpack-plugin": "^2.4.0",
-    "prettier": "^2.5.0"
+    "@babel/eslint-parser": "^7.19.1",
+    "@quasar/app": "^3.3.3",
+    "eslint": "^8.35.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-vue": "^9.9.0",
+    "eslint-webpack-plugin": "^4.0.0",
+    "prettier": "^2.8.4"
   },
   "browserslist": [
     "last 10 Chrome versions",

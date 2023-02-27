@@ -18,7 +18,7 @@
           <filter-sort
             :items="notesArray"
             type="notes"
-            @updateData="(modifiedItems) => (notes = modifiedItems)"
+            @update-data="(modifiedItems) => (notes = modifiedItems)"
           />
         </q-card-section>
       </q-card-section>

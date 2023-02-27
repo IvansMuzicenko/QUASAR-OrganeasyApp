@@ -39,7 +39,7 @@
       Priority:
       <priority-select
         :item-priority="form.priority || 3"
-        @prioritySelected="
+        @priority-selected="
           (selectedPriority) => (form.priority = selectedPriority)
         "
       />
@@ -53,7 +53,7 @@
       Category:
       <category-select
         :item-category="form.category || ''"
-        @categorySelected="
+        @category-selected="
           (selectedCategory) => (form.category = selectedCategory)
         "
       />
@@ -373,7 +373,7 @@
     </q-card-section>
 
     <q-card-actions align="right">
-      <save-button v-if="editTask" :error="error" @saveEvent="onSaveClick" />
+      <save-button v-if="editTask" :error="error" @save-event="onSaveClick" />
       <q-btn
         v-else
         color="positive"
@@ -407,7 +407,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'saveEvent', 'error'],
+  emits: ['confirmEvent', 'cancelEvent', 'saveEvent', 'error'],
 
   data() {
     return {
@@ -533,7 +533,7 @@ export default {
       this.form.subtasks[index]['subtasks'][subIndex]['progress'] = !progress
     },
     async onOKClick() {
-      this.$emit('OKEvent', this.form)
+      this.$emit('confirmEvent', this.form)
     },
     onCancelClick() {
       this.$emit('cancelEvent')

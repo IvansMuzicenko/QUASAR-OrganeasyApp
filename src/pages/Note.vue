@@ -7,7 +7,7 @@
         v-if="editState"
         top-bar
         :error="error"
-        @saveEvent="$refs.noteForm.onSaveClick()"
+        @save-event="$refs.noteForm.onSaveClick()"
       />
 
       <edit-button v-if="!editState" ref="editButton" top-bar />
@@ -28,7 +28,7 @@
               rewrite
               :item-path="`notes/id-${note.id}`"
               icon-only
-              @categorySelected="updateNoteData()"
+              @category-selected="updateNoteData()"
             />
           </q-item-section>
           <q-item-section>
@@ -39,7 +39,7 @@
               :item-favorite="note.favorite"
               :item-id="note.id"
               icon-only
-              @favoriteChanged="updateNoteData()"
+              @favorite-changed="updateNoteData()"
             />
           </q-item-section>
         </q-item>
@@ -53,8 +53,8 @@
           v-if="editState"
           ref="noteForm"
           :edit-note="note"
-          @saveEvent="onSaveClick"
-          @cancelEvent="onCancelClick"
+          @save-event="onSaveClick"
+          @cancel-event="onCancelClick"
           @error="errorCheck"
         />
       </q-card-section>

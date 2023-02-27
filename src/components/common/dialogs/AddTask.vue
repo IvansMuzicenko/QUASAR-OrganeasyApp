@@ -3,8 +3,8 @@
     <task-form
       :exact-date="exactDate"
       :copy="copy"
-      @OKEvent="onOKClick"
-      @cancelEvent="onCancelClick"
+      @confirm-event="onOKClick"
+      @cancel-event="onCancelClick"
     />
   </q-dialog>
 </template>
