@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <category-form @OKEvent="onOKClick" @cancelEvent="onCancelClick" />
+    <category-form @confirm-event="onOKClick" @cancel-event="onCancelClick" />
   </q-dialog>
 </template>
 

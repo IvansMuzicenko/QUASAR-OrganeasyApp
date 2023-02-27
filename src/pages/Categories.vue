@@ -47,8 +47,8 @@
     <q-dialog ref="dialog" @hide="onDialogHide">
       <category-form
         :edit-category="selectedCategory"
-        @saveEvent="onSaveClick"
-        @cancelEvent="onCancelClick"
+        @save-event="onSaveClick"
+        @cancel-event="onCancelClick"
       />
     </q-dialog>
   </q-page>

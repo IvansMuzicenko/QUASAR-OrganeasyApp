@@ -25,7 +25,7 @@
         }
       ]
     ]"
-    @update:modelValue="(newValue) => $emit('update:modelValue', newValue)"
+    @update:model-value="(newValue) => $emit('update:modelValue', newValue)"
   />
 </template>
 

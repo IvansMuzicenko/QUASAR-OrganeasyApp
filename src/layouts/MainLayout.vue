@@ -6,11 +6,11 @@
       @refresh="reload"
     />
 
-    <app-header @drawerClick="toggleLeftDrawer" />
+    <app-header @drawer-click="toggleLeftDrawer" />
 
     <app-side-bar
       :left-drawer-open="leftDrawerOpen"
-      @stateChanged="stateChanged"
+      @state-changed="stateChanged"
     />
 
     <app-footer />

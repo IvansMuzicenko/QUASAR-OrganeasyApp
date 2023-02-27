@@ -7,7 +7,7 @@
         v-if="!editState && task['continuous'] && !task['continuousStarted']"
         top-bar
         :path="`tasks/date-${taskDate}/id-${taskId}`"
-        @updateData="updateTaskData()"
+        @update-data="updateTaskData()"
       />
       <stop-continuous-button
         v-if="
@@ -18,7 +18,7 @@
         "
         top-bar
         :path="`tasks/date-${taskDate}/id-${taskId}`"
-        @updateData="updateTaskData()"
+        @update-data="updateTaskData()"
       />
 
       <progress-change
@@ -26,7 +26,7 @@
         :item="task"
         type="task"
         top-bar
-        @updateData="updateTaskData()"
+        @update-data="updateTaskData()"
       />
       <copy-button v-if="!editState" top-bar :task="task" type="task" />
 
@@ -36,7 +36,7 @@
         v-if="editState"
         top-bar
         :error="error"
-        @saveEvent="$refs.taskForm.onSaveClick()"
+        @save-event="$refs.taskForm.onSaveClick()"
       />
       <item-remove v-if="editState" :item="task" type="task" top-bar />
     </q-card>
@@ -265,8 +265,8 @@
       v-if="editState"
       ref="taskForm"
       :edit-task="task"
-      @saveEvent="onSaveClick"
-      @cancelEvent="$router.push(path)"
+      @save-event="onSaveClick"
+      @cancel-event="$router.push(path)"
       @error="errorCheck"
     />
   </q-page>

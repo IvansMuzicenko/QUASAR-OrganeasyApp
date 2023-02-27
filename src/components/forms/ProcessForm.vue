@@ -28,7 +28,11 @@
       </p>
     </q-card-section>
     <q-card-actions align="right">
-      <save-button v-if="editProcess" :error="error" @saveEvent="onSaveClick" />
+      <save-button
+        v-if="editProcess"
+        :error="error"
+        @save-event="onSaveClick"
+      />
       <q-btn
         v-if="!editProcess"
         color="positive"
@@ -41,7 +45,7 @@
         v-if="editProcess"
         :item="editProcess"
         type="process"
-        @deleteEvent="deleteClick()"
+        @delete-event="deleteClick()"
       />
     </q-card-actions>
   </q-card>
@@ -60,7 +64,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'saveEvent', 'deleteEvent'],
+  emits: ['confirmEvent', 'cancelEvent', 'saveEvent', 'deleteEvent'],
   data() {
     return {
       form: {
@@ -87,7 +91,7 @@ export default {
       }
     },
     onOKClick() {
-      this.$emit('OKEvent', this.form)
+      this.$emit('confirmEvent', this.form)
     },
     onSaveClick() {
       this.$emit('saveEvent', this.form)

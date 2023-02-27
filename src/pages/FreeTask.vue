@@ -6,7 +6,7 @@
         v-if="!editState && task['continuous'] && !task['continuousStarted']"
         top-bar
         :path="`freeTasks/id-${taskId}`"
-        @updateData="updateTaskData()"
+        @update-data="updateTaskData()"
       />
       <stop-continuous-button
         v-if="
@@ -17,14 +17,14 @@
         "
         top-bar
         :path="`freeTasks/id-${taskId}`"
-        @updateData="updateTaskData()"
+        @update-data="updateTaskData()"
       />
       <progress-change
         v-if="!editState"
         :item="task"
         type="free-task"
         top-bar
-        @updateData="updateTaskData()"
+        @update-data="updateTaskData()"
       />
       <copy-button v-if="!editState" top-bar :task="task" type="free-task" />
 
@@ -34,7 +34,7 @@
         v-if="editState"
         top-bar
         :error="error"
-        @saveEvent="$refs.freeTaskForm.onSaveClick()"
+        @save-event="$refs.freeTaskForm.onSaveClick()"
       />
 
       <item-remove v-if="editState" :item="task" type="free-task" top-bar />
@@ -62,7 +62,7 @@
         <priority-select
           :item-priority="task.priority"
           :item-id="task.id"
-          @prioritySelected="updateTaskData()"
+          @priority-selected="updateTaskData()"
         />
       </q-item>
 
@@ -73,7 +73,7 @@
           :item-category="task.category || ''"
           rewrite
           :item-path="`freeTasks/id-${task.id}`"
-          @categorySelected="updateTaskData()"
+          @category-selected="updateTaskData()"
         />
       </q-item>
 
@@ -217,8 +217,8 @@
       v-if="editState"
       ref="freeTaskForm"
       :edit-task="task"
-      @saveEvent="onSaveClick"
-      @cancelEvent="onCancelClick"
+      @save-event="onSaveClick"
+      @cancel-event="onCancelClick"
       @error="errorCheck"
     />
   </q-page>

@@ -70,7 +70,7 @@
         label="Add"
         @click="onOKClick"
       />
-      <save-button v-else @saveEvent="onSaveClick" />
+      <save-button v-else @save-event="onSaveClick" />
       <q-btn color="secondary" label="Cancel" @click="onCancelClick" />
     </q-card-actions>
   </q-card>
@@ -89,7 +89,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'saveEvent'],
+  emits: ['confirmEvent', 'cancelEvent', 'saveEvent'],
   data() {
     return {
       form: {
@@ -146,7 +146,7 @@ export default {
     },
     onOKClick() {
       this.form.id = generateId()
-      this.$emit('OKEvent', this.form)
+      this.$emit('confirmEvent', this.form)
     },
     onSaveClick() {
       this.$emit('saveEvent', this.form)
