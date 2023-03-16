@@ -7,14 +7,16 @@
       ref="timeLogsHeader"
       :is-today="isToday"
       :is-selected="isSelected"
-      :get-day-date="getDayDate"
+      :time-logs="timeLogs"
+      :dates="dates"
       @date-changed="dateChanged"
     />
     <time-log-table
       ref="timeLogsTable"
+      :time-logs="timeLogs"
       :is-today="isToday"
       :is-selected="isSelected"
-      :get-day-date="getDayDate"
+      :dates="dates"
     />
   </q-page>
 </template>
@@ -37,6 +39,32 @@ export default {
         to: ''
       },
       date: new Date()
+    }
+  },
+  computed: {
+    timeLogs() {
+      let timeLogs = Object.fromEntries(
+        Object.entries(this.$store.getters['users/timeLogs']).filter(
+          ([key, value]) => this.dates.includes(key.replace('date-', ''))
+        )
+      )
+
+      return timeLogs
+    },
+    dates() {
+      let dates = []
+      if (this.weekStart) {
+        for (let i = 0; i < 7; i++) {
+          dates.push(
+            date.formatDate(
+              date.addToDate(this.weekStart, { days: i }),
+              'DD-MM-YYYY'
+            )
+          )
+        }
+      }
+
+      return dates
     }
   },
 
@@ -85,26 +113,15 @@ export default {
       this.$refs.timeLogsHeader.changeWeek()
     },
 
-    isToday(dayOfWeek) {
-      let currentDay = this.getDayDate(dayOfWeek)
-      let today = date.formatDate(new Date(), 'dddd, DD-MM-YYYY')
+    isToday(day) {
+      let today = date.formatDate(new Date(), 'DD-MM-YYYY')
 
-      return currentDay === today
+      return day === today
     },
-    isSelected(dayOfWeek) {
-      let currentDay = this.getDayDate(dayOfWeek)
-      let selectedDate = date.formatDate(
-        date.extractDate(this.$route.query.date, 'DD-MM-YYYY'),
-        'dddd, DD-MM-YYYY'
-      )
+    isSelected(day) {
+      let selectedDate = this.$route.query.date
 
-      return currentDay === selectedDate
-    },
-    getDayDate(dayOfWeek) {
-      return date.formatDate(
-        date.addToDate(this.weekStart, { days: dayOfWeek - 1 }),
-        'dddd, DD-MM-YYYY'
-      )
+      return day === selectedDate
     }
   }
 }

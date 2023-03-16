@@ -57,6 +57,7 @@ import AddFreeTask from 'src/components/common/dialogs/AddFreeTask.vue'
 import AddProcess from 'src/components/common/dialogs/AddProcess.vue'
 import AddNote from 'src/components/common/dialogs/AddNote.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
+import AddTimeLog from 'src/components/common/dialogs/AddTimeLog.vue'
 export default {
   methods: {
     addTask() {
@@ -86,7 +87,10 @@ export default {
     },
     addTimeLog() {
       this.$q.dialog({
-        component: 123
+        component: AddTimeLog,
+        componentProps: {
+          exactDate: this.date
+        }
       })
     }
   }

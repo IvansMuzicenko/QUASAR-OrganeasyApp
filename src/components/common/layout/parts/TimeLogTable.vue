@@ -7,30 +7,23 @@
         class="time-field relative-position"
       >
         <span class="hour">
-          {{ (hourQuarter - 1) % 4 ? '-' : formatField(hourQuarter) }}
+          {{ hourQuarter % 4 ? '-' : convertMinutesToTime(hourQuarter * 15) }}
         </span>
-        <button class="hours-add full-width">+</button>
+        <button
+          class="hours-add full-width"
+          @click="addTimeLog(convertMinutesToTime(hourQuarter * 15))"
+        >
+          +
+        </button>
       </div>
     </div>
     <div
-      v-for="day in 7"
+      v-for="day in dates"
       :key="day"
       class="col day"
       :class="{ selected: isSelected(day), today: isToday(day) }"
     >
-      <div
-        v-for="hourQuarter in dayQuartersCount"
-        :key="hourQuarter"
-        class="field relative-position row justify-center"
-      >
-        <span class="time absolute-top q-mx-auto text-center" hidden>
-          {{ formatField(hourQuarter) }}
-        </span>
-        <q-separator
-          :size="(hourQuarter - 1) % 4 ? '1px' : '3px'"
-          class="absolute-top divider"
-        />
-      </div>
+      <time-log-column :time-logs="timeLogs" :date="day" />
     </div>
     <q-separator
       ref="currentTimeLine"
@@ -41,7 +34,12 @@
   </div>
 </template>
 <script>
+import AddTimeLog from 'src/components/common/dialogs/AddTimeLog.vue'
+import TimeLogColumn from 'src/components/common/elements/blocks/TimeLogColumn.vue'
+import { convertTimeToMinutes, convertMinutesToTime } from 'src/dateTimeHelper'
+
 export default {
+  components: { TimeLogColumn },
   props: {
     isToday: {
       type: Function,
@@ -51,30 +49,41 @@ export default {
       type: Function,
       required: true
     },
-    getDayDate: {
-      type: Function,
+    dates: {
+      type: Array,
+      required: true
+    },
+    timeLogs: {
+      type: Object,
       required: true
     }
   },
   data() {
     return {
-      dayQuartersCount: 97
+      convertMinutesToTime,
+      dayQuartersCount: [...Array(97).keys()]
     }
   },
+  mounted() {
+    this.$store.dispatch('users/checkTimeLogCrossings')
+  },
+  updated() {
+    this.$store.dispatch('users/checkTimeLogCrossings')
+  },
   methods: {
-    formatField(hourQuarter) {
-      let hours = Math.floor(((hourQuarter - 1) * 15) / 60).toString()
-      hours = (hours.length > 1 ? '' : '0') + hours
-
-      let minutes = (((hourQuarter - 1) * 15) % 60).toString()
-      minutes = minutes + (minutes.length > 1 ? '' : '0')
-
-      return `${hours}:${minutes}`
+    addTimeLog(time, date = null) {
+      this.$q.dialog({
+        component: AddTimeLog,
+        componentProps: {
+          exactTime: time,
+          exactDate: date
+        }
+      })
     }
   }
 }
 </script>
-<style>
+<style lang="scss">
 .main-logs-block {
   margin-top: 115px;
 }
@@ -99,21 +108,23 @@ export default {
   display: none;
 }
 .time-field:hover > .hours-add,
-.field:hover > .time {
+.field:hover .time {
   display: inline-block;
 }
+
+.time-log-active ~ .quarters-field {
+  display: none;
+}
+
 .hours-add {
   height: 20px;
   display: none;
 }
-.divider {
-  margin-top: 10px;
-}
+.drag-enter {
+  border: 1px solid gray;
 
-.time {
-  user-select: none;
-  background: white;
-  z-index: 2;
-  width: 40px;
+  .time {
+    display: inline-block;
+  }
 }
 </style>
