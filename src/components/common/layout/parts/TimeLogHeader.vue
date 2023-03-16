@@ -34,24 +34,24 @@
             <q-btn flat @click="changeWeek()">&gt;</q-btn>
           </span>
         </div>
-        <div>Total: {{ 0 }}</div>
+        <div>Total: {{ convertMinutesToTime(weekTotalHours) }}</div>
       </div>
       <div class="dates row full-width">
         <div class="hours" />
         <div
-          v-for="i in 7"
-          :key="i"
+          v-for="day in dates"
+          :key="day"
           class="col column justify-between date"
-          :class="{ selected: isSelected(i), today: isToday(i) }"
+          :class="{ selected: isSelected(day), today: isToday(day) }"
         >
           <span>
-            {{ getDayDate(i) }}
+            {{ day }}
           </span>
           <span>
             <!-- Total of day -->
-            Total: {{ 0 }}
+            Total: {{ convertMinutesToTime(weekTotals[day] ?? 0) }}
           </span>
-          <q-btn>+</q-btn>
+          <q-btn @click="addTimeLog(day)">+</q-btn>
         </div>
       </div>
     </q-toolbar>
@@ -60,6 +60,9 @@
 
 <script>
 import { date } from 'quasar'
+import AddTimeLog from 'src/components/common/dialogs/AddTimeLog.vue'
+import { convertTimeToMinutes, convertMinutesToTime } from 'src/dateTimeHelper'
+
 export default {
   props: {
     isToday: {
@@ -70,21 +73,29 @@ export default {
       type: Function,
       required: true
     },
-    getDayDate: {
-      type: Function,
+    dates: {
+      type: Array,
+      required: true
+    },
+    timeLogs: {
+      type: Object,
       required: true
     }
   },
   emits: ['dateChanged'],
   data() {
     return {
+      convertTimeToMinutes,
+      convertMinutesToTime,
       weekStart: '',
       weekEnd: '',
       currentWeek: {
         from: '',
         to: ''
       },
-      date: new Date()
+      date: new Date(),
+      weekTotals: [],
+      weekTotalHours: 0
     }
   },
 
@@ -124,6 +135,17 @@ export default {
       },
       immediate: true,
       flush: 'post'
+    }
+  },
+  mounted() {
+    for (let dayDate of this.dates) {
+      for (const timeLog of Object.values(
+        this.timeLogs[`date-${dayDate}`] ?? {}
+      )) {
+        this.weekTotals[dayDate] = this.weekTotals[dayDate] ?? 0
+        this.weekTotals[dayDate] += convertTimeToMinutes(timeLog.timeSpent)
+        this.weekTotalHours += convertTimeToMinutes(timeLog.timeSpent)
+      }
     }
   },
 
@@ -213,13 +235,21 @@ export default {
             el.classList.add('q-date__range-to', 'circle')
           }
         })
+    },
+    addTimeLog(date) {
+      this.$q.dialog({
+        component: AddTimeLog,
+        componentProps: {
+          exactDate: date
+        }
+      })
     }
   }
 }
 </script>
 <style>
 .header {
-  z-index: 10;
+  z-index: 100;
 }
 .date {
   min-height: 100px;

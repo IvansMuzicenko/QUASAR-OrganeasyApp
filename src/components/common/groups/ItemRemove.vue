@@ -146,6 +146,8 @@ export default {
       } else if (this.type == 'process') {
         this.deleteExistsProcesses(this.item.id)
         this.removeItem(`processes/id-${this.item.id}`)
+      } else if (this.type == 'time-log') {
+        this.removeItem(`timeLogs/date-${this.item.date}/id-${this.item.id}`)
       }
       this.removeNotify()
     },
