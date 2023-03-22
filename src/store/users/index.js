@@ -25,7 +25,7 @@ const mutations = {
     this.$router.push('/auth')
   },
   CHECKTIMELOGCROSSINGS(state) {
-    for (const date of Object.keys(state.user.userData.timeLogs)) {
+    for (const date of Object.keys(state.user.userData.timeLogs ?? {})) {
       const dateLogs = state.user.userData.timeLogs[date]
       let logs = Object.values(dateLogs).sort(
         (a, b) =>
@@ -72,7 +72,9 @@ const getters = {
   notes: (state) => state.user?.userData?.notes || {},
   processes: (state) => state.user?.userData?.processes || {},
   categories: (state) => state.user?.userData?.categories || {},
-  timeLogs: (state) => state.user?.userData?.timeLogs || {}
+  timeLogs: (state) => state.user?.userData?.timeLogs || {},
+  logProcesses: (state) => state.user?.userData?.logProcesses || {},
+  logCategories: (state) => state.user?.userData?.logCategories || {}
 }
 
 export default {

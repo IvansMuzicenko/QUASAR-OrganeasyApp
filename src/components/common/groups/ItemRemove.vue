@@ -148,6 +148,12 @@ export default {
         this.removeItem(`processes/id-${this.item.id}`)
       } else if (this.type == 'time-log') {
         this.removeItem(`timeLogs/date-${this.item.date}/id-${this.item.id}`)
+      } else if (this.type == 'log-process') {
+        this.removeItem(`logProcesses/id-${this.item.id}`)
+        this.deleteExistsLogProcesses(this.item.id)
+      } else if (this.type == 'log-category') {
+        this.removeItem(`logCategories/id-${this.item.id}`)
+        this.deleteExistsCategories(this.item.id, true)
       }
       this.removeNotify()
     },
@@ -211,7 +217,22 @@ export default {
         }
       }
     },
-    deleteExistsCategories(id) {
+    deleteExistsCategories(id, logCategory = false) {
+      if (logCategory) {
+        const vuexLogProcesses = this.$store.getters['users/logProcesses']
+        for (const vuexLogProcess in vuexLogProcesses) {
+          const logProcess = vuexLogProcesses[vuexLogProcess]
+          if (logProcess.category && logProcess.category == id) {
+            remove(
+              ref(
+                db,
+                `${this.$store.getters['users/userId']}/logProcesses/id-${logProcess['id']}/category`
+              )
+            )
+          }
+        }
+        return
+      }
       const vuexFreeTasks = this.$store.getters['users/freeTasks']
       for (const vuexFreeTask in vuexFreeTasks) {
         const freeTask = vuexFreeTasks[vuexFreeTask]
@@ -235,6 +256,24 @@ export default {
               `${this.$store.getters['users/userId']}/notes/id-${note['id']}/category`
             )
           )
+        }
+      }
+    },
+    deleteExistsLogProcesses(logProcessId) {
+      const vuexTimeLogs = this.$store.getters['users/timeLogs']
+      for (const vuexTimeLogDate in vuexTimeLogs) {
+        const timeLogDates = vuexTimeLogs[vuexTimeLogDate]
+        for (const timeLogDate in timeLogDates) {
+          const timeLog = timeLogDates[timeLogDate]
+          if (timeLog.logProcessId && timeLog.logProcessId == logProcessId) {
+            update(
+              ref(
+                db,
+                `${this.$store.getters['users/userId']}/timeLogs/date-${timeLog.date}/id-${timeLog['id']}`
+              ),
+              { logProcessId: '0' }
+            )
+          }
         }
       }
     },

@@ -69,6 +69,9 @@
               parentPath == 'processes' ||
               parentPath == 'categories' ||
               parentPath == 'settings' ||
+              parentPath == 'logs' ||
+              parentPath == 'logProcesses' ||
+              parentPath == 'logCatgories' ||
               parentPath == 'help'
                 ? 'activeLink'
                 : ''
@@ -108,6 +111,54 @@
                     </q-item-section>
                     <q-item-section class="no-margin text-weight-light">
                       Categories
+                    </q-item-section>
+                  </q-item-section>
+                </q-item>
+
+                <q-item
+                  class="col justify-center no-padding"
+                  clickable
+                  :class="parentPath == 'logs' ? 'activeLink' : ''"
+                  to="/logs"
+                >
+                  <q-item-section class="text-center" style="line-height: 0">
+                    <q-item-section class="row no-padding">
+                      <q-icon size="sm" name="pending_actions" class="col" />
+                    </q-item-section>
+                    <q-item-section class="no-margin text-weight-light">
+                      Time Logs
+                    </q-item-section>
+                  </q-item-section>
+                </q-item>
+
+                <q-item
+                  class="col justify-center no-padding"
+                  clickable
+                  :class="parentPath == 'log-processes' ? 'activeLink' : ''"
+                  to="/log-processes"
+                >
+                  <q-item-section class="text-center" style="line-height: 0">
+                    <q-item-section class="row no-padding">
+                      <q-icon size="sm" name="account_tree" class="col" />
+                    </q-item-section>
+                    <q-item-section class="no-margin text-weight-light">
+                      Log Processes
+                    </q-item-section>
+                  </q-item-section>
+                </q-item>
+
+                <q-item
+                  class="col justify-center no-padding"
+                  clickable
+                  :class="parentPath == 'log-categories' ? 'activeLink' : ''"
+                  to="/log-categories"
+                >
+                  <q-item-section class="text-center" style="line-height: 0">
+                    <q-item-section class="row no-padding">
+                      <q-icon size="md" name="hub" class="col" />
+                    </q-item-section>
+                    <q-item-section class="no-margin text-weight-light">
+                      Log Categories
                     </q-item-section>
                   </q-item-section>
                 </q-item>

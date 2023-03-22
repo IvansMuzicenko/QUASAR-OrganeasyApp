@@ -47,6 +47,20 @@
         </q-item-section>
         <q-item-section>Log time</q-item-section>
       </q-item>
+      <q-separator />
+      <q-item clickable @click="addLogProcess">
+        <q-item-section avatar>
+          <q-icon name="account_tree" />
+        </q-item-section>
+        <q-item-section>Log Process</q-item-section>
+      </q-item>
+      <q-separator />
+      <q-item clickable @click="addLogCategory">
+        <q-item-section avatar>
+          <q-icon name="hub" />
+        </q-item-section>
+        <q-item-section>Log Category</q-item-section>
+      </q-item>
     </q-list>
   </q-menu>
 </template>
@@ -58,6 +72,7 @@ import AddProcess from 'src/components/common/dialogs/AddProcess.vue'
 import AddNote from 'src/components/common/dialogs/AddNote.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import AddTimeLog from 'src/components/common/dialogs/AddTimeLog.vue'
+import AddLogProcess from 'src/components/common/dialogs/AddLogProcess.vue'
 export default {
   methods: {
     addTask() {
@@ -90,6 +105,19 @@ export default {
         component: AddTimeLog,
         componentProps: {
           exactDate: this.date
+        }
+      })
+    },
+    addLogProcess() {
+      this.$q.dialog({
+        component: AddLogProcess
+      })
+    },
+    addLogCategory() {
+      this.$q.dialog({
+        component: AddCategory,
+        componentProps: {
+          logCategory: true
         }
       })
     }

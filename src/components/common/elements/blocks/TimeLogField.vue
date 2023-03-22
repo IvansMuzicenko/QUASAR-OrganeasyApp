@@ -11,7 +11,26 @@
     @dragstart="onDragStart"
     @click.prevent.stop="editTimeLog(timeLog.id, date)"
   >
-    {{ timeLogText }}
+    <div class="column log-text full-width">
+      <p class="full-width q-ma-none">{{ logProcess?.title ?? 'Default' }}</p>
+      <q-chip v-if="logCategory" dense class="q-ma-none full-width">
+        <q-avatar
+          :icon="logCategory ? logCategory['icon'] : ''"
+          :color="logCategory ? logCategory['color'] : ''"
+          text-color="white"
+        />
+        <span>{{ logCategory ? logCategory['title'] : '' }}</span>
+      </q-chip>
+      <p class="full-width q-ma-none">{{ timeLog.description }}</p>
+      <div class="row justify-between q-px-xs field-times">
+        <span>{{ `${timeLog.timeFrom} - ${timeLog.timeTo}` }}</span>
+        <span>{{ timeLog.timeSpent }}</span>
+      </div>
+    </div>
+    <span
+      :class="`bg-${logCategory?.color ?? 'grey-5'} full-height`"
+      style="width: 5px"
+    />
   </div>
   <div v-else class="quarters-field">
     <span class="time absolute-top q-mx-auto text-center" hidden>
@@ -55,8 +74,17 @@ export default {
         (el) => el.timeFrom === this.timeFrom
       )[0]
     },
-    timeLogText() {
-      return `${this.timeLog.issueId}, ${this.timeLog.description}, ${this.timeLog.crossings}`
+    logProcess() {
+      return this.$store.getters['users/logProcesses'][
+        `id-${this.timeLog.logProcessId}`
+      ]
+    },
+    logCategory() {
+      return (
+        this.$store.getters['users/logCategories'][
+          `id-${this.logProcess?.category}`
+        ] ?? null
+      )
     }
   },
   methods: {
@@ -79,24 +107,36 @@ export default {
 <style lang="scss">
 .log-block {
   position: absolute;
+  display: flex;
+  justify-content: space-between;
   z-index: 50;
   transform: translateY(9px);
-  background: rgb(240, 240, 240);
+  background: rgb(250, 250, 250);
   overflow: hidden;
   border: 2px solid rgb(175, 175, 175);
   border-radius: 4px;
+  border-right: 0;
 
   &:hover {
-    background: rgb(220, 220, 220);
+    background: rgb(240, 240, 240);
+  }
+
+  .log-text {
+    line-height: 16px;
+    font-size: 14px;
   }
 }
 .time {
   user-select: none;
-  background: white;
-  z-index: 51;
+  z-index: 49;
   width: 40px;
 }
 .divider {
   margin-top: 10px;
+}
+.field-times {
+  border-top: 1px solid gray;
+  font-size: 13px;
+  line-height: 15px;
 }
 </style>

@@ -112,10 +112,6 @@ export default {
   display: inline-block;
 }
 
-.time-log-active ~ .quarters-field {
-  display: none;
-}
-
 .hours-add {
   height: 20px;
   display: none;
