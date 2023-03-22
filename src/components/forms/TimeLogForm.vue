@@ -36,36 +36,91 @@
       </p>
       <q-card-section class="row">
         <q-select
-          v-model="form.issueId"
+          v-model="form.logProcessId"
           filled
           use-input
           input-debounce
           hide-bottom-space
           class="full-width"
-          emit-value=""
+          emit-value
           map-options
-          :options="issues"
-          :error="errorFields.includes('issue')"
-          error-message="Please select issue or create new"
-          label="Issue"
+          :options="logProcesses"
+          :error="errorFields.includes('logProcess')"
+          error-message="Please select logProcess or create new"
+          label="LogProcess"
           behavior="menu"
-          @filter="issueFilter"
-          @keydown.tab="selectFirstOfIssues()"
+          option-value="id"
+          @filter="logProcessFilter"
+          @keydown.tab="selectFirstOfLogProcesses()"
         >
           <template #no-option>
             <q-item>
               <q-item-section class="text-grey">No results</q-item-section>
             </q-item>
           </template>
-          <template v-if="form.issueId" #append>
+          <template v-if="form.logProcessId" #append>
             <q-icon
               name="cancel"
               class="cursor-pointer"
-              @click.stop.prevent="form.issueId = ''"
+              @click.stop.prevent="form.logProcessId = ''"
             />
           </template>
+          <template #selected-item="scope">
+            <div class="column items-start">
+              <q-chip v-if="scope.opt.category">
+                <q-avatar
+                  :icon="
+                    scope.opt.category
+                      ? logCategories[`id-${scope.opt.category}`]['icon']
+                      : ''
+                  "
+                  :color="
+                    scope.opt.category
+                      ? logCategories[`id-${scope.opt.category}`]['color']
+                      : ''
+                  "
+                  text-color="white"
+                />
+                {{
+                  scope.opt.category
+                    ? logCategories[`id-${scope.opt.category}`]['title']
+                    : ''
+                }}
+              </q-chip>
+              {{ scope.opt.title }}
+            </div>
+          </template>
+          <template #option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section>
+                <q-item-label class="column items-start">
+                  <q-chip v-if="scope.opt.category">
+                    <q-avatar
+                      :icon="
+                        scope.opt.category
+                          ? logCategories[`id-${scope.opt.category}`]['icon']
+                          : ''
+                      "
+                      :color="
+                        scope.opt.category
+                          ? logCategories[`id-${scope.opt.category}`]['color']
+                          : ''
+                      "
+                      text-color="white"
+                    />
+                    {{
+                      scope.opt.category
+                        ? logCategories[`id-${scope.opt.category}`]['title']
+                        : ''
+                    }}
+                  </q-chip>
+                  {{ scope.opt.title }}
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
         </q-select>
-        <q-btn @click="addIssue()">New</q-btn>
+        <q-btn @click="addLogProcess()">Create Log Process</q-btn>
       </q-card-section>
 
       <q-card-section>
@@ -298,7 +353,7 @@
 </template>
 <script>
 import { date } from 'quasar'
-import AddIssue from 'src/components/common/dialogs/AddIssue.vue'
+import AddLogProcess from 'src/components/common/dialogs/AddLogProcess.vue'
 import Editor from 'src/components/common/form/Editor.vue'
 import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
@@ -327,23 +382,15 @@ export default {
   data() {
     return {
       form: {
-        issueId: '',
+        logProcessId: '',
         date: '',
         timeFrom: '',
         timeTo: '',
         timeSpent: '',
-        description: '',
-        title: ''
+        description: ''
       },
       timesModifiers: ['from', 'spent'],
-      issues: [
-        { label: '123', value: 123 },
-        { label: 'asd', value: 345 }
-      ],
-      allIssues: [
-        { label: '123', value: 123 },
-        { label: 'asd', value: 345 }
-      ],
+      logProcesses: [],
       hourQuartersOptions: [0, 15, 30, 45],
       pauseWatch: true,
       errorFields: [],
@@ -356,8 +403,8 @@ export default {
     error() {
       if (this.errorsActivated) {
         this.clearErrorFields()
-        if (this.form.issueId === '') {
-          this.addErrorField('issue')
+        if (this.form.logProcessId === '') {
+          this.addErrorField('logProcess')
         }
         if (this.form.date.includes('#')) {
           this.addErrorField('date')
@@ -393,6 +440,22 @@ export default {
         return true
       }
       return false
+    },
+    logCategories() {
+      return this.$store.getters['users/logCategories'] || {}
+    },
+
+    allLogProcesses() {
+      // maybe should be with name allLogProcesses
+      // option-value and option-label can be used to not assign twice same values
+      const vuexLogProcesses = this.$store.getters['users/logProcesses']
+      let logProcessesArray = []
+      for (const vuexLogProcess in vuexLogProcesses) {
+        const logProcess = {}
+        Object.assign(logProcess, vuexLogProcesses[vuexLogProcess])
+        logProcessesArray.push(logProcess)
+      }
+      return logProcessesArray
     }
   },
   watch: {
@@ -416,7 +479,7 @@ export default {
           `id-${this.editTimeLog.id}`
         ]
       Object.assign(this.form, timeLog)
-      this.form.title = `${this.form.date}, ${this.form.timeFrom} - ${this.form.timeTo}`
+      this.logProcesses = this.allLogProcesses
       return
     }
     this.form.date = this.exactDate ?? this.$route.query.date
@@ -426,10 +489,20 @@ export default {
     this.form.timeTo = this.modifyQuarter('to', this.form.timeFrom)
   },
   methods: {
-    addIssue() {
-      this.$q.dialog({
-        component: AddIssue
-      })
+    addLogProcess() {
+      this.$q
+        .dialog({
+          component: AddLogProcess,
+          componentProps: {
+            selectOnSave: true
+          }
+        })
+        .onOk((selectOnSave = false) => {
+          if (selectOnSave) {
+            this.logProcesses = this.allLogProcesses
+            this.form.logProcessId = selectOnSave
+          }
+        })
     },
     startTypeSelected() {
       this.form.timeFrom =
@@ -471,24 +544,24 @@ export default {
       }
       this.$emit('confirmEvent', this.form)
     },
-    issueFilter(val, update) {
+    logProcessFilter(val, update) {
       if (val === '') {
         update(() => {
-          this.issues = this.allIssues
+          this.logProcesses = this.allLogProcesses
         })
         return
       }
 
       update(() => {
         const needle = val.toLowerCase()
-        this.issues = this.allIssues.filter(
-          (el) => el.label.toLowerCase().indexOf(needle) > -1
+        this.logProcesses = this.allLogProcesses.filter(
+          (el) => el.title.toLowerCase().indexOf(needle) > -1
         )
       })
     },
-    selectFirstOfIssues() {
-      if (this.issues[0] !== undefined) {
-        this.form.issueId = this.issues[0]
+    selectFirstOfLogProcesses() {
+      if (this.logProcesses[0] !== undefined) {
+        this.form.logProcessId = this.logProcesses[0]
       }
     },
     addErrorField(type) {

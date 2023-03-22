@@ -53,6 +53,7 @@
       Category:
       <category-select
         :item-category="form.category || ''"
+        :select-on-save="true"
         @category-selected="
           (selectedCategory) => (form.category = selectedCategory)
         "

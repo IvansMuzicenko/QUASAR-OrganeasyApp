@@ -95,7 +95,11 @@
           />
         </q-card-section>
         <q-separator />
-        <q-card-section v-if="type == 'notes' || type == 'free-tasks'">
+        <q-card-section
+          v-if="
+            type == 'notes' || type == 'free-tasks' || type === 'log-processes'
+          "
+        >
           Category:
           <q-radio
             v-model="filter.category"
@@ -113,7 +117,7 @@
             v-for="(category, index) of itemsCategories"
             :key="index"
             v-model="filter.category"
-            :val="category['id']"
+            :val="category['id'] ?? category"
             class="full-width"
           >
             <q-icon
@@ -126,78 +130,80 @@
         </q-card-section>
         <q-separator />
 
-        <q-card-section class="text-subtitle1 text-center">
-          <q-icon name="sort" />
-          Sort
+        <q-card-section v-if="type !== 'log-processes'">
+          <q-card-section class="text-subtitle1 text-center">
+            <q-icon name="sort" />
+            Sort
 
-          <q-btn
-            icon="backspace"
-            color="red-5"
-            flat
-            dense
-            size="sm"
-            class="q-ml-md"
-            @click="defaultSorting()"
-          >
-            Clear
-          </q-btn>
-        </q-card-section>
-        <q-card-section>
-          <q-btn
-            :icon="
-              sort.title == 'none'
-                ? 'last_page'
-                : sort.title == 'asc'
-                ? 'vertical_align_bottom'
-                : 'vertical_align_top'
-            "
-            class="full-width"
-            @click="sortByTitle"
-          >
-            Title
-          </q-btn>
-          <q-btn
-            v-if="type == 'tasks' || type == 'processes'"
-            :icon="
-              sort.time == 'none'
-                ? 'last_page'
-                : sort.time == 'asc'
-                ? 'vertical_align_bottom'
-                : 'vertical_align_top'
-            "
-            class="full-width"
-            @click="sortByTime"
-          >
-            Time
-          </q-btn>
-          <q-btn
-            v-if="type == 'free-tasks'"
-            :icon="
-              sort.priority == 'none'
-                ? 'last_page'
-                : sort.priority == 'asc'
-                ? 'vertical_align_bottom'
-                : 'vertical_align_top'
-            "
-            class="full-width"
-            @click="sortByPriority"
-          >
-            Priority
-          </q-btn>
-          <q-btn
-            v-if="type != 'processes'"
-            :icon="
-              sort.dateModified == 'none'
-                ? 'last_page'
-                : sort.dateModified == 'asc'
-                ? 'vertical_align_bottom'
-                : 'vertical_align_top'
-            "
-            class="full-width"
-            @click="sortByDateModified"
-          >
-            Date modified
-          </q-btn>
+            <q-btn
+              icon="backspace"
+              color="red-5"
+              flat
+              dense
+              size="sm"
+              class="q-ml-md"
+              @click="defaultSorting()"
+            >
+              Clear
+            </q-btn>
+          </q-card-section>
+          <q-card-section>
+            <q-btn
+              :icon="
+                sort.title == 'none'
+                  ? 'last_page'
+                  : sort.title == 'asc'
+                  ? 'vertical_align_bottom'
+                  : 'vertical_align_top'
+              "
+              class="full-width"
+              @click="sortByTitle"
+            >
+              Title
+            </q-btn>
+            <q-btn
+              v-if="type == 'tasks' || type == 'processes'"
+              :icon="
+                sort.time == 'none'
+                  ? 'last_page'
+                  : sort.time == 'asc'
+                  ? 'vertical_align_bottom'
+                  : 'vertical_align_top'
+              "
+              class="full-width"
+              @click="sortByTime"
+            >
+              Time
+            </q-btn>
+            <q-btn
+              v-if="type == 'free-tasks'"
+              :icon="
+                sort.priority == 'none'
+                  ? 'last_page'
+                  : sort.priority == 'asc'
+                  ? 'vertical_align_bottom'
+                  : 'vertical_align_top'
+              "
+              class="full-width"
+              @click="sortByPriority"
+            >
+              Priority
+            </q-btn>
+            <q-btn
+              v-if="type != 'processes'"
+              :icon="
+                sort.dateModified == 'none'
+                  ? 'last_page'
+                  : sort.dateModified == 'asc'
+                  ? 'vertical_align_bottom'
+                  : 'vertical_align_top'
+              "
+              class="full-width"
+              @click="sortByDateModified"
+            >
+              Date modified
+            </q-btn>
+          </q-card-section>
         </q-card-section>
       </q-card>
     </q-popup-proxy>
@@ -244,8 +250,7 @@ export default {
               (el['priority'] != undefined &&
                 this.filter.priority == el['priority'])) &&
             (this.filter.category == 'all' ||
-              (el['category'] == undefined &&
-                this.filter.category == 'uncategorized') ||
+              (!el['category'] && this.filter.category == 'uncategorized') ||
               (el['category'] != undefined &&
                 this.filter.category == el['category'])) &&
             (this.filter.favorite == 'all' ||
@@ -334,7 +339,13 @@ export default {
   },
   methods: {
     findCategory(id) {
-      return this.$store.getters['users/categories'][`id-${id}`] || {}
+      return (
+        this.$store.getters[
+          `users/${
+            this.type === 'log-processes' ? 'logCategories' : 'categories'
+          }`
+        ][`id-${id}`] || {}
+      )
     },
     defaultFiltering() {
       this.filter.progress =

@@ -50,8 +50,18 @@ const routes = [
       },
       {
         path: '/logs',
-        component: () => import('src/pages/TimeLog.vue'),
-        meta: { parentPath: 'time-log' }
+        component: () => import('src/pages/TimeLogs.vue'),
+        meta: { parentPath: 'logs' }
+      },
+      {
+        path: '/log-processes',
+        component: () => import('src/pages/LogProcesses.vue'),
+        meta: { parentPath: 'log-processes' }
+      },
+      {
+        path: '/log-categories',
+        component: () => import('src/pages/LogCategories.vue'),
+        meta: { parentPath: 'log-categories' }
       },
       {
         path: '/settings',
