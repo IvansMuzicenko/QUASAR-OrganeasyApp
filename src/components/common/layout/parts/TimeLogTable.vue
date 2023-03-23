@@ -1,5 +1,5 @@
 <template>
-  <div class="flex full-width q-pt-lg main-logs-block">
+  <div class="flex full-width main-logs-block">
     <div class="hours day cursor-none">
       <div
         v-for="hourQuarter in dayQuartersCount"
@@ -85,10 +85,10 @@ export default {
 </script>
 <style lang="scss">
 .main-logs-block {
-  margin-top: 115px;
+  margin-top: 139px;
 }
 .current-time-line {
-  margin-top: 35px;
+  margin-top: 9px;
   z-index: 5;
 }
 .day {
@@ -121,6 +121,31 @@ export default {
 
   .time {
     display: inline-block;
+  }
+}
+@media only screen and (max-width: 900px) {
+  .main-logs-block {
+    margin: 0;
+  }
+  .current-time-line {
+    margin-top: 149px;
+  }
+  .field,
+  .time-field {
+    height: 50px;
+  }
+  .hours-add {
+    height: 50px;
+  }
+  .divider {
+    margin-top: 25px;
+  }
+  .time {
+    margin-top: 15px;
+  }
+  .time-field {
+    display: flex;
+    align-items: center;
   }
 }
 </style>
