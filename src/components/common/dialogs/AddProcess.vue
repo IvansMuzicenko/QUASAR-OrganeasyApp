@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <process-form @OKEvent="onOKClick" @cancelEvent="onCancelClick" />
+    <process-form @confirm-event="onOKClick" @cancel-event="onCancelClick" />
   </q-dialog>
 </template>
 

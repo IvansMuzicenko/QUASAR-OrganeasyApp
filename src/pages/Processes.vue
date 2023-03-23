@@ -10,7 +10,7 @@
           <filter-sort
             :items="processesArray"
             type="processes"
-            @updateData="(modifiedItems) => (processes = modifiedItems)"
+            @update-data="(modifiedItems) => (processes = modifiedItems)"
           />
         </q-card-section>
       </q-card-section>
@@ -37,9 +37,9 @@
     <q-dialog ref="editDialog" @hide="onDialogHide">
       <process-form
         :edit-process="selectedProcess"
-        @cancelEvent="onDialogHide"
-        @saveEvent="onOKClick"
-        @deleteEvent="onDialogHide"
+        @cancel-event="onDialogHide"
+        @save-event="onOKClick"
+        @delete-event="onDialogHide"
       />
     </q-dialog>
   </q-page>

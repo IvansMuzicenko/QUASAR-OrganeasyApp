@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <note-form @OKEvent="onOKClick" @cancelEvent="onCancelClick" />
+    <note-form @confirm-event="onOKClick" @cancel-event="onCancelClick" />
   </q-dialog>
 </template>
 
@@ -28,11 +28,17 @@ export default {
 
     onOKClick(form) {
       if (!form.title) {
-        let titleText = form.text
-          .replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '')
-          .slice(0, 31)
-
-        if (form.text.length > 30) titleText += '...'
+        let titleText
+        if (form.text.slice(0, 26).includes('<br>')) {
+          titleText = form.text
+            .slice(0, form.text.indexOf('<br>'))
+            .replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '')
+        } else {
+          titleText = form.text
+            .replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, '')
+            .slice(0, 31)
+          if (form.text.length > 30) titleText += '...'
+        }
 
         form.title = titleText
       }

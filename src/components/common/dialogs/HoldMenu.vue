@@ -87,7 +87,7 @@
         />
       </q-card-section>
       <q-card-section class="text-center">
-        <item-remove :item="item" :type="type" @deleteEvent="hide()" />
+        <item-remove :item="item" :type="type" @delete-event="hide()" />
       </q-card-section>
     </q-card>
   </q-dialog>

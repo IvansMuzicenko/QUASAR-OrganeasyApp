@@ -22,14 +22,15 @@
       <favorite-button
         :item-favorite="form.favorite || false"
         flat
-        @favoriteChanged="(favoriteState) => (form.favorite = favoriteState)"
+        @favorite-changed="(favoriteState) => (form.favorite = favoriteState)"
       />
 
       <q-card-section class="q-pl-xs">
         Category:
         <category-select
           :item-category="form.category || ''"
-          @categorySelected="
+          :select-on-save="true"
+          @category-selected="
             (selectedCategory) => (form.category = selectedCategory)
           "
         />
@@ -42,7 +43,7 @@
     </q-card-section>
 
     <q-card-actions align="right">
-      <save-button v-if="editNote" :error="error" @saveEvent="onSaveClick" />
+      <save-button v-if="editNote" :error="error" @save-event="onSaveClick" />
       <q-btn
         v-if="!editNote"
         color="primary"
@@ -70,7 +71,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'saveEvent', 'error'],
+  emits: ['confirmEvent', 'cancelEvent', 'saveEvent', 'error'],
   data() {
     return {
       form: {
@@ -109,7 +110,7 @@ export default {
       }
     },
     onOKClick() {
-      this.$emit('OKEvent', this.form)
+      this.$emit('confirmEvent', this.form)
     },
     onSaveClick() {
       this.$emit('saveEvent', this.form)

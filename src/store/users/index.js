@@ -1,3 +1,4 @@
+import { convertTimeToMinutes } from 'src/dateTimeHelper'
 const state = () => {
   return {
     user: {
@@ -22,6 +23,28 @@ const mutations = {
     state.user.userData = {}
 
     this.$router.push('/auth')
+  },
+  CHECKTIMELOGCROSSINGS(state) {
+    for (const date of Object.keys(state.user.userData.timeLogs ?? {})) {
+      const dateLogs = state.user.userData.timeLogs[date]
+      let logs = Object.values(dateLogs).sort(
+        (a, b) =>
+          convertTimeToMinutes(a.timeFrom) - convertTimeToMinutes(b.timeFrom)
+      )
+
+      logs.forEach((el, index) => {
+        let prevEl = logs[index - 1]
+        if (
+          prevEl &&
+          convertTimeToMinutes(prevEl.timeFrom) <=
+            convertTimeToMinutes(el.timeFrom) &&
+          convertTimeToMinutes(prevEl.timeTo) >
+            convertTimeToMinutes(el.timeFrom)
+        ) {
+          el.crossings = prevEl.crossings ? prevEl.crossings + 1 : 1
+        }
+      })
+    }
   }
 }
 
@@ -34,6 +57,9 @@ const actions = {
   },
   logout({ commit }) {
     commit('LOGOUT')
+  },
+  checkTimeLogCrossings({ commit }) {
+    commit('CHECKTIMELOGCROSSINGS')
   }
 }
 
@@ -45,7 +71,10 @@ const getters = {
   freeTasks: (state) => state.user?.userData?.freeTasks || {},
   notes: (state) => state.user?.userData?.notes || {},
   processes: (state) => state.user?.userData?.processes || {},
-  categories: (state) => state.user?.userData?.categories || {}
+  categories: (state) => state.user?.userData?.categories || {},
+  timeLogs: (state) => state.user?.userData?.timeLogs || {},
+  logProcesses: (state) => state.user?.userData?.logProcesses || {},
+  logCategories: (state) => state.user?.userData?.logCategories || {}
 }
 
 export default {

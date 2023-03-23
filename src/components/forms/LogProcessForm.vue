@@ -1,7 +1,7 @@
 <template>
   <q-card class="q-dialog-plugin">
     <p class="text-center text-subtitle1 no-margin">
-      {{ editProcess ? 'Edit process' : 'New process' }}
+      {{ editLogProcess ? 'Edit log-process' : 'New log-process' }}
       <q-btn
         icon="close"
         class="absolute-top-right"
@@ -12,29 +12,29 @@
     </p>
     <q-card-section>
       <q-input v-model="form.title" bottom-slots label="Title" :dense="false" />
-      <q-input
-        v-model.number="form.time"
-        bottom-slots
-        type="number"
-        label="Time"
-        suffix="Minutes"
-        min="1"
-        :dense="false"
+    </q-card-section>
+    <q-card-section>
+      Category:
+      <category-select
+        :item-category="form.category || ''"
+        :log-category="true"
+        :select-on-save="true"
+        @category-selected="
+          (selectedCategory) => (form.category = selectedCategory)
+        "
       />
     </q-card-section>
-    <q-card-section v-if="error">
-      <p class="text-negative">
-        Title must not be empty and time must be greater than 0
-      </p>
+    <q-card-section>
+      <editor v-model="form.description" min-height="2rem" />
     </q-card-section>
     <q-card-actions align="right">
       <save-button
-        v-if="editProcess"
+        v-if="editLogProcess"
         :error="error"
         @save-event="onSaveClick"
       />
       <q-btn
-        v-if="!editProcess"
+        v-if="!editLogProcess"
         color="positive"
         :disable="error"
         label="OK"
@@ -42,10 +42,10 @@
       />
       <q-btn color="primary" label="Cancel" @click="onCancelClick" />
       <item-remove
-        v-if="editProcess"
-        :item="editProcess"
-        type="process"
-        @delete-event="deleteClick()"
+        v-if="editLogProcess"
+        :item="editLogProcess"
+        type="log-process"
+        @delete-event="onCancelClick()"
       />
     </q-card-actions>
   </q-card>
@@ -54,11 +54,13 @@
 <script>
 import SaveButton from 'src/components/common/elements/buttons/SaveButton.vue'
 import ItemRemove from 'src/components/common/groups/ItemRemove.vue'
+import CategorySelect from 'src/components/common/groups/CategorySelect.vue'
+import Editor from 'src/components/common/form/Editor.vue'
 
 export default {
-  components: { SaveButton, ItemRemove },
+  components: { SaveButton, ItemRemove, Editor, CategorySelect },
   props: {
-    editProcess: {
+    editLogProcess: {
       type: Object,
       required: false,
       default: null
@@ -68,28 +70,23 @@ export default {
   data() {
     return {
       form: {
-        id: '',
         title: '',
-        time: 0
+        category: '',
+        description: ''
       }
     }
   },
   computed: {
     error() {
-      return !this.form.title || this.form.time <= 0
+      return !this.form.title
     }
   },
   mounted() {
-    this.updateData()
+    if (this.editLogProcess) {
+      Object.assign(this.form, this.editLogProcess)
+    }
   },
   methods: {
-    updateData() {
-      if (this.editProcess) {
-        this.form.id = this.editProcess.id
-        this.form.title = this.editProcess.title
-        this.form.time = this.editProcess.time
-      }
-    },
     onOKClick() {
       this.$emit('confirmEvent', this.form)
     },
@@ -98,9 +95,6 @@ export default {
     },
     onCancelClick() {
       this.$emit('cancelEvent')
-    },
-    deleteClick() {
-      this.$emit('deleteEvent')
     }
   }
 }

@@ -644,7 +644,7 @@
     </q-card-section>
 
     <q-card-actions align="right">
-      <save-button v-if="editTask" :error="error" @saveEvent="onSaveClick" />
+      <save-button v-if="editTask" :error="error" @save-event="onSaveClick" />
       <q-btn
         v-else
         color="positive"
@@ -684,7 +684,7 @@ export default {
       default: null
     }
   },
-  emits: ['OKEvent', 'cancelEvent', 'saveEvent', 'error'],
+  emits: ['confirmEvent', 'cancelEvent', 'saveEvent', 'error'],
 
   data() {
     return {
@@ -1127,7 +1127,7 @@ export default {
     },
     async onOKClick() {
       await this.addNotifsId()
-      this.$emit('OKEvent', this.form)
+      this.$emit('confirmEvent', this.form)
     },
     onCancelClick() {
       this.$emit('cancelEvent')

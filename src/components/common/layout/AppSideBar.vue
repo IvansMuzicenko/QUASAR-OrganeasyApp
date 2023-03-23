@@ -106,6 +106,24 @@ export default {
           link: '/categories'
         },
         {
+          title: 'Time Logs',
+          caption: '',
+          icon: 'pending_actions',
+          link: '/logs'
+        },
+        {
+          title: 'Log Processes',
+          caption: '',
+          icon: 'account_tree',
+          link: '/log-processes'
+        },
+        {
+          title: 'Log Categories',
+          caption: '',
+          icon: 'hub',
+          link: '/log-categories'
+        },
+        {
           title: 'Help',
           caption: '',
           icon: 'help',

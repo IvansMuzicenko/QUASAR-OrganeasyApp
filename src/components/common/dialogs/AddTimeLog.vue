@@ -1,9 +1,11 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
-    <free-task-form
-      :copy="copy"
+    <time-log-form
+      :exact-date="exactDate"
+      :exact-time="exactTime"
+      :edit-time-log="editTimeLog"
       @confirm-event="onOKClick"
-      @cancel-event="onCancelClick"
+      @cancel-event="hide()"
     />
   </q-dialog>
 </template>
@@ -11,18 +13,27 @@
 <script>
 import { date } from 'quasar'
 import { getDatabase, ref, set } from 'firebase/database'
-import FreeTaskForm from 'src/components/forms/FreeTaskForm.vue'
+import TimeLogForm from 'src/components/forms/TimeLogForm.vue'
 import generateId from 'src/idGenerator.js'
 
 const db = getDatabase()
 
 export default {
   components: {
-    FreeTaskForm
+    TimeLogForm
   },
-
   props: {
-    copy: {
+    exactDate: {
+      type: String,
+      required: false,
+      default: null
+    },
+    exactTime: {
+      type: String,
+      required: false,
+      default: null
+    },
+    editTimeLog: {
       type: Object,
       required: false,
       default: null
@@ -45,35 +56,21 @@ export default {
     },
 
     onOKClick(form) {
-      const newTodo = {
-        id: generateId(),
-        title: form.todoTitle,
-        priority: form.priority,
-        progress: form.progress,
-        continuous: form.continuousState,
-        notes: form.toggleNotes ? form.notes : null,
-        location: form.toggleLocation ? form.eventLocation : null,
-        subtasks: form.toggleSubtasks ? form.subtasks : null,
-        category: form.category || null,
-        dateModified: Date.now(),
-        finishedDate: form.progress ? Date.now() : null
-      }
-
+      form.id = form.id ?? generateId()
       set(
         ref(
           db,
-          `${this.$store.getters['users/userId']}/freeTasks/id-${newTodo.id}/`
+          `${this.$store.getters['users/userId']}/timeLogs/date-${form.date}/id-${form.id}/`
         ),
-        newTodo
+        form
       )
-
       this.$emit('ok')
 
       this.hide()
 
       this.$q.notify({
         position: 'top',
-        message: 'Task added',
+        message: `Time log ${this.editTimeLog ? 'edited' : 'added'}`,
         color: 'green',
         timeout: 1000
       })

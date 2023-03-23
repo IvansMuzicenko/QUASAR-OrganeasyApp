@@ -2,6 +2,7 @@
   <q-editor
     :model-value="modelValue"
     :class="{ 'full-width': fullWidth }"
+    :min-height="minHeight"
     :toolbar="[
       ['undo', 'redo'],
       ['bold', 'italic', 'strike', 'underline', 'subscript', 'superscript'],
@@ -25,7 +26,7 @@
         }
       ]
     ]"
-    @update:modelValue="(newValue) => $emit('update:modelValue', newValue)"
+    @update:model-value="(newValue) => $emit('update:modelValue', newValue)"
   />
 </template>
 
@@ -41,6 +42,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    minHeight: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
   emits: ['update:modelValue']

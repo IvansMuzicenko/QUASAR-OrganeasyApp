@@ -76,12 +76,25 @@ export default {
       type: String,
       required: false,
       default: ''
+    },
+    logCategory: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    selectOnSave: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   emits: ['categorySelected'],
   computed: {
     categories() {
-      const vuexCategories = this.$store.getters['users/categories']
+      const vuexCategories =
+        this.$store.getters[
+          `users/${this.logCategory ? 'logCategories' : 'categories'}`
+        ]
       let categories = []
       for (const category in vuexCategories) {
         categories.push(vuexCategories[category])
@@ -90,7 +103,9 @@ export default {
     },
     currentCategory() {
       return (
-        this.$store.getters['users/categories'][`id-${this.itemCategory}`] || {}
+        this.$store.getters[
+          `users/${this.logCategory ? 'logCategories' : 'categories'}`
+        ][`id-${this.itemCategory}`] || {}
       )
     }
   },
@@ -111,9 +126,19 @@ export default {
       }
     },
     addCategory() {
-      this.$q.dialog({
-        component: AddCategory
-      })
+      this.$q
+        .dialog({
+          component: AddCategory,
+          componentProps: {
+            logCategory: this.logCategory,
+            selectOnSave: this.selectOnSave
+          }
+        })
+        .onOk((formId = false) => {
+          if (formId) {
+            this.categorySelected(formId)
+          }
+        })
     }
   }
 }
