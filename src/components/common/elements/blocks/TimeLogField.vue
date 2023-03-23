@@ -5,15 +5,19 @@
     draggable="true"
     class="log-block"
     :style="`height: ${
-      (convertTimeToMinutes(timeLog.timeSpent) / 15) * 20 - 2
+      (convertTimeToMinutes(timeLog.timeSpent) / 15) *
+        (20 * (window.innerWidth < 900 ? 2.5 : 1)) -
+      2
     }px;
     width: calc(100% - ${(timeLog.crossings ?? 0) * 5}px);`"
     @dragstart="onDragStart"
     @click.prevent.stop="editTimeLog(timeLog.id, date)"
   >
-    <div class="column log-text full-width">
-      <p class="full-width q-ma-none">{{ logProcess?.title ?? 'Default' }}</p>
-      <q-chip v-if="logCategory" dense class="q-ma-none full-width">
+    <div class="column full-width">
+      <p class="full-width q-ma-none log-text">
+        {{ logProcess?.title ?? 'Default' }}
+      </p>
+      <q-chip v-if="logCategory" dense class="q-ma-none full-width log-text">
         <q-avatar
           :icon="logCategory ? logCategory['icon'] : ''"
           :color="logCategory ? logCategory['color'] : ''"
@@ -21,7 +25,7 @@
         />
         <span>{{ logCategory ? logCategory['title'] : '' }}</span>
       </q-chip>
-      <p class="full-width q-ma-none">{{ timeLog.description }}</p>
+      <p class="full-width q-ma-none log-text">{{ timeLog.description }}</p>
       <div class="row justify-between q-px-xs field-times">
         <span>{{ `${timeLog.timeFrom} - ${timeLog.timeTo}` }}</span>
         <span>{{ timeLog.timeSpent }}</span>
@@ -63,7 +67,7 @@ export default {
     }
   },
   data() {
-    return { convertTimeToMinutes, convertMinutesToTime }
+    return { convertTimeToMinutes, convertMinutesToTime, window }
   },
   computed: {
     timeLog() {
@@ -120,11 +124,10 @@ export default {
   &:hover {
     background: rgb(240, 240, 240);
   }
-
-  .log-text {
-    line-height: 16px;
-    font-size: 14px;
-  }
+}
+.log-text {
+  line-height: 16px;
+  font-size: 14px;
 }
 .time {
   user-select: none;
@@ -138,5 +141,19 @@ export default {
   border-top: 1px solid gray;
   font-size: 13px;
   line-height: 15px;
+}
+@media only screen and (max-width: 600px) {
+  .log-block {
+    margin-top: 15px;
+  }
+  .log-text {
+    line-height: 18px;
+    font-size: 16px;
+  }
+  .field-times {
+    border-top: 1px solid gray;
+    font-size: 15px;
+    line-height: 17px;
+  }
 }
 </style>

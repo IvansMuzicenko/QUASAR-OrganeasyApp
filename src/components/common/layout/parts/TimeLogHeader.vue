@@ -1,7 +1,7 @@
 <template>
   <q-page-sticky expand position="top" class="header">
-    <q-toolbar class="bg-grey-1 q-pa-none column">
-      <div class="row full-width justify-between">
+    <div class="bg-grey-1 column full-width">
+      <div class="row justify-between header-actions">
         <div>
           <span>
             <q-btn flat @click="changeWeek(-1)">&lt;</q-btn>
@@ -34,7 +34,9 @@
             <q-btn flat @click="changeWeek()">&gt;</q-btn>
           </span>
         </div>
-        <div>Total: {{ convertMinutesToTime(weekTotalHours) }}</div>
+        <div class="row items-center">
+          Total: {{ convertMinutesToTime(weekTotalHours) }}
+        </div>
       </div>
       <div class="dates row full-width">
         <div class="hours" />
@@ -54,7 +56,7 @@
           <q-btn @click="addTimeLog(day)">+</q-btn>
         </div>
       </div>
-    </q-toolbar>
+    </div>
   </q-page-sticky>
 </template>
 
@@ -250,6 +252,27 @@ export default {
 <style>
 .header {
   z-index: 100;
+}
+@media only screen and (max-width: 900px) {
+  .header {
+    position: relative;
+    justify-content: start;
+    transform: translate(0px, 0px) !important;
+  }
+
+  #timeLogsPage {
+    min-width: 1200px;
+  }
+
+  .header-actions {
+    padding-right: 20px;
+    width: 100vw;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .header {
+    padding-top: 3rem;
+  }
 }
 .date {
   min-height: 100px;

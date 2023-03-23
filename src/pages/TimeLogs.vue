@@ -1,5 +1,6 @@
 <template>
   <q-page
+    id="timeLogsPage"
     v-touch-swipe:3e-2:10:100.mouse.horizontal="handleSwipe"
     class="relative-position"
   >
@@ -91,7 +92,10 @@ export default {
       minutes += hours * 60
       minutes += minutes / 3
       let currentTimeLine = document.querySelector('.current-time-line')
-      currentTimeLine.style.top = minutes + 'px'
+      currentTimeLine.style.top =
+        minutes * (window.innerWidth < 900 ? 2.5 : 1) +
+        (window.innerWidth < 900 ? 15 : 0) +
+        'px'
 
       setTimeout(() => {
         currentTimeLine.scrollIntoView({
