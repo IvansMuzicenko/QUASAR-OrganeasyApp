@@ -34,4 +34,4 @@ yarn-error.log*
 
 .env
 
-src-capacitor/android/app/src/main/assets/capacitor.config.json
+/src-capacitor
