@@ -147,5 +147,9 @@ export default {
     display: flex;
     align-items: center;
   }
+
+  .hours {
+    display: none;
+  }
 }
 </style>
