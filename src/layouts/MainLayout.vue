@@ -1,11 +1,5 @@
 <template>
   <q-layout view="LHh Lpr lFf">
-    <q-pull-to-refresh
-      style="height: 3rem; z-index: 1000"
-      class="absolute full-width"
-      @refresh="reload"
-    />
-
     <app-header @drawer-click="toggleLeftDrawer" />
 
     <app-side-bar
@@ -38,10 +32,6 @@ export default {
     }
   },
   methods: {
-    reload(done) {
-      location.reload()
-      done()
-    },
     toggleLeftDrawer() {
       this.leftDrawerOpen = !this.leftDrawerOpen
     },

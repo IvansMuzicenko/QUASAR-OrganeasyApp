@@ -6,7 +6,7 @@
     class="log-block"
     :style="`height: ${
       (convertTimeToMinutes(timeLog.timeSpent) / 15) *
-        (20 * (window.innerWidth < 900 ? 2.5 : 1)) -
+        (20 * (screenWidth < 900 ? 2.5 : 1)) -
       2
     }px;
     width: calc(100% - ${(timeLog.crossings ?? 0) * 5}px);`"
@@ -37,7 +37,11 @@
     />
   </div>
   <div v-else class="quarters-field">
-    <span class="time absolute-top q-mx-auto text-center" hidden>
+    <span
+      class="time absolute-top q-mx-auto text-center"
+      hidden
+      :class="(convertTimeToMinutes(timeFrom) / 15) % 4 ? '' : 'quarterTime'"
+    >
       {{ timeFrom }}
     </span>
     <q-separator
@@ -67,7 +71,11 @@ export default {
     }
   },
   data() {
-    return { convertTimeToMinutes, convertMinutesToTime, window }
+    return {
+      convertTimeToMinutes,
+      convertMinutesToTime,
+      screenWidth: window.innerWidth
+    }
   },
   computed: {
     timeLog() {
@@ -142,10 +150,18 @@ export default {
   font-size: 13px;
   line-height: 15px;
 }
-@media only screen and (max-width: 600px) {
+.quarterTime {
+  display: none;
+}
+@media only screen and (max-width: 900px) {
+  .quarterTime {
+    display: inline-block;
+  }
   .log-block {
     margin-top: 15px;
   }
+}
+@media only screen and (max-width: 600px) {
   .log-text {
     line-height: 18px;
     font-size: 16px;
