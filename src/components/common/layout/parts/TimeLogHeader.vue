@@ -253,25 +253,23 @@ export default {
 .header {
   z-index: 100;
 }
+.header-actions {
+  padding-right: 20px;
+  width: 100vw;
+}
 @media only screen and (max-width: 900px) {
   .header {
     position: relative;
     justify-content: start;
     transform: translate(0px, 0px) !important;
   }
+  .header-actions {
+    position: sticky;
+    left: 0;
+  }
 
   #timeLogsPage {
     min-width: 1200px;
-  }
-
-  .header-actions {
-    padding-right: 20px;
-    width: 100vw;
-  }
-}
-@media only screen and (max-width: 600px) {
-  .header {
-    padding-top: 3rem;
   }
 }
 .date {

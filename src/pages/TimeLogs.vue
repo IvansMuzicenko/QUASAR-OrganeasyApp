@@ -1,9 +1,5 @@
 <template>
-  <q-page
-    id="timeLogsPage"
-    v-touch-swipe:3e-2:10:100.mouse.horizontal="handleSwipe"
-    class="relative-position"
-  >
+  <q-page id="timeLogsPage" class="relative-position">
     <time-log-header
       ref="timeLogsHeader"
       :is-today="isToday"
@@ -104,17 +100,6 @@ export default {
           inline: 'nearest'
         })
       }, 1)
-    },
-
-    handleSwipe(evt) {
-      if (!evt.direction) {
-        return
-      }
-      if (evt.direction == 'right') {
-        this.$refs.timeLogsHeader.changeWeek(-1)
-        return
-      }
-      this.$refs.timeLogsHeader.changeWeek()
     },
 
     isToday(day) {
