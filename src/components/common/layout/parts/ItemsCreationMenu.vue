@@ -73,6 +73,8 @@ import AddNote from 'src/components/common/dialogs/AddNote.vue'
 import AddCategory from 'src/components/common/dialogs/AddCategory.vue'
 import AddTimeLog from 'src/components/common/dialogs/AddTimeLog.vue'
 import AddLogProcess from 'src/components/common/dialogs/AddLogProcess.vue'
+import { date } from 'quasar'
+
 export default {
   methods: {
     addTask() {
@@ -104,7 +106,7 @@ export default {
       this.$q.dialog({
         component: AddTimeLog,
         componentProps: {
-          exactDate: this.date
+          exactDate: date.formatDate(new Date(), 'DD-MM-YYYY')
         }
       })
     },

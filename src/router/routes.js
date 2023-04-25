@@ -54,6 +54,11 @@ const routes = [
         meta: { parentPath: 'logs' }
       },
       {
+        path: '/logs-stats',
+        component: () => import('src/pages/LogsStats.vue'),
+        meta: { parentPath: 'logs-stats' }
+      },
+      {
         path: '/log-processes',
         component: () => import('src/pages/LogProcesses.vue'),
         meta: { parentPath: 'log-processes' }

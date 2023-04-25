@@ -112,6 +112,12 @@ export default {
           link: '/logs'
         },
         {
+          title: 'Log Statistics',
+          caption: '',
+          icon: 'analytics',
+          link: '/logs-stats'
+        },
+        {
           title: 'Log Processes',
           caption: '',
           icon: 'account_tree',
