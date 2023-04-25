@@ -134,6 +134,22 @@
                 <q-item
                   class="col justify-center no-padding"
                   clickable
+                  :class="parentPath == 'logs-stats' ? 'activeLink' : ''"
+                  to="/logs-stats"
+                >
+                  <q-item-section class="text-center" style="line-height: 0">
+                    <q-item-section class="row no-padding">
+                      <q-icon size="sm" name="analytics" class="col" />
+                    </q-item-section>
+                    <q-item-section class="no-margin text-weight-light">
+                      Logs Statistics
+                    </q-item-section>
+                  </q-item-section>
+                </q-item>
+
+                <q-item
+                  class="col justify-center no-padding"
+                  clickable
                   :class="parentPath == 'log-processes' ? 'activeLink' : ''"
                   to="/log-processes"
                 >

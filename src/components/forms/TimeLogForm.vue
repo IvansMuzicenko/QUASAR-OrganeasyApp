@@ -446,8 +446,6 @@ export default {
     },
 
     allLogProcesses() {
-      // maybe should be with name allLogProcesses
-      // option-value and option-label can be used to not assign twice same values
       const vuexLogProcesses = this.$store.getters['users/logProcesses']
       let logProcessesArray = []
       for (const vuexLogProcess in vuexLogProcesses) {
