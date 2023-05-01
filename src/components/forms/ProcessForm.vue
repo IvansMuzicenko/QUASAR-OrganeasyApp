@@ -10,6 +10,22 @@
         @click="onCancelClick"
       />
     </p>
+
+    <q-card-actions align="center">
+      <save-button
+        v-if="editProcess"
+        :error="error"
+        @save-event="onSaveClick"
+      />
+      <q-btn
+        v-if="!editProcess"
+        color="positive"
+        :disable="error"
+        label="OK"
+        @click="onOKClick"
+      />
+    </q-card-actions>
+
     <q-card-section>
       <q-input v-model="form.title" bottom-slots label="Title" :dense="false" />
       <q-input

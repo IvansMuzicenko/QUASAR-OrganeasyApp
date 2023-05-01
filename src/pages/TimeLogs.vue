@@ -22,6 +22,8 @@
 import { date } from 'quasar'
 import TimeLogHeader from 'src/components/common/layout/parts/TimeLogHeader.vue'
 import TimeLogTable from 'src/components/common/layout/parts/TimeLogTable.vue'
+import { convertTimeToMinutes, convertMinutesToTime } from 'src/dateTimeHelper'
+
 export default {
   components: {
     TimeLogHeader,
@@ -29,6 +31,8 @@ export default {
   },
   data() {
     return {
+      convertTimeToMinutes,
+      convertMinutesToTime,
       weekStart: '',
       weekEnd: '',
       currentWeek: {
@@ -93,13 +97,39 @@ export default {
         (window.innerWidth < 900 ? 15 : 0) +
         'px'
 
+      const currentTimeBlock = document.querySelector(
+        `.selected .time-${this.roundTime(
+          date.formatDate(new Date(), 'HH:mm')
+        )}`
+      )
+
       setTimeout(() => {
-        currentTimeLine.scrollIntoView({
-          behavior: 'auto',
-          block: 'center',
-          inline: 'nearest'
-        })
+        if (currentTimeBlock) {
+          currentTimeBlock.hidden = false
+          currentTimeBlock.scrollIntoView({
+            behavior: 'auto',
+            block: 'center',
+            inline: 'center'
+          })
+          currentTimeBlock.hidden = true
+        } else {
+          currentTimeLine.scrollIntoView({
+            behavior: 'auto',
+            block: 'center',
+            inline: 'center'
+          })
+        }
       }, 1)
+    },
+
+    roundTime(time) {
+      let minutes = Math.floor(convertTimeToMinutes(time) / 15) * 15
+      if (convertTimeToMinutes(time) > 1440) {
+        return convertMinutesToTime(1440)
+      } else if (convertTimeToMinutes(time) < 0) {
+        return convertMinutesToTime(0)
+      }
+      return minutes
     },
 
     isToday(day) {

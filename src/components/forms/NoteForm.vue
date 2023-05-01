@@ -11,6 +11,17 @@
       />
     </p>
 
+    <q-card-actions align="center">
+      <save-button v-if="editNote" :error="error" @save-event="onSaveClick" />
+      <q-btn
+        v-if="!editNote"
+        color="primary"
+        :disable="error"
+        label="Add"
+        @click="onOKClick"
+      />
+    </q-card-actions>
+
     <q-card-section>
       <q-input
         v-model="form.title"
