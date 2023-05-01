@@ -300,20 +300,20 @@ export default {
                 return 1
               if ((a.priority ? a.priority : 3) < (b.priority ? b.priority : 3))
                 return -1
-              if (a.dateModified < b.dateModified) return 1
-              if (a.dateModified > b.dateModified) return -1
               if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
               if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+              if (a.dateModified < b.dateModified) return 1
+              if (a.dateModified > b.dateModified) return -1
               return 0
             } else {
               if ((a.priority ? a.priority : 3) < (b.priority ? b.priority : 3))
                 return 1
               if ((a.priority ? a.priority : 3) > (b.priority ? b.priority : 3))
                 return -1
-              if (a.dateModified < b.dateModified) return 1
-              if (a.dateModified > b.dateModified) return -1
               if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
               if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+              if (a.dateModified < b.dateModified) return 1
+              if (a.dateModified > b.dateModified) return -1
               return 0
             }
           } else if (this.sort.dateModified != 'none') {

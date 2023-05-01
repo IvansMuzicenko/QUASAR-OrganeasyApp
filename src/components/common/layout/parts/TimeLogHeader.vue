@@ -35,7 +35,7 @@
           </span>
         </div>
         <div class="row items-center">
-          Total: {{ convertMinutesToTime(weekTotalHours) }}
+          Total week: {{ convertMinutesToTime(weekTotalHours) }}
         </div>
       </div>
       <div class="dates row full-width">
