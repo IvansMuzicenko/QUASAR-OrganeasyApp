@@ -34,6 +34,22 @@
           @click="onCancelClick"
         />
       </p>
+
+      <q-card-actions align="center">
+        <save-button
+          v-if="editTimeLog"
+          :error="error"
+          @save-event="onSaveClick()"
+        />
+        <q-btn
+          v-if="!editTimeLog"
+          color="positive"
+          :disable="error"
+          label="OK"
+          @click="onOKClick"
+        />
+      </q-card-actions>
+
       <q-card-section class="row">
         <q-select
           v-model="form.logProcessId"

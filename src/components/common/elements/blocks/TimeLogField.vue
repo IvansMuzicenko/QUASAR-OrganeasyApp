@@ -40,7 +40,11 @@
     <span
       class="time absolute-top q-mx-auto text-center"
       hidden
-      :class="(convertTimeToMinutes(timeFrom) / 15) % 4 ? '' : 'quarterTime'"
+      :class="
+        (convertTimeToMinutes(timeFrom) / 15) % 4
+          ? `time-${convertTimeToMinutes(timeFrom)}`
+          : `quarterTime time-${convertTimeToMinutes(timeFrom)}`
+      "
     >
       {{ timeFrom }}
     </span>
