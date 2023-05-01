@@ -262,10 +262,22 @@ export default {
             if (this.sort.title == 'asc') {
               if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
               if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+              if ((a.priority ? a.priority : 3) > (b.priority ? b.priority : 3))
+                return 1
+              if ((a.priority ? a.priority : 3) < (b.priority ? b.priority : 3))
+                return -1
+              if (a.dateModified < b.dateModified) return 1
+              if (a.dateModified > b.dateModified) return -1
               return 0
             } else {
               if (a.title.toLowerCase() < b.title.toLowerCase()) return 1
               if (a.title.toLowerCase() > b.title.toLowerCase()) return -1
+              if ((a.priority ? a.priority : 3) > (b.priority ? b.priority : 3))
+                return 1
+              if ((a.priority ? a.priority : 3) < (b.priority ? b.priority : 3))
+                return -1
+              if (a.dateModified < b.dateModified) return 1
+              if (a.dateModified > b.dateModified) return -1
               return 0
             }
           } else if (this.sort.time != 'none') {
@@ -284,25 +296,65 @@ export default {
             }
           } else if (this.sort.priority != 'none') {
             if (this.sort.priority == 'asc') {
-              return (
-                (a.priority ? a.priority : 3) - (b.priority ? b.priority : 3)
-              )
+              if ((a.priority ? a.priority : 3) > (b.priority ? b.priority : 3))
+                return 1
+              if ((a.priority ? a.priority : 3) < (b.priority ? b.priority : 3))
+                return -1
+              if (a.dateModified < b.dateModified) return 1
+              if (a.dateModified > b.dateModified) return -1
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+              return 0
             } else {
-              return (
-                (b.priority ? b.priority : 3) - (a.priority ? a.priority : 3)
-              )
+              if ((a.priority ? a.priority : 3) < (b.priority ? b.priority : 3))
+                return 1
+              if ((a.priority ? a.priority : 3) > (b.priority ? b.priority : 3))
+                return -1
+              if (a.dateModified < b.dateModified) return 1
+              if (a.dateModified > b.dateModified) return -1
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+              return 0
             }
           } else if (this.sort.dateModified != 'none') {
             if (this.sort.dateModified == 'asc') {
-              return (
-                (a.dateModified ? a.dateModified : 0) -
+              if (
+                (a.dateModified ? a.dateModified : 0) >
                 (b.dateModified ? b.dateModified : 0)
               )
-            } else {
-              return (
-                (b.dateModified ? b.dateModified : 0) -
-                (a.dateModified ? a.dateModified : 0)
+                return 1
+              if (
+                (a.dateModified ? a.dateModified : 0) <
+                (b.dateModified ? b.dateModified : 0)
               )
+                return -1
+
+              if ((a.priority ? a.priority : 3) > (b.priority ? b.priority : 3))
+                return 1
+              if ((a.priority ? a.priority : 3) < (b.priority ? b.priority : 3))
+                return -1
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+              return 0
+            } else {
+              if (
+                (a.dateModified ? a.dateModified : 0) <
+                (b.dateModified ? b.dateModified : 0)
+              )
+                return 1
+              if (
+                (a.dateModified ? a.dateModified : 0) >
+                (b.dateModified ? b.dateModified : 0)
+              )
+                return -1
+
+              if ((a.priority ? a.priority : 3) > (b.priority ? b.priority : 3))
+                return 1
+              if ((a.priority ? a.priority : 3) < (b.priority ? b.priority : 3))
+                return -1
+              if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+              if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+              return 0
             }
           }
         })

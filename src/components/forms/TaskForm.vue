@@ -10,6 +10,18 @@
         @click="onCancelClick"
       />
     </p>
+
+    <q-card-actions align="center">
+      <save-button v-if="editTask" :error="error" @save-event="onSaveClick" />
+      <q-btn
+        v-else
+        color="positive"
+        label="Add"
+        :disable="error"
+        @click="onOKClick"
+      />
+    </q-card-actions>
+
     <q-card-section class="no-padding">
       <q-input
         v-model="form.todoTitle"

@@ -10,6 +10,15 @@
         @click="onCancelClick"
       />
     </p>
+    <q-card-actions align="center">
+      <q-btn
+        v-if="!editCategory"
+        color="positive"
+        label="Add"
+        @click="onOKClick"
+      />
+      <save-button v-else @save-event="onSaveClick" />
+    </q-card-actions>
     <q-card-section class="text-center text-subtitle1">
       Preview:
       <q-icon :name="form.icon" :color="form.color" />
